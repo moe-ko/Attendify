@@ -1,3 +1,1 @@
 # Attendify
-
-git pull
