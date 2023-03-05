@@ -1,45 +1,89 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
 import { Platform, Text, View, StyleSheet } from 'react-native';
+import { firebase } from './config';
+// Screens
+import Login from './src/screens/Login';
+import Register from './src/screens/Register';
+import Home from './src/screens/Home';
+import Header from './components/Header';
+//  
 
-import * as Location from 'expo-location';
 
-export default function App() {
-  const [location, setLocation] = useState(null);
-  const [errorMsg, setErrorMsg] = useState(null);
+const Stack = createStackNavigator();
 
+function App() {
+  const [initializing, setInitializing] = useState(true);
+  const [user, setUser] = useState();
+
+
+  function onAuthStateChange(user) {
+    setUser(user);
+    if (initializing) setInitializing(false);
+  }
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        setErrorMsg('Permission to access location was denied');
-        return;
-      }
+    const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChange);
+    return subscriber;
+  }, [])
 
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-  }, []);
+  if (initializing) return null;
 
-
-  let text = 'Waiting...';
-  let lat = 0;
-  let long = 0;
-  if (errorMsg) {
-    text = errorMsg;
-  } else if (location) {
-    text = JSON.stringify(location);
-    lat = JSON.parse(text)['coords']['latitude'];
-    long = JSON.parse(text)['coords']['longitude'];
+  if (!user) {
+    return (
+      <Stack.Navigator>
+        <Stack.Screen
+          name='Login'
+          component={Login}
+          options={{
+            headerTitle: () => <Header name='Attendify' />,
+            headerStyle: {
+              height: 150,
+              backgroundColor: '#00e4d0',
+              elevation: 25
+            }
+          }}
+        />
+        <Stack.Screen
+          name='Register'
+          component={Register}
+          options={{
+            headerTitle: () => <Header name='Attendify' />,
+            headerStyle: {
+              height: 150,
+              backgroundColor: '#00e4d0',
+              elevation: 25
+            }
+          }}
+        />
+      </Stack.Navigator>
+    )
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.paragraph}>You are here</Text>
-      <Text style={styles.paragraph}>Latitude: {lat}</Text>
-      <Text style={styles.paragraph}>Longitude: {long}</Text>
-    </View>
-  );
+    <Stack.Navigator>
+      <Stack.Screen
+        name='Home'
+        component={Home}
+        options={{
+          headerTitle: () => <Header name='Home' />,
+          headerStyle: {
+            height: 150,
+            backgroundColor: '#00e4d0',
+            elevation: 25
+          }
+        }}
+      />
+    </Stack.Navigator>
+  )
+}
+export default () => {
+  return (
+    <NavigationContainer>
+      <App />
+    </NavigationContainer>
+  )
 }
 
 const styles = StyleSheet.create({
