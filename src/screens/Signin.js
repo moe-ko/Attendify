@@ -3,13 +3,12 @@ import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../../config'
 
-import LoginForm from '../../components/LoginForm'
-const Login = () => {
+const Signin = () => {
     const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    loginUser = async (email, password) => {
+    signinUser = async (email, password) => {
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
         } catch (error) {
@@ -34,7 +33,7 @@ const Login = () => {
                 onChangeText={(text) => setPassword(text)}
                 autoCorrect={false}
             />
-            <TouchableOpacity onPress={() => { loginUser(email, password) }}>
+            <TouchableOpacity onPress={() => { signinUser(email, password) }}>
                 <Text>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { navigation.navigate('Register') }}>
@@ -44,4 +43,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Signin
