@@ -3,11 +3,11 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
 import { Platform, Text, View, StyleSheet } from 'react-native';
 import { firebase } from './config';
-// Screens
-import Login from './src/screens/Login';
-import Register from './src/screens/Register';
+// Screens 
+import SingUp from './src/screens/SignUp';
 import Home from './src/screens/Home';
 import Header from './components/Header';
+import SignIn from './src/screens/SignIn';
 //  
 
 
@@ -34,26 +34,28 @@ function App() {
     return (
       <Stack.Navigator>
         <Stack.Screen
-          name='Login'
-          component={Login}
+          name='Sign In'
+          component={SignIn}
           options={{
-            headerTitle: () => <Header name='Attendify' />,
+            headerTitle: () => <Header name='Attendify Sign In' />,
+            headerBackTitleVisible: false,
             headerStyle: {
               height: 150,
-              backgroundColor: '#00e4d0',
+              backgroundColor: '#62ABEF',
               elevation: 25
             }
           }}
         />
         <Stack.Screen
-          name='Register'
-          component={Register}
+          name='Sign Up'
+          component={SingUp}
           options={{
-            headerTitle: () => <Header name='Attendify' />,
+            headerTitle: () => <Header name='Attendify Sign Up' />,
+            headerBackTitleVisible: false,
             headerStyle: {
               height: 150,
-              backgroundColor: '#00e4d0',
-              elevation: 25
+              backgroundColor: '#62ABEF',
+              elevation: 25,
             }
           }}
         />
