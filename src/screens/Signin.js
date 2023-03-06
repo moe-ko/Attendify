@@ -5,6 +5,7 @@ import { firebase } from '../../config'
 
 const SignIn = () => {
     const navigation = useNavigation();
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -15,6 +16,7 @@ const SignIn = () => {
             alert(error.message);
         }
     }
+
     return (
         <View>
             <TextInput
@@ -23,6 +25,7 @@ const SignIn = () => {
                 onChangeText={(text) => setEmail(text)}
                 autoCapitalize={'none'}
                 keyboardType={'email-address'}
+                required
             />
             <TextInput
                 value={password}
@@ -30,8 +33,9 @@ const SignIn = () => {
                 secureTextEntry
                 onChangeText={(text) => setPassword(text)}
                 autoCorrect={false}
+                required
             />
-            <TouchableOpacity onPress={() => { signInUser(email, password) }}>
+            <TouchableOpacity onPress={() => { signInUser(email, password) }} disabled={(!email.trim() || !password.trim())}>
                 <Text>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { navigation.navigate('Sign Up') }}>
