@@ -19,7 +19,3 @@
 - if you are using Xcode 12.5 or higher got to /ios and execute `pod install --repo-update`
 - running your app on a simulator or virtual device, run `npm run ios` or `npm run android` to start your application!
 - install the [Expo Go](https://expo.dev/client) app on your iOS or Android phone and connect to the same wireless network as your computer. On Android, use the Expo Go app to scan the QR code from your terminal to open your project. On iOS, use the built-in QR code scanner of the default iOS Camera app.
-
-
-testing this
-added another line
