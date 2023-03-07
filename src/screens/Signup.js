@@ -97,10 +97,33 @@ const SignUp = () => {
             </View>
             <View>
                 <SelectList
-                    boxStyles={style.inputSelect}
-                    style={style.input}
                     data={units}
                     setSelected={setSubunitSelected}
+                    placeholder='Select Unit/Subunit'
+                    inputStyles={{
+                        color: "#666",
+                        padding: 0,
+                        margin: 0,
+                    }}
+                    boxStyles={{
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderColor: '#000',
+                        color: '#fff',
+                        margin: 5,
+                    }}
+                    dropdownStyles={{
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        borderColor: '#DDDDDD',
+                        backgroundColor: '#DDDDDD',
+                        color: '#fff',
+                        marginLeft: 5,
+                        marginRight: 5,
+                        marginBottom: 5,
+                        marginTop: 0,
+                        position: 'relative'
+                    }}
                 />
             </View>
             <View>
@@ -147,14 +170,6 @@ const style = StyleSheet.create({
         padding: 10,
         borderWidth: 1,
         borderRadius: 4,
-        margin: 5
-    },
-    inputSelect: {
-        padding: 5,
-        borderWidth: 1,
-        borderRadius: 4,
-        borderColor: '#000',
-        color: '#fff',
         margin: 5
     },
     buttonGray: {
