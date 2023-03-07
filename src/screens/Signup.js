@@ -1,8 +1,10 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { firebase } from '../../config'
 import { useNavigation } from '@react-navigation/native'
 import { format } from 'date-fns'
+import { SelectList } from 'react-native-dropdown-select-list'
+import { Colors } from 'react-native/Libraries/NewAppScreen'
 
 const SignUp = () => {
     const navigation = useNavigation();
@@ -12,18 +14,20 @@ const SignUp = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
+    const [subunitSelected, setSubunitSelected] = useState('');
+    const units = []
 
     handleSignUp = (empId, email, password, name) => {
         firebase.auth()
             .createUserWithEmailAndPassword(email, password)
-            .then(() => { addEmployeeDetails(empId, email, name) })
+            .then(() => { addEmployeeDetails(empId, email, name, subunitSelected) })
             .then(() => { navigation.navigate('Sign In') })
             .catch(error => {
                 console.log(error)
             });
     }
 
-    addEmployeeDetails = (empId, email, name) => {
+    addEmployeeDetails = (empId, email, name, subunitSelected) => {
         firebase
             .firestore()
             .collection('employees')
@@ -32,14 +36,38 @@ const SignUp = () => {
                 createdAt: format(new Date(), "dd MMMM yyyy - H:mm:ss"),
                 email: email,
                 full_name: name,
-                status_id: `/status/1`
+                status_id: 1,
+                subunit_id: parseInt(subunitSelected)
             })
     }
 
+    getSubunits = () => {
+        firebase.firestore()
+            .collection('subunits')
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(documentSnapshot => {
+                    getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                });
+            });
+    }
+    getUnits = (subunit_id, subunit_name, id) => {
+        const subscriber = firebase.firestore()
+            .collection('units')
+            .doc(id)
+            .onSnapshot(documentSnapshot => {
+                units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' > ' + subunit_name}` })
+            });
+        return () => subscriber();
+    }
+
+    getSubunits()
+
     return (
-        <View>
+        <View style={style.container}>
             <View>
                 <TextInput
+                    style={style.input}
                     onChangeText={(text) => setEmpId(text)}
                     placeholder="Employee ID"
                     placeholderTextColor="#666"
@@ -49,6 +77,7 @@ const SignUp = () => {
             </View>
             <View>
                 <TextInput
+                    style={style.input}
                     onChangeText={(text) => setName(text)}
                     placeholder="Full Name"
                     placeholderTextColor="#666"
@@ -58,6 +87,7 @@ const SignUp = () => {
             </View>
             <View>
                 <TextInput
+                    style={style.input}
                     onChangeText={(text) => setEmail(text)}
                     placeholder="Email"
                     placeholderTextColor="#666"
@@ -66,7 +96,16 @@ const SignUp = () => {
                 />
             </View>
             <View>
+                <SelectList
+                    boxStyles={style.inputSelect}
+                    style={style.input}
+                    data={units}
+                    setSelected={setSubunitSelected}
+                />
+            </View>
+            <View>
                 <TextInput
+                    style={style.input}
                     onChangeText={(text) => setPassword(text)}
                     placeholder="Password"
                     placeholderTextColor="#666"
@@ -77,6 +116,7 @@ const SignUp = () => {
             </View>
             <View>
                 <TextInput
+                    style={style.input}
                     onChangeText={(text) => setConfirmPassword(text)}
                     placeholder="Confirm Password"
                     placeholderTextColor="#666"
@@ -85,14 +125,51 @@ const SignUp = () => {
                     autoCorrect={false}
                 />
             </View>
-            <TouchableOpacity onPress={() => { handleSignUp(empId, email, password, name) }} disabled={(!email.trim() || !password.trim())}>
+            <TouchableOpacity
+                style={style.buttonGray}
+                onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }} disabled={(!email.trim() || !password.trim())}>
                 <Text>Sign Up </Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { navigation.navigate('Sign In') }}>
+            <TouchableOpacity
+                style={style.buttonBlue}
+                onPress={() => { navigation.navigate('Sign In') }}>
                 <Text>Sign In </Text>
             </TouchableOpacity>
         </View>
     );
 };
-
+const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 36,
+    },
+    input: {
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 4,
+        margin: 5
+    },
+    inputSelect: {
+        padding: 5,
+        borderWidth: 1,
+        borderRadius: 4,
+        borderColor: '#000',
+        color: '#fff',
+        margin: 5
+    },
+    buttonGray: {
+        alignItems: 'center',
+        backgroundColor: '#DDDDDD',
+        padding: 10,
+        borderRadius: 4,
+        margin: 5
+    },
+    buttonBlue: {
+        alignItems: 'center',
+        backgroundColor: '#62ABEF',
+        padding: 10,
+        borderRadius: 4,
+        margin: 5
+    },
+})
 export default SignUp

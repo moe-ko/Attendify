@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import { firebase } from '../../config'
@@ -18,8 +18,9 @@ const SignIn = () => {
     }
 
     return (
-        <View>
+        <View style={style.container}>
             <TextInput
+                style={style.input}
                 value={email}
                 placeholder={'Username'}
                 onChangeText={(text) => setEmail(text)}
@@ -28,6 +29,7 @@ const SignIn = () => {
                 required
             />
             <TextInput
+                style={style.input}
                 value={password}
                 placeholder={'Password'}
                 secureTextEntry
@@ -35,14 +37,43 @@ const SignIn = () => {
                 autoCorrect={false}
                 required
             />
-            <TouchableOpacity onPress={() => { signInUser(email, password) }} disabled={(!email.trim() || !password.trim())}>
+            <TouchableOpacity
+                style={style.buttonGray}
+                onPress={() => { signInUser(email, password) }} disabled={(!email.trim() || !password.trim())}>
                 <Text>Login</Text>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => { navigation.navigate('Sign Up') }}>
+            <TouchableOpacity
+                style={style.buttonBlue}
+                onPress={() => { navigation.navigate('Sign Up') }}>
                 <Text>SignUp</Text>
             </TouchableOpacity>
         </View>
     )
 }
-
+const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 36,
+    },
+    input: {
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 4,
+        margin: 5
+    },
+    buttonGray: {
+        alignItems: 'center',
+        backgroundColor: '#DDDDDD',
+        padding: 10,
+        borderRadius: 4,
+        margin: 5
+    },
+    buttonBlue: {
+        alignItems: 'center',
+        backgroundColor: '#62ABEF',
+        padding: 10,
+        borderRadius: 4,
+        margin: 5
+    },
+})
 export default SignIn

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { Platform, Text, View, StyleSheet } from 'react-native';
 import { firebase } from './config';
 // Screens 
-import SingUp from './src/screens/SignUp';
+import SignUp from './src/screens/SignUp';
 import Home from './src/screens/Home';
 import Header from './components/Header';
 import SignIn from './src/screens/SignIn';
@@ -37,7 +37,7 @@ function App() {
           name='Sign In'
           component={SignIn}
           options={{
-            headerTitle: () => <Header name='Attendify Sign In' />,
+            headerTitle: () => <Header name='Attendify Sign' />,
             headerBackTitleVisible: false,
             headerStyle: {
               height: 150,
@@ -48,7 +48,7 @@ function App() {
         />
         <Stack.Screen
           name='Sign Up'
-          component={SingUp}
+          component={SignUp}
           options={{
             headerTitle: () => <Header name='Attendify Sign Up' />,
             headerBackTitleVisible: false,
