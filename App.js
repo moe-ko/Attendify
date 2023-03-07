@@ -64,7 +64,7 @@ function App() {
   }
 
   return (
-    <Stack.Navigator>
+    < Stack.Navigator >
       <Stack.Screen
         name='Home'
         component={Home}
@@ -77,7 +77,7 @@ function App() {
           }
         }}
       />
-    </Stack.Navigator>
+    </Stack.Navigator >
   )
 }
 export default () => {
