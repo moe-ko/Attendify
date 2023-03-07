@@ -39,7 +39,10 @@ const SignIn = () => {
             />
             <TouchableOpacity
                 style={style.buttonGray}
-                onPress={() => { signInUser(email, password) }} disabled={(!email.trim() || !password.trim())}>
+
+                onPress={() => { signInUser(email, password) }}
+                disabled={(!email.trim() || !password.trim())}
+            >
                 <Text>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -47,7 +50,7 @@ const SignIn = () => {
                 onPress={() => { navigation.navigate('Sign Up') }}>
                 <Text>SignUp</Text>
             </TouchableOpacity>
-        </View>
+        </View >
     )
 }
 const style = StyleSheet.create({
