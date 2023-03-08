@@ -1,8 +1,9 @@
-import { View, Text, TouchableOpacity } from 'react-native'
-import React, { Component, useState } from 'react'
+import { View, Text, TouchableOpacity, Alert } from 'react-native'
+import React, { useState } from 'react'
 import { firebase } from '../../config'
 import { useNavigation } from '@react-navigation/native'
 import Geolocation from '../../components/Geolocation'
+import { checkIpAddress } from '../../functions'
 
 const Home = () => {
     const navigation = useNavigation()
@@ -12,6 +13,11 @@ const Home = () => {
     const [email, setEmail] = useState('');
     const [unit, setUnit] = useState('');
     const [subunit, setSubunit] = useState('');
+    const [ipAddress, setIpAddress] = useState('')
+
+    checkIpAddress().then(res => {
+        setIpAddress(res)
+    })
 
     const handleSignOut = () => {
         firebase.auth()
@@ -37,6 +43,7 @@ const Home = () => {
                 });
             });
     }
+
     getStatusEmployee = (status_id) => {
         const status = firebase.firestore()
             .collection('status')
@@ -57,6 +64,7 @@ const Home = () => {
             });
         return () => subunit();
     }
+
     getUnits = (unit_id) => {
         const subunit = firebase.firestore()
             .collection('units')
@@ -71,6 +79,7 @@ const Home = () => {
 
     return (
         <View>
+            <View><Text>Ip Address: {ipAddress}</Text></View>
             <View><Text>Employee Id: {empId}</Text></View>
             <View><Text>Email: {email}</Text></View>
             <View><Text>User: {name}</Text></View>
@@ -81,7 +90,6 @@ const Home = () => {
                 <Text>Sign Out</Text>
             </TouchableOpacity>
         </View>
-
     )
 }
 
