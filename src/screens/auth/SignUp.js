@@ -1,13 +1,11 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import { firebase } from '../../config'
-import { useNavigation } from '@react-navigation/native'
+import { firebase } from '../../../config'
 import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { Colors } from 'react-native/Libraries/NewAppScreen'
 
-const SignUp = () => {
-    const navigation = useNavigation();
+const SignUp = ({ navigation }) => {
+
     const [empId, setEmpId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -187,4 +185,4 @@ const style = StyleSheet.create({
         margin: 5
     },
 })
-export default SignUp
+export default SignUp;

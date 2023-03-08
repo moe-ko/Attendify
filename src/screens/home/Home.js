@@ -1,12 +1,10 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState } from 'react'
-import { firebase } from '../../config'
-import { useNavigation } from '@react-navigation/native'
-import Geolocation from '../../components/Geolocation'
-import { checkIpAddress } from '../../functions'
+import { firebase } from '../../../config'
+import Geolocation from '../../../components/Geolocation'
+import { checkIpAddress } from '../../../functions'
 
-const Home = () => {
-    const navigation = useNavigation()
+const Home = ({ navigation }) => {
     const [status, setStatus] = useState('');
     const [empId, setEmpId] = useState('');
     const [name, setName] = useState('');
@@ -23,9 +21,9 @@ const Home = () => {
         firebase.auth()
             .signOut()
             .then(() => {
-                navigation.replace('Sign In')
+                navigation.replace('Welcome')
             })
-            .catch(error => alert(error.message))
+            .catch(error => console.log(error.message))
     }
 
     getCurrentEmployee = () => {
