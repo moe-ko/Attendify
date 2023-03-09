@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
+import CreateEvent from './Admin/CreateEvent'
 
 const Home = ({ navigation }) => {
     const [status, setStatus] = useState('');
@@ -77,6 +78,10 @@ const Home = ({ navigation }) => {
 
     return (
         <View>
+            <View>
+                <CreateEvent />
+            </View>
+
             <View><Text>Ip Address: {ipAddress}</Text></View>
             <View><Text>Employee Id: {empId}</Text></View>
             <View><Text>Email: {email}</Text></View>

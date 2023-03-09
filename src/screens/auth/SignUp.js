@@ -148,7 +148,9 @@ const SignUp = ({ navigation }) => {
             </View>
             <TouchableOpacity
                 style={style.buttonGray}
-                onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }} disabled={(!email.trim() || !password.trim())}>
+                onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
+                disabled={(!email.trim() || !password.trim())}
+            >
                 <Text>Sign Up </Text>
             </TouchableOpacity>
             <TouchableOpacity
