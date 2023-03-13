@@ -1,12 +1,12 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react'
-import { firebase } from '../../config'
-import { useNavigation } from '@react-navigation/native'
-import Geolocation from '../../components/Geolocation'
-import { checkIpAddress } from '../../functions'
+import React, { useState, useEffect } from 'react'
+import { firebase } from '../../../config'
+import Geolocation from '../../../components/Geolocation'
+import { checkIpAddress } from '../../../functions'
+import CreateEvent from './Admin/CreateEvent'
+import CurrentEvent from './CurrentEvent'
 
-const Home = () => {
-    const navigation = useNavigation()
+const Home = ({ navigation }) => {
     const [status, setStatus] = useState('');
     const [empId, setEmpId] = useState('');
     const [name, setName] = useState('');
@@ -14,7 +14,7 @@ const Home = () => {
     const [unit, setUnit] = useState('');
     const [subunit, setSubunit] = useState('');
     const [ipAddress, setIpAddress] = useState('')
-
+    const [permission, setPermission] = useState('')
     checkIpAddress().then(res => {
         setIpAddress(res)
     })
@@ -23,9 +23,9 @@ const Home = () => {
         firebase.auth()
             .signOut()
             .then(() => {
-                navigation.replace('Sign In')
+                navigation.replace('Welcome')
             })
-            .catch(error => alert(error.message))
+            .catch(error => console.log(error.message))
     }
 
     getCurrentEmployee = () => {
@@ -40,6 +40,7 @@ const Home = () => {
                     setEmpId(documentSnapshot.id)
                     setEmail(documentSnapshot.data()['email'])
                     setName(documentSnapshot.data()['full_name'])
+                    setPermission(documentSnapshot.data()['permission_id'])
                 });
             });
     }
@@ -77,8 +78,13 @@ const Home = () => {
 
     getCurrentEmployee()
 
+
+
     return (
         <View>
+            <View>
+                <CreateEvent props={{ ipAddress: ipAddress, permission: permission }} />
+            </View>
             <View><Text>Ip Address: {ipAddress}</Text></View>
             <View><Text>Employee Id: {empId}</Text></View>
             <View><Text>Email: {email}</Text></View>
@@ -89,6 +95,9 @@ const Home = () => {
             <TouchableOpacity onPress={() => { handleSignOut() }}>
                 <Text>Sign Out</Text>
             </TouchableOpacity>
+            {/* <View>
+                <CurrentEvent />
+            </View> */}
         </View>
     )
 }

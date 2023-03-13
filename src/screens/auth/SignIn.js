@@ -1,11 +1,8 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
-import { useNavigation } from '@react-navigation/native'
-import { firebase } from '../../config'
+import { firebase } from '../../../config'
 
-const SignIn = () => {
-    const navigation = useNavigation();
-
+const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -13,7 +10,7 @@ const SignIn = () => {
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
         } catch (error) {
-            alert(error.message);
+            console.log(error.message);
         }
     }
 
@@ -39,9 +36,9 @@ const SignIn = () => {
             />
             <TouchableOpacity
                 style={style.buttonGray}
-
-                onPress={() => { signInUser(email, password) }}
-                disabled={(!email.trim() || !password.trim())}
+                onPress={() => { signInUser('javier.ramos@infosys.com', 'xa04vi10er92') }}
+            // onPress={() => { signInUser(email, password) }}
+            // disabled={(!email.trim() || !password.trim())}
             >
                 <Text>Login</Text>
             </TouchableOpacity>
@@ -79,4 +76,4 @@ const style = StyleSheet.create({
         margin: 5
     },
 })
-export default SignIn
+export default SignIn;
