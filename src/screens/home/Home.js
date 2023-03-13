@@ -1,9 +1,10 @@
 import { View, Text, TouchableOpacity, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
 import CreateEvent from './Admin/CreateEvent'
+import CurrentEvent from './CurrentEvent'
 
 const Home = ({ navigation }) => {
     const [status, setStatus] = useState('');
@@ -13,7 +14,7 @@ const Home = ({ navigation }) => {
     const [unit, setUnit] = useState('');
     const [subunit, setSubunit] = useState('');
     const [ipAddress, setIpAddress] = useState('')
-
+    const [permission, setPermission] = useState('')
     checkIpAddress().then(res => {
         setIpAddress(res)
     })
@@ -39,6 +40,7 @@ const Home = ({ navigation }) => {
                     setEmpId(documentSnapshot.id)
                     setEmail(documentSnapshot.data()['email'])
                     setName(documentSnapshot.data()['full_name'])
+                    setPermission(documentSnapshot.data()['permission_id'])
                 });
             });
     }
@@ -76,12 +78,13 @@ const Home = ({ navigation }) => {
 
     getCurrentEmployee()
 
+
+
     return (
         <View>
             <View>
-                <CreateEvent />
+                <CreateEvent props={{ ipAddress: ipAddress, permission: permission }} />
             </View>
-
             <View><Text>Ip Address: {ipAddress}</Text></View>
             <View><Text>Employee Id: {empId}</Text></View>
             <View><Text>Email: {email}</Text></View>
@@ -92,6 +95,9 @@ const Home = ({ navigation }) => {
             <TouchableOpacity onPress={() => { handleSignOut() }}>
                 <Text>Sign Out</Text>
             </TouchableOpacity>
+            {/* <View>
+                <CurrentEvent />
+            </View> */}
         </View>
     )
 }

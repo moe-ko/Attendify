@@ -17,9 +17,7 @@ export default function App() {
   const [user, setUser] = useState();
   const [connection, setConnection] = useState(false)
 
-  checkConnection().then(res => {
-    setConnection(res)
-  })
+
 
   function onAuthStateChange(user) {
     setUser(user);
@@ -29,6 +27,13 @@ export default function App() {
   useEffect(() => {
     const subscriber = firebase.auth().onAuthStateChanged(onAuthStateChange);
     return subscriber;
+  }, [])
+
+  useEffect(() => {
+    console.log('Checking Connection')
+    checkConnection().then(res => {
+      setConnection(res)
+    })
   }, [])
 
   if (initializing) return null;
