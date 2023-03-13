@@ -13,19 +13,20 @@ const SignUp = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [subunitSelected, setSubunitSelected] = useState('');
+    const [avatar, setAvatar] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.kindpng.com%2Fpicc%2Fm%2F52-526237_avatar-profile-hd-png-download.png&f=1&nofb=1&ipt=24bd667f767c21e1dac6ead1b76d80cdee852d105be78ddc85daab385ad432d2&ipo=images')
     const units = []
 
     handleSignUp = (empId, email, password, name) => {
         firebase.auth()
             .createUserWithEmailAndPassword(email, password)
-            .then(() => { addEmployeeDetails(empId, email, name, subunitSelected) })
+            .then(() => { addEmployeeDetails(empId, email, name, subunitSelected, avatar) })
             .then(() => { navigation.navigate('Sign In') })
             .catch(error => {
                 console.log(error)
             });
     }
 
-    addEmployeeDetails = (empId, email, name, subunitSelected) => {
+    addEmployeeDetails = (empId, email, name, subunitSelected, avatar) => {
         firebase
             .firestore()
             .collection('employees')
@@ -35,7 +36,8 @@ const SignUp = ({ navigation }) => {
                 email: email,
                 full_name: name,
                 status_id: 1,
-                subunit_id: parseInt(subunitSelected)
+                subunit_id: parseInt(subunitSelected),
+                avatar: avatar
             })
     }
 
