@@ -92,6 +92,7 @@ const Profile = ({ navigation }) => {
                     source={{
                         uri: `${avatar}`,
                     }}
+
                 />
             </View>
             <View><Text>User: {name}</Text></View>
