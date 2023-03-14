@@ -83,7 +83,7 @@ const Home = ({ navigation }) => {
     return (
         <View>
             <View>
-                <CreateEvent props={{ ipAddress: ipAddress, permission: permission }} />
+                <CreateEvent props={{ ipAddress: ipAddress, permission: permission, empId: empId }} />
             </View>
             <View><Text>Ip Address: {ipAddress}</Text></View>
             <View><Text>Employee Id: {empId}</Text></View>
