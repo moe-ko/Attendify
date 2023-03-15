@@ -40,6 +40,7 @@ export default function App() {
 
   return (
     connection ? (
+
       <NavigationContainer>
         {(user) ? <BottomTabNavigator /> : <WelcomeStackNavigator />}
       </NavigationContainer>

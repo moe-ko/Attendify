@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { TouchableOpacity, View, Text, StyleSheet, Button, FlatList, Alert, TextInput, Modal, Platform, TouchableHighlight } from 'react-native'
+import { View, Text, StyleSheet, Button, FlatList, Alert, TextInput, Modal, Platform } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
@@ -9,7 +9,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CreateEvent = ({ props }) => {
     const [locations, setLocations] = useState();
-    const [title, setTitle] = useState()
+    const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
     const [duration, setDuration] = useState(0);
     const [createEventVisible, setCreateEventVisible] = useState(true);
@@ -18,7 +18,9 @@ const CreateEvent = ({ props }) => {
     const [locationName, setLocationName] = useState();
     const [mins, setMins] = useState('')
     const [secs, setSecs] = useState('')
-
+    const [codeEvent, setCodeEvent] = useState('')
+    const [hasAttended, setHasAttended] = useState(false)
+    const [eventId, setEventId] = useState('')
     // eventTimer = () => {
     //     const eventExpirationDate = new Date("2023-03-13 16:25")
     //     setInterval(() => {
@@ -88,28 +90,13 @@ const CreateEvent = ({ props }) => {
                     location: docSnapshot.data()["location"],
                     duration_mins: docSnapshot.data()["duration_mins"]
                 }))
-                return setCurrentEvent(event)
+                if (event.length > 0) {
+                    setCurrentEvent(event)
+                    setEventId(event[0]['id'])
+                }
             }
         })
-
-        // firebase.firestore()
-        //     .collection('events')
-        //     .where('status_id', '==', '1')
-        //     .get()
-        //     .then(querySnapshot => {
-        //         let event_data = []
-        //         querySnapshot.forEach(documentSnapshot => {
-        //             event_data.push({
-        //                 id: documentSnapshot.id,
-        //                 passcode: documentSnapshot.data()["passcode"],
-        //                 location: documentSnapshot.data()["location"],
-        //                 duration_mins: documentSnapshot.data()["duration_mins"]
-        //             });
-        //         });
-        //         setCurrentEvent(event_data)
-        //     });
     }
-
     getLocationName = () => {
         firebase.firestore()
             .collection('locations')
@@ -119,7 +106,6 @@ const CreateEvent = ({ props }) => {
                 setLocationName(documentSnapshot.data()['name']);
             });
     }
-
     updateStatusEvent = (event_id) => {
         firebase.firestore()
             .collection('events')
@@ -128,7 +114,7 @@ const CreateEvent = ({ props }) => {
                 status_id: '0',
             })
     }
-    alertCancelEvent = (id) =>
+    alertCancelEvent = (id) => {
         Alert.alert('Cancel Event', 'Are you sure you want to cancel this event?', [
             {
                 text: 'No',
@@ -137,14 +123,92 @@ const CreateEvent = ({ props }) => {
             },
             { text: 'Yes', onPress: () => cancelEvent(id) },
         ]);
+    }
     cancelEvent = (id) => {
+
         firebase.firestore()
             .collection('events')
             .doc(id)
             .delete()
             .then(() => {
-                console.log('Event deleted!');
+                //Event needs to be deleted from attendance table
+                firebase.firestore()
+                    .collection('attendance')
+                    .where('event_id', '==', id)
+                    .get()
+                    .then(querySnapshot => {
+                        querySnapshot.forEach(documentSnapshot => {
+                            firebase.firestore()
+                                .collection('attendance')
+                                .doc(documentSnapshot.id)
+                                .delete()
+                                .then(() => {
+                                    console.log(`Event ${id} deleted from attendance!`);
+                                });
+                        });
+                    });
             });
+        setCurrentEvent('')
+    }
+    handleAttendify = (id, codeEvent) => {
+        if (currentEvent[0]['passcode'] === codeEvent) {
+            firebase.firestore()
+                .collection('attendance')
+                .add({
+                    event_id: id,
+                    employee_id: props.empId,
+                    status_id: '1',
+                })
+            getAttendance(id)
+            Alert.alert('Event attendance', 'Your attendance has been registered!', [
+                { text: 'Ok' },
+            ]);
+            getAttendance(id)
+        } else {
+            Alert.alert('Event code', 'Code is incorrect', [
+                { text: 'Ok' },
+            ]);
+        }
+    }
+    getAttendance = (id) => {
+        firebase.firestore()
+            .collection('attendance')
+            .where('event_id', '==', id)
+            .where('employee_id', '==', props.empId)
+            .get()
+            .then(querySnapshot => {
+                querySnapshot.forEach(documentSnapshot => {
+                    if (documentSnapshot.id) {
+                        return setHasAttended(true)
+                    } else {
+                        return setHasAttended(false)
+                    }
+                });
+            });
+
+    }
+
+    Pass = ({ id }) => {
+        return (
+            <View>
+                <TextInput
+                    style={style.input}
+                    value={codeEvent}
+                    placeholder='Enter code event'
+                    onChangeText={(text) => setCodeEvent(text)}
+                    autoCorrect={false}
+                    required
+                    placeholderTextColor="#666"
+                />
+                <Button
+                    style={style.buttonBlue}
+                    title={'Attendify'}
+                    onPress={() => {
+                        handleAttendify(id, codeEvent)
+                    }}
+                />
+            </View>
+        )
     }
 
     Item = ({ id, passcode }) => (
@@ -160,6 +224,8 @@ const CreateEvent = ({ props }) => {
                     alertCancelEvent(id)
                 }}
             />
+            {hasAttended ? null : < Pass id={id} />}
+
         </View >
     );
 
@@ -179,7 +245,7 @@ const CreateEvent = ({ props }) => {
 
     return (
         <View>
-            {currentEventVisible ? (
+            {(currentEventVisible && currentEvent) ? (
                 <View>
                     <View>
                         <Text>Happenning now</Text>
@@ -229,25 +295,26 @@ const CreateEvent = ({ props }) => {
                         placeholder={'Event title'}
                         onChangeText={(text) => setTitle(text)}
                         autoCorrect={false}
-                        required
                     />
-                    <DateTimePicker
+                    {/* <DateTimePicker
                         value={startDate}
                         mode='datetime'
                         minimumDate={new Date()}
                         is24Hour={true}
                         display="default"
                         onChange={setStartDateEvent}
-                    />
-                    <DateTimePicker
-                        value={endDate}
-                        minimumDate={startDate}
-                        mode='datetime'
-                        is24Hour={true}
-                        display="default"
-                        onChange={setEndDateEvent}
-                    />
-
+                    /> */}
+                    <View>
+                        <Text>End date and time</Text>
+                        <DateTimePicker
+                            value={endDate}
+                            minimumDate={startDate}
+                            mode='datetime'
+                            is24Hour={true}
+                            display="default"
+                            onChange={setEndDateEvent}
+                        />
+                    </View>
                     <Button
                         style={style.buttonBlue}
                         title={'CreateEvent'}
