@@ -18,33 +18,35 @@ const CreateEvent = ({ props }) => {
     const [locationName, setLocationName] = useState();
     const [mins, setMins] = useState('')
     const [secs, setSecs] = useState('')
+    const [hrs, setHrs] = useState('')
     const [codeEvent, setCodeEvent] = useState('')
-    const [hasAttended, setHasAttended] = useState(false)
     const [eventId, setEventId] = useState('')
-    // eventTimer = () => {
-    //     const eventExpirationDate = new Date("2023-03-13 16:25")
-    //     setInterval(() => {
-    //         const now = new Date().getTime()
-    //         const timeLeft = eventExpirationDate - now
 
-    //         const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
-    //         const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
+    eventTimer = (date) => {
+        const eventExpirationDate = new Date(date)
+        setInterval(() => {
+            const now = new Date().getTime()
+            const timeLeft = eventExpirationDate - now
+            const hrs = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
+            const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
+            setHrs(hrs)
+            setMins(mins)
+            setSecs(secs)
+            if (timeLeft < 0) {
+                clearInterval(eventTimer)
+                setHrs(0)
+                setMins(0)
+                setSecs(0)
 
-    //         setMins(mins)
-    //         setSecs(secs)
-
-    //         if (timeLeft < 0) {
-    //             clearInterval(eventTimer)
-    //             setMins(mins)
-    //             setSecs(secs)
-    //         }
-    //     }, 1000);
-    // }
-    // eventTimer()
+            }
+        }, 1000);
+    }
 
     useEffect(() => {
         getEventLocations();
         getCurrentEvent();
+
     }, [])
 
     getEventLocations = () => {
@@ -88,11 +90,13 @@ const CreateEvent = ({ props }) => {
                     id: docSnapshot.id,
                     passcode: docSnapshot.data()["passcode"],
                     location: docSnapshot.data()["location"],
-                    duration_mins: docSnapshot.data()["duration_mins"]
+                    end_date: docSnapshot.data()["end_date"]
                 }))
                 if (event.length > 0) {
                     setCurrentEvent(event)
                     setEventId(event[0]['id'])
+                    eventTimer(event[0]['end_date'])
+                    // eventTimer()
                 }
             }
         })
@@ -125,7 +129,6 @@ const CreateEvent = ({ props }) => {
         ]);
     }
     cancelEvent = (id) => {
-
         firebase.firestore()
             .collection('events')
             .doc(id)
@@ -150,6 +153,7 @@ const CreateEvent = ({ props }) => {
             });
         setCurrentEvent('')
     }
+
     handleAttendify = (id, codeEvent) => {
         if (currentEvent[0]['passcode'] === codeEvent) {
             firebase.firestore()
@@ -175,59 +179,21 @@ const CreateEvent = ({ props }) => {
             .collection('attendance')
             .where('event_id', '==', id)
             .where('employee_id', '==', props.empId)
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(documentSnapshot => {
-                    if (documentSnapshot.id) {
-                        return setHasAttended(true)
-                    } else {
-                        return setHasAttended(false)
+            .onSnapshot({
+                next: querySnapshot => {
+                    const event = querySnapshot.docs.map(docSnapshot => ({
+                        id: docSnapshot.id,
+                        // passcode: docSnapshot.data()["passcode"],
+                        // location: docSnapshot.data()["location"],
+                        // duration_mins: docSnapshot.data()["duration_mins"]
+                    }))
+                    if (event.length > 0) {
+                        console.log(event)
                     }
-                });
-            });
+                }
+            })
 
     }
-
-    Pass = ({ id }) => {
-        return (
-            <View>
-                <TextInput
-                    style={style.input}
-                    value={codeEvent}
-                    placeholder='Enter code event'
-                    onChangeText={(text) => setCodeEvent(text)}
-                    autoCorrect={false}
-                    required
-                    placeholderTextColor="#666"
-                />
-                <Button
-                    style={style.buttonBlue}
-                    title={'Attendify'}
-                    onPress={() => {
-                        handleAttendify(id, codeEvent)
-                    }}
-                />
-            </View>
-        )
-    }
-
-    Item = ({ id, passcode }) => (
-        <View style={style.item}>
-            <Text style={style.title}>Session Code</Text>
-            <Text style={style.title}>{locationName}</Text>
-            <Text style={style.title}>{passcode}</Text>
-            <Text style={style.title}>Expire in</Text>
-            <Button
-                style={style.buttonBlue}
-                title={'Cancel'}
-                onPress={() => {
-                    alertCancelEvent(id)
-                }}
-            />
-            {hasAttended ? null : < Pass id={id} />}
-
-        </View >
-    );
 
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
@@ -250,11 +216,44 @@ const CreateEvent = ({ props }) => {
                     <View>
                         <Text>Happenning now</Text>
                     </View>
-                    <FlatList
+                    <View style={style.item}>
+                        <Text style={style.title}>Session Code</Text>
+                        <Text style={style.title}>{locationName}</Text>
+                        <Text style={style.title}>{currentEvent[0]['passcode']}</Text>
+                        <Text style={style.title}>Expire in {hrs}:{mins}:{secs}</Text>
+                        <Button
+                            style={style.buttonBlue}
+                            title={'Cancel'}
+                            onPress={() => {
+                                alertCancelEvent(eventId)
+                            }}
+                        />
+                        {/* {hasAttended ? null : < Pass id={id} />} */}
+
+
+                        <TextInput
+                            style={style.input}
+                            value={codeEvent}
+                            placeholder='Enter code event'
+                            onChangeText={(text) => setCodeEvent(text)}
+                            autoCorrect={false}
+                            required
+                            placeholderTextColor="#666"
+                        />
+                        <Button
+                            style={style.buttonBlue}
+                            title={'Attendify'}
+                            onPress={() => {
+                                handleAttendify(eventId, codeEvent)
+                            }}
+                        />
+
+                    </View >
+                    {/* <FlatList
                         data={currentEvent}
                         renderItem={({ item }) => <Item id={item.id} passcode={item.passcode} />}
                         keyExtractor={item => item.id}
-                    />
+                    /> */}
                 </View>
             ) : null}
             {(props.permission == 1 && createEventVisible) ? (
@@ -296,19 +295,11 @@ const CreateEvent = ({ props }) => {
                         onChangeText={(text) => setTitle(text)}
                         autoCorrect={false}
                     />
-                    {/* <DateTimePicker
-                        value={startDate}
-                        mode='datetime'
-                        minimumDate={new Date()}
-                        is24Hour={true}
-                        display="default"
-                        onChange={setStartDateEvent}
-                    /> */}
                     <View>
                         <Text>End date and time</Text>
                         <DateTimePicker
                             value={endDate}
-                            minimumDate={startDate}
+                            minimumDate={new Date()}
                             mode='datetime'
                             is24Hour={true}
                             display="default"
@@ -351,7 +342,7 @@ const style = StyleSheet.create({
         margin: 5
     },
     item: {
-        backgroundColor: '#f9c2ff',
+        backgroundColor: '#62ABEF',
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,

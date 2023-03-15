@@ -36,7 +36,7 @@ const SignIn = ({ navigation }) => {
             />
             <TouchableOpacity
                 style={style.buttonGray}
-                onPress={() => { signInUser('test@test.com', '123456') }}
+                onPress={() => { signInUser('superadmin@gmail.com', 'superadmin') }}
             // onPress={() => { signInUser(email, password) }}
             // disabled={(!email.trim() || !password.trim())}
             >
