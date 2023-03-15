@@ -9,6 +9,9 @@ import CurrentEvent from './CurrentEvent'
 const Home = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
     const [permission, setPermission] = useState('')
+    const [empId, setEmpId] = useState('')
+
+
     checkIpAddress().then(res => {
         setIpAddress(res)
     })
@@ -25,6 +28,8 @@ const Home = ({ navigation }) => {
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
                     setPermission(documentSnapshot.data()['permission_id'])
+                    setEmpId(documentSnapshot.id)
+                    
                 });
             });
     }
