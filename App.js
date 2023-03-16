@@ -1,7 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
+import { SafeAreaView, StyleSheet } from 'react-native';
 import { firebase } from './config';
 // Navigator
 import WelcomeStackNavigator from './navigation/StackNavigator';
@@ -40,7 +40,6 @@ export default function App() {
 
   return (
     connection ? (
-
       <NavigationContainer>
         {(user) ? <BottomTabNavigator /> : <WelcomeStackNavigator />}
       </NavigationContainer>
@@ -50,10 +49,10 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  // container: {
+  //   flex: 1,
+  //   backgroundColor: '#fff',
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
 });

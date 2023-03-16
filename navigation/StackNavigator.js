@@ -13,6 +13,7 @@ const WelcomeStackNavigator = () => {
                 component={Welcome}
                 options={{
                     headerTitle: () => <Header name='Attendify' />,
+                    headerShown:false,
                     headerBackTitleVisible: false,
                     headerStyle: {
                         height: 150,
@@ -24,13 +25,15 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen
                 name='Sign In'
                 component={SignIn}
+                
                 options={{
-                    headerTitle: () => <Header name='Sign' />,
-                    headerBackTitleVisible: false,
+                    headerShown:false,
+                    headerBackTitleVisible: false, 
                     headerStyle: {
                         height: 150,
+                        display:'none',
                         backgroundColor: '#62ABEF',
-                        elevation: 25
+                        // elevation: 25
                     }
                 }}
             />
