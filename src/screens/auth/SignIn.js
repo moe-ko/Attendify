@@ -14,57 +14,68 @@ const SignIn = ({ navigation }) => {
         }
     }
 
-    return ( 
-        <View className="flex-1 items-center justify-center bg-[#62ABEF] pt-40">
-            <View className="bg-[#ECF0F3] w-full h-full rounded-t-[50] pt-32">
-                <View className='w-full justify-center flex-row'>
-                    <Text className="mb-[20] font-bold pb-[30] text-3xl">Sign In</Text> 
+
+    const style = {
+        containerWrapper: 'bg-[#62ABEF] pt-32',
+        container: 'bg-[#ECF0F3] w-full h-full rounded-t-[50] items-center px-4',
+        title: 'w-full flex-row justify-center py-20',
+        titleText: 'font-bold text-3xl',
+        viewWrapper: 'w-full mb-[20]',
+        inputs: 'p-[15] bg-white rounded-2xl',
+        blueTextLink: 'text-[#62ABEF] font-bold',
+        buttonBlue: 'p-[15] b-[7] mb-16 bg-[#62ABEF] rounded-2xl justify-center',
+        buttonBlueText: 'text-white font-bold text-xl text-center',
+    }
+
+    return (
+        <View className={`${style.containerWrapper}`}>
+            <View className={`${style.container}`}>
+                <View className={`${style.title}`}>
+                    <Text className={`${style.titleText}`}>Sign In</Text>
                 </View>
-                <View className='w-full px-10 mb-[20]'>
+                <View className={`${style.viewWrapper}`}>
                     <TextInput
-                    className="p-[15]  w-[350] bg-white rounded-2xl"
-                    value={email}
-                    placeholder={'Employee ID'}
-                    onChangeText={(text) => setEmail(text)}
-                    autoCapitalize={'none'}
-                    keyboardType={'email-address'}
-                    required
-                />
-               </View>
-                <View className='w-full px-10 mb-[20]'>
-                <TextInput
-                    className="p-[15] b-[100] mb-[15] w-[350] bg-white rounded-2xl"
-                    value={password}
-                    placeholder={'Password'}
-                    secureTextEntry
-                    onChangeText={(text) => setPassword(text)}
-                    autoCorrect={false}
-                    required
+                        className={`${style.inputs}`}
+                        value={email}
+                        placeholder={'Employee ID'}
+                        onChangeText={(text) => setEmail(text)}
+                        autoCapitalize={'none'}
+                        keyboardType={'email-address'}
+                        required
                     />
                 </View>
-                <View className='w-full px-10 mb-[20]'>
-                    <Text className=" text-[#62ABEF] font-bold">Forgot Password?</Text>
+                <View className={`${style.viewWrapper}`}>
+                    <TextInput
+                        className={`${style.inputs}`}
+                        value={password}
+                        placeholder={'Password'}
+                        secureTextEntry
+                        onChangeText={(text) => setPassword(text)}
+                        autoCorrect={false}
+                        required
+                    />
                 </View>
-                 <View className='w-full px-10 mb-[20]'>
+                <View className={`${style.viewWrapper}`}>
+                    <Text className={`${style.blueTextLink}`}>Forgot Password?</Text>
+                </View>
+                <View className={`${style.viewWrapper}`}>
                     <TouchableOpacity
-                        className="p-[15] b-[7] mb-16 w-[350] bg-[#62ABEF] rounded-2xl justify-center"
+                        className={`${style.buttonBlue}`}
                         onPress={() => { signInUser('test@test.com', '123456') }}
                     // onPress={() => { signInUser(email, password) }}
                     // disabled={(!email.trim() || !password.trim())}
                     >
-                        <Text className="text-white font-bold text-xl mx-auto">Sign In</Text>
-                    </TouchableOpacity>
-                    </View>
-                <View className=" px-10 flex-row top-50 justify-center align-bottom bottom-0">
-                    <Text className="text-[#454545]">New User?</Text>
-                    <TouchableOpacity
-                        className="text-[#62ABEF] font-bold"
-                        onPress={() => { navigation.navigate('Sign Up') }}>
-                            <Text className="text-[#62ABEF] font-bold"> Sign Up here</Text>
+                        <Text className={`${style.buttonBlueText}`}>Sign In</Text>
                     </TouchableOpacity>
                 </View>
-            </View> 
+                <View className={`${style.viewWrapper} absolute bottom-5`} >
+                    <Text>New User?</Text>
+                    <TouchableOpacity onPress={() => { navigation.navigate('Sign Up') }}>
+                        <Text className={`${style.blueTextLink}`} > Sign Up here</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
+        </View >
     )
 }
 const style = StyleSheet.create({
