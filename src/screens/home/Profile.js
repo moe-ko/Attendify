@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
+import * as ImagePicker from 'expo-image-picker'
 
 const Profile = ({ navigation }) => {
     const [status, setStatus] = useState('');
@@ -14,6 +15,7 @@ const Profile = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
     const [permission, setPermission] = useState('')
     const [avatar, setAvatar] = useState('')
+    const [image, setImage] = useState('');
 
     checkIpAddress().then(res => {
         setIpAddress(res)
@@ -77,8 +79,19 @@ const Profile = ({ navigation }) => {
         return () => subunit();
     }
 
+    
     getCurrentEmployee()
 
+const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+    })
+    console.log(result);
+    if (!result.canceled) {
+        setImage(result.uri);
+      }
+    }
 
 
     return (
@@ -90,11 +103,21 @@ const Profile = ({ navigation }) => {
                         height: 50,
                     }}
                     source={{
-                        uri: `${avatar}`,
+                        uri: `${image ? image : avatar}`,
                     }}
 
                 />
+
             </View>
+            <View>
+            <TouchableOpacity onPress={() => { pickImage() }}>
+                <Text>pick an image from camera roll</Text>
+            </TouchableOpacity>
+            {/* {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />} */}
+            </View>
+          
+          
+          
             <View><Text>User: {name}</Text></View>
 
             <View><Text>Employee Id: {empId}</Text></View>
