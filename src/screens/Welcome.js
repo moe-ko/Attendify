@@ -1,28 +1,33 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native'
 import React from 'react'
+import tailwind from '../constants/tailwind'
 
 const Welcome = ({ navigation }) => {
     return (
         <ImageBackground source={require("../../assets/pic1.png")} className="h-full">
-            <View className="flex-1 justify-center items-center pt-[350]">
+            <View className="flex-1 justify-center items-center pt-[450]">
                 <View className=" justfy-center items-center" >
                     <Image source={require('../../assets/Logo.png')} className="w-24 h-24" />
                 </View>
-                <View className="mx-5 mb-20">
+                <View className={`${tailwind.container}`}>
                     <Text className="text-center text-black-500 font-semibold mb-10 text-4xl pt-5">
                         Attendify
                     </Text>
-                    <TouchableOpacity
-                        className="rounded-full pt-[15] mb-[15] w-64 bg-[#62ABEF]"
-                        onPress={() => { navigation.navigate('Sign In') }}
-                    >
-                        <Text className="text-center text-white font-bold pb-[10]">Login</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        className="rounded-full pt-[15] w-64 bg-white mb-3"
-                        onPress={() => { navigation.navigate('Sign Up') }}>
-                        <Text className="text-center text-[#62ABEF] font-bold pb-[10]" >SignUp</Text>
-                    </TouchableOpacity>
+                    <View className={`${tailwind.viewWrapper} w-11/12 `}>
+                        <TouchableOpacity
+                            className={`${tailwind.buttonBlue}`}
+                            onPress={() => { navigation.navigate('Sign In') }}
+                        >
+                            <Text className={`${tailwind.buttonWhiteText}`}>Login</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View className={`${tailwind.viewWrapper} w-11/12`}>
+                        <TouchableOpacity
+                            className={`${tailwind.buttonWhite}`}
+                            onPress={() => { navigation.navigate('Sign Up') }}>
+                            <Text className={`${tailwind.buttonBlueText}`} >Sign Up</Text>
+                        </TouchableOpacity>
+                    </View>
                     <Text className="text-center text-[#62ABEF] pt-[15] ">
                         Contact Us
                     </Text>

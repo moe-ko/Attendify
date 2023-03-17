@@ -74,7 +74,6 @@ const SignUp = ({ navigation }) => {
                     className={`${tailwind.inputs}`}
                     onChangeText={(text) => setEmpId(text)}
                     placeholder="Employee ID"
-                    placeholderTextColor="#666"
                     autoCapitalize='none'
                     autoCorrect={false}
                 />
@@ -84,7 +83,6 @@ const SignUp = ({ navigation }) => {
                     className={`${tailwind.inputs}`}
                     onChangeText={(text) => setName(text)}
                     placeholder="Full Name"
-                    placeholderTextColor="#666"
                     autoCapitalize='none'
                     autoCorrect={false}
                 />
@@ -94,7 +92,6 @@ const SignUp = ({ navigation }) => {
                     className={`${tailwind.inputs}`}
                     onChangeText={(text) => setEmail(text)}
                     placeholder="Email"
-                    placeholderTextColor="#666"
                     autoCapitalize='none'
                     autoCorrect={false}
                 />
@@ -104,8 +101,8 @@ const SignUp = ({ navigation }) => {
                     data={units}
                     setSelected={setSubunitSelected}
                     placeholder='Select Unit/Subunit'
+                    placeholderTextColor='#000'
                     inputStyles={{
-                        color: "#666",
                         padding: 0,
                         margin: 0,
                     }}
@@ -134,7 +131,6 @@ const SignUp = ({ navigation }) => {
                     className={`${tailwind.inputs}`}
                     onChangeText={(text) => setPassword(text)}
                     placeholder="Password"
-                    placeholderTextColor="#666"
                     autoCapitalize='none'
                     secureTextEntry={true}
                     autoCorrect={false}
@@ -145,7 +141,6 @@ const SignUp = ({ navigation }) => {
                     className={`${tailwind.inputs}`}
                     onChangeText={(text) => setConfirmPassword(text)}
                     placeholder="Confirm Password"
-                    placeholderTextColor="#666"
                     autoCapitalize='none'
                     secureTextEntry={true}
                     autoCorrect={false}
@@ -157,7 +152,7 @@ const SignUp = ({ navigation }) => {
                     onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
                     disabled={(!email.trim() || !password.trim())}
                 >
-                    <Text className={`${tailwind.buttonBlueText}`}>Create account</Text>
+                    <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
                 </TouchableOpacity>
             </View>
             <View className={`flex-row justify-center items-center`}>

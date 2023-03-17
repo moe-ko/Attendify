@@ -8,5 +8,7 @@ export default {
     inputs: 'p-[15] bg-white rounded-2xl',
     blueTextLink: 'text-[#62ABEF] font-bold',
     buttonBlue: 'p-[15] b-[7] bg-[#62ABEF] rounded-2xl justify-center',
-    buttonBlueText: 'text-white font-bold text-xl text-center',
+    buttonBlueText: 'text-[#62ABEF] font-bold text-xl text-center',
+    buttonWhiteText: 'text-white font-bold text-xl text-center',
+    buttonWhite: 'p-[15] b-[7] bg-white rounded-2xl justify-center',
 }

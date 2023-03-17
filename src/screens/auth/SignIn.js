@@ -53,7 +53,7 @@ const SignIn = ({ navigation }) => {
                     // onPress={() => { signInUser(email, password) }}
                     // disabled={(!email.trim() || !password.trim())}
                     >
-                        <Text className={`${tailwind.buttonBlueText}`}>Sign In</Text>
+                        <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>
                     </TouchableOpacity>
                 </View>
                 <View className={`${tailwind.viewWrapper} absolute bottom-5 flex-row justify-center items-center`}>
