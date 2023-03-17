@@ -1,19 +1,20 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Welcome, SignIn, SignUp } from "..";
-// import { ROUTES } from '../constants'
-import Header from "../../components/Header";
+import { Welcome, SignIn, SignUp, Home } from "../screens";
+import { ROUTES } from "..";
+import BottomTabNavigator from "./BottomNavigator";
 
 const Stack = createStackNavigator();
 
-function AuthNavigator() {
+const WelcomeStackNavigator = () => {
     return (
         <Stack.Navigator initialRouteName="Welcome">
             <Stack.Screen
                 name='Welcome'
                 component={Welcome}
                 options={{
-                    headerTitle: () => <Header name='Attendify' />,
+                    // headerTitle: () => <Header name='Attendify' />,
+                    headerShown: false,
                     headerBackTitleVisible: false,
                     headerStyle: {
                         height: 150,
@@ -26,12 +27,12 @@ function AuthNavigator() {
                 name='Sign In'
                 component={SignIn}
                 options={{
-                    headerTitle: () => <Header name='Sign' />,
+                    headerShown: false,
                     headerBackTitleVisible: false,
                     headerStyle: {
                         height: 150,
+                        display: 'none',
                         backgroundColor: '#62ABEF',
-                        elevation: 25
                     }
                 }}
             />
@@ -39,11 +40,24 @@ function AuthNavigator() {
                 name='Sign Up'
                 component={SignUp}
                 options={{
-                    headerTitle: () => <Header name='Sign Up' />,
+                    // headerTitle: () => <Header name='Sign Up' />,
                     headerBackTitleVisible: false,
+                    headerTitleStyle: { display: 'none' },
                     headerStyle: {
-                        height: 150,
-                        backgroundColor: '#62ABEF',
+                        backgroundColor: '#ECF0F3',
+                        elevation: 25,
+                    }
+                }}
+            />
+            <Stack.Screen
+                name={ROUTES.HOME}
+                component={BottomTabNavigator}
+                options={{
+                    // headerTitle: () => <Header name='Sign Up' />,
+                    headerBackTitleVisible: false,
+                    headerTitleStyle: { display: 'none' },
+                    headerStyle: {
+                        backgroundColor: '#ECF0F3',
                         elevation: 25,
                     }
                 }}
@@ -51,4 +65,4 @@ function AuthNavigator() {
         </Stack.Navigator>
     );
 };
-export default AuthNavigator
+export default WelcomeStackNavigator

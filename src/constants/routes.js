@@ -9,5 +9,9 @@ export default {
 
     PROFILE: 'Profile',
     PROFILE_TAB: 'Profile',
-    PROFILE_DRAWER: 'Profile'
+    PROFILE_DRAWER: 'Profile',
+
+    EVENT: 'CreateEvent',
+    EVENT_TAB: 'CreateEvent',
+    EVENT_DRAWER: 'CreateEvent'
 }
