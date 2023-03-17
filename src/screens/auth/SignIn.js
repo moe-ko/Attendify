@@ -1,6 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useState } from 'react'
 import { firebase } from '../../../config'
+import tailwind from '../../constants/tailwind'
 
 const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -14,28 +15,15 @@ const SignIn = ({ navigation }) => {
         }
     }
 
-
-    const style = {
-        containerWrapper: 'bg-[#62ABEF] pt-32',
-        container: 'bg-[#ECF0F3] w-full h-full rounded-t-[50] items-center px-4',
-        title: 'w-full flex-row justify-center py-20',
-        titleText: 'font-bold text-3xl',
-        viewWrapper: 'w-full mb-[20]',
-        inputs: 'p-[15] bg-white rounded-2xl',
-        blueTextLink: 'text-[#62ABEF] font-bold',
-        buttonBlue: 'p-[15] b-[7] mb-16 bg-[#62ABEF] rounded-2xl justify-center',
-        buttonBlueText: 'text-white font-bold text-xl text-center',
-    }
-
     return (
-        <View className={`${style.containerWrapper}`}>
-            <View className={`${style.container}`}>
-                <View className={`${style.title}`}>
-                    <Text className={`${style.titleText}`}>Sign In</Text>
+        <View className={`${tailwind.containerWrapper}`}>
+            <View className={`${tailwind.container}`}>
+                <View className={`${tailwind.title}`}>
+                    <Text className={`${tailwind.titleText}`}>Sign In</Text>
                 </View>
-                <View className={`${style.viewWrapper}`}>
+                <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
-                        className={`${style.inputs}`}
+                        className={`${tailwind.inputs}`}
                         value={email}
                         placeholder={'Employee ID'}
                         onChangeText={(text) => setEmail(text)}
@@ -44,9 +32,9 @@ const SignIn = ({ navigation }) => {
                         required
                     />
                 </View>
-                <View className={`${style.viewWrapper}`}>
+                <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
-                        className={`${style.inputs}`}
+                        className={`${tailwind.inputs}`}
                         value={password}
                         placeholder={'Password'}
                         secureTextEntry
@@ -55,23 +43,23 @@ const SignIn = ({ navigation }) => {
                         required
                     />
                 </View>
-                <View className={`${style.viewWrapper}`}>
-                    <Text className={`${style.blueTextLink}`}>Forgot Password?</Text>
+                <View className={`${tailwind.viewWrapper}`}>
+                    <Text className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
                 </View>
-                <View className={`${style.viewWrapper}`}>
+                <View className={`${tailwind.viewWrapper}`}>
                     <TouchableOpacity
-                        className={`${style.buttonBlue}`}
+                        className={`${tailwind.buttonBlue}`}
                         onPress={() => { signInUser('test@test.com', '123456') }}
                     // onPress={() => { signInUser(email, password) }}
                     // disabled={(!email.trim() || !password.trim())}
                     >
-                        <Text className={`${style.buttonBlueText}`}>Sign In</Text>
+                        <Text className={`${tailwind.buttonBlueText}`}>Sign In</Text>
                     </TouchableOpacity>
                 </View>
-                <View className={`${style.viewWrapper} absolute bottom-5`} >
+                <View className={`${tailwind.viewWrapper} absolute bottom-5`} >
                     <Text>New User?</Text>
                     <TouchableOpacity onPress={() => { navigation.navigate('Sign Up') }}>
-                        <Text className={`${style.blueTextLink}`} > Sign Up here</Text>
+                        <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>
                     </TouchableOpacity>
                 </View>
             </View>
