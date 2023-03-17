@@ -1,8 +1,9 @@
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { firebase } from '../../../config'
 import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
+import tailwind from '../../constants/tailwind'
 
 const SignUp = ({ navigation }) => {
 
@@ -25,7 +26,6 @@ const SignUp = ({ navigation }) => {
                 console.log(error)
             });
     }
-
     addEmployeeDetails = (empId, email, name, subunitSelected, avatar) => {
         firebase
             .firestore()
@@ -40,7 +40,6 @@ const SignUp = ({ navigation }) => {
                 avatar: avatar
             })
     }
-
     getSubunits = () => {
         firebase.firestore()
             .collection('subunits')
@@ -60,14 +59,19 @@ const SignUp = ({ navigation }) => {
             });
         return () => subscriber();
     }
-
-    getSubunits()
+    useEffect(() => {
+        getSubunits()
+    })
 
     return (
-        <View style={style.container}>
-            <View>
+        <View className={`${tailwind.container}`}>
+            <View className={`${tailwind.viewWrapper}`}>
+                <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
+                <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
+            </View>
+            <View className={`${tailwind.viewWrapper}`}>
                 <TextInput
-                    style={style.input}
+                    className={`${tailwind.inputs}`}
                     onChangeText={(text) => setEmpId(text)}
                     placeholder="Employee ID"
                     placeholderTextColor="#666"
@@ -75,9 +79,9 @@ const SignUp = ({ navigation }) => {
                     autoCorrect={false}
                 />
             </View>
-            <View>
+            <View className={`${tailwind.viewWrapper}`}>
                 <TextInput
-                    style={style.input}
+                    className={`${tailwind.inputs}`}
                     onChangeText={(text) => setName(text)}
                     placeholder="Full Name"
                     placeholderTextColor="#666"
@@ -85,9 +89,9 @@ const SignUp = ({ navigation }) => {
                     autoCorrect={false}
                 />
             </View>
-            <View>
+            <View className={`${tailwind.viewWrapper}`}>
                 <TextInput
-                    style={style.input}
+                    className={`${tailwind.inputs}`}
                     onChangeText={(text) => setEmail(text)}
                     placeholder="Email"
                     placeholderTextColor="#666"
@@ -95,7 +99,7 @@ const SignUp = ({ navigation }) => {
                     autoCorrect={false}
                 />
             </View>
-            <View>
+            <View className={`${tailwind.viewWrapper}`}>
                 <SelectList
                     data={units}
                     setSelected={setSubunitSelected}
@@ -106,11 +110,10 @@ const SignUp = ({ navigation }) => {
                         margin: 0,
                     }}
                     boxStyles={{
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#000',
+                        borderRadius: 15,
+                        borderColor: '#fff',
                         color: '#fff',
-                        margin: 5,
+                        backgroundColor: '#fff'
                     }}
                     dropdownStyles={{
                         borderWidth: 1,
@@ -126,9 +129,9 @@ const SignUp = ({ navigation }) => {
                     }}
                 />
             </View>
-            <View>
+            <View className={`${tailwind.viewWrapper}`}>
                 <TextInput
-                    style={style.input}
+                    className={`${tailwind.inputs}`}
                     onChangeText={(text) => setPassword(text)}
                     placeholder="Password"
                     placeholderTextColor="#666"
@@ -137,9 +140,9 @@ const SignUp = ({ navigation }) => {
                     autoCorrect={false}
                 />
             </View>
-            <View>
+            <View className={`${tailwind.viewWrapper}`}>
                 <TextInput
-                    style={style.input}
+                    className={`${tailwind.inputs}`}
                     onChangeText={(text) => setConfirmPassword(text)}
                     placeholder="Confirm Password"
                     placeholderTextColor="#666"
@@ -148,45 +151,24 @@ const SignUp = ({ navigation }) => {
                     autoCorrect={false}
                 />
             </View>
-            <TouchableOpacity
-                style={style.buttonGray}
-                onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
-                disabled={(!email.trim() || !password.trim())}
-            >
-                <Text>Sign Up </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={style.buttonBlue}
-                onPress={() => { navigation.navigate('Sign In') }}>
-                <Text>Sign In </Text>
-            </TouchableOpacity>
-        </View>
+            <View className={`${tailwind.viewWrapper}`}>
+                <TouchableOpacity
+                    className={`${tailwind.buttonBlue}`}
+                    onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
+                    disabled={(!email.trim() || !password.trim())}
+                >
+                    <Text className={`${tailwind.buttonBlueText}`}>Create account</Text>
+                </TouchableOpacity>
+            </View>
+            <View className={`flex-row justify-center items-center`}>
+                <Text className={`text-center`}>Already an account?
+                </Text>
+                <TouchableOpacity
+                    onPress={() => { navigation.navigate('Sign In') }}>
+                    <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
+                </TouchableOpacity>
+            </View>
+        </View >
     );
 };
-const style = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 36,
-    },
-    input: {
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 4,
-        margin: 5
-    },
-    buttonGray: {
-        alignItems: 'center',
-        backgroundColor: '#DDDDDD',
-        padding: 10,
-        borderRadius: 4,
-        margin: 5
-    },
-    buttonBlue: {
-        alignItems: 'center',
-        backgroundColor: '#62ABEF',
-        padding: 10,
-        borderRadius: 4,
-        margin: 5
-    },
-})
 export default SignUp;

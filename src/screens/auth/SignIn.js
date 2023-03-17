@@ -56,11 +56,12 @@ const SignIn = ({ navigation }) => {
                         <Text className={`${tailwind.buttonBlueText}`}>Sign In</Text>
                     </TouchableOpacity>
                 </View>
-                <View className={`${tailwind.viewWrapper} absolute bottom-5`} >
-                    <Text>New User?</Text>
+                <View className={`${tailwind.viewWrapper} absolute bottom-5 flex-row justify-center items-center`}>
+                    <Text className={`text-right`}>New User? </Text>
                     <TouchableOpacity onPress={() => { navigation.navigate('Sign Up') }}>
                         <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>
                     </TouchableOpacity>
+
                 </View>
             </View>
         </View >
