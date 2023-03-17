@@ -1,5 +1,5 @@
 export default {
-    containerWrapper: 'bg-[#62ABEF] pt-32',
+    containerWrapper: 'bg-[#62ABEF] pt-32 ',
     container: 'bg-[#ECF0F3] w-full h-full rounded-t-[50] items-center px-4',
     title: 'w-full flex-row justify-center py-20',
     titleText: 'font-bold text-3xl',
