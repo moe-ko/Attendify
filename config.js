@@ -9,16 +9,19 @@ import { initializeApp } from "firebase/app";
 // Your web app's Firebase configuration 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyB_vIaCtpu0vxCmuLlTOa0xVWeR9arq9nc",
-    authDomain: "attendify-cf931.firebaseapp.com",
-    projectId: "attendify-cf931",
-    storageBucket: "attendify-cf931.appspot.com",
-    messagingSenderId: "804119425420",
-    appId: "1:804119425420:web:7d3ea1f3258ec9239866a9"
+    apiKey: "AIzaSyBDWtUCKKwhaeZ4aIiW62kQFj-vEoX_DT0",
+    authDomain: "attend-3096f.firebaseapp.com",
+    projectId: "attend-3096f",
+    storageBucket: "attend-3096f.appspot.com",
+    messagingSenderId: "1062696918069",
+    appId: "1:1062696918069:web:6cf11616b8c9973fbce57c",
+    measurementId: "G-GY6Q8KQS3K"
 };
 if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig)
 }
+// Initialize Firebase
+
 export { firebase }
 // Initialize Firebase
 // const app = initializeApp(firebaseConfig);

@@ -49,7 +49,7 @@ const Profile = ({ navigation }) => {
     getStatusEmployee = (status_id) => {
         const status = firebase.firestore()
             .collection('status')
-            .doc(status_id.toString())
+            .doc(status_id)
             .onSnapshot(documentSnapshot => {
                 setStatus(documentSnapshot.data()['name'])
                 getUnits(documentSnapshot.id)
@@ -60,7 +60,7 @@ const Profile = ({ navigation }) => {
     getSubunits = (subunit_id) => {
         const subunit = firebase.firestore()
             .collection('subunits')
-            .doc(subunit_id.toString())
+            .doc(subunit_id)
             .onSnapshot(documentSnapshot => {
                 setSubunit(documentSnapshot.data()['name'])
             });
@@ -70,7 +70,7 @@ const Profile = ({ navigation }) => {
     getUnits = (unit_id) => {
         const subunit = firebase.firestore()
             .collection('units')
-            .doc(unit_id.toString())
+            .doc(unit_id)
             .onSnapshot(documentSnapshot => {
                 setUnit(documentSnapshot.data()['name'])
             });

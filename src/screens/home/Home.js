@@ -2,41 +2,37 @@ import { View, Text, TouchableOpacity, Alert } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
-import { checkIpAddress } from '../../../functions'
+import { checkIpAddress, getEmployeeId, isAdmin } from '../../../functions'
 import CreateEvent from './Admin/CreateEvent'
 import CurrentEvent from './CurrentEvent'
 
 const Home = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
-    const [permission, setPermission] = useState('')
     const [empId, setEmpId] = useState('')
-
+    const [loading, setLoading] = useState(true)
 
     checkIpAddress().then(res => {
         setIpAddress(res)
     })
 
     useEffect(() => {
-        getCurrentEmployee()
-    })
+        if (loading) {
+            getEmployeeId().then(res => {
+                setEmpId(res)
+                setLoading(false)
+            })
+        }
+    }, []);
 
-    getCurrentEmployee = () => {
-        firebase.firestore()
-            .collection('employees')
-            .where('email', '==', firebase.auth().currentUser?.email)
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(documentSnapshot => {
-                    setPermission(documentSnapshot.data()['permission_id'])
-                    setEmpId(documentSnapshot.id)
-                    
-                });
-            });
-    }
     return (
         <View>
             <View>
-                <CreateEvent props={{ ipAddress: ipAddress, permission: permission, empId: empId }} />
+                {/* {loading ? (
+                    <Text>Loading</Text>
+                ) : ( */}
+                <CreateEvent props={{ ipAddress: ipAddress, empId: empId }} />
+                {/* )} */}
+
             </View>
         </View>
     )
