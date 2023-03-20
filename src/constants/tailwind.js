@@ -11,4 +11,6 @@ export default {
     buttonBlueText: 'text-[#62ABEF] font-bold text-xl text-center',
     buttonWhiteText: 'text-white font-bold text-xl text-center',
     buttonWhite: 'p-[15] b-[7] bg-white rounded-2xl justify-center',
+    //checkin
+    textLine:'text-white font-semibold mx-auto mb-5',
 }

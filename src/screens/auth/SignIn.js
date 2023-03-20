@@ -46,7 +46,7 @@ const SignIn = ({ navigation }) => {
                             />
                         </View>
                         <View className={`${tailwind.viewWrapper}`}>
-                            <Text className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
+                            <Text onPress={() => { navigation.navigate('Forgotpassword') }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
                         </View>
                         <View className={`${tailwind.viewWrapper}`}>
                             <TouchableOpacity
@@ -66,9 +66,9 @@ const SignIn = ({ navigation }) => {
 
                         </View>
                     </View>
-                </View >
-            </KeyboardAvoidingView >
-        </ScrollView >
+                </View>
+            </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 export default SignIn;

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { firebase } from './config';
 // Navigator
 import WelcomeStackNavigator from './src/navigations/AuthNavigator';
-import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
+//import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
 import BottomTabNavigator from './src/navigations/BottomNavigator';
 import 'react-native-gesture-handler';
 import { checkConnection } from './functions';

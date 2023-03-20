@@ -165,7 +165,7 @@ const SignUp = ({ navigation }) => {
                             <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
                         </TouchableOpacity>
                     </View>
-                </View >
+                </View>
             </KeyboardAvoidingView>
         </ScrollView>
     );
