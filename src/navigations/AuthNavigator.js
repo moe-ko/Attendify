@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { Welcome, SignIn, SignUp, Home} from "../screens";
 import { ROUTES } from "..";
 import BottomTabNavigator from "./BottomNavigator";
+import EnterOTP from "../screens/auth/EnterOTP";
 import  Checkin from "../screens/auth/Checkin";
 
 import Forgotpassword from "../screens/auth/Forgotpassword";
@@ -81,6 +82,20 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen
                 name='Checkin'
                 component={Checkin}
+                options={{
+                    // headerTitle: () => <Header name='Attendify' />,
+                    headerShown: false,
+                    headerBackTitleVisible: false,
+                    headerStyle: {
+                        height: 150,
+                        backgroundColor: '#62ABEF',
+                        elevation: 25
+                    }
+                }}
+            />
+            <Stack.Screen
+                name='EnterOTP'
+                component={EnterOTP}
                 options={{
                     // headerTitle: () => <Header name='Attendify' />,
                     headerShown: false,

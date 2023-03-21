@@ -226,7 +226,7 @@ const CreateEvent = ({ props }) => {
             />
             {hasAttended ? null : < Pass id={id} />}
 
-        </View >
+        </View>
     );
 
     const [startDate, setStartDate] = useState(new Date())
