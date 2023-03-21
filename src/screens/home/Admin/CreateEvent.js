@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Button, Alert, TextInput, Platform } from 'react-native'
+import { View, Text, Button, Alert, TextInput, Platform, TouchableOpacity } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { generatePasscode, getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, cancelEvent } from '../../../../functions'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { doc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent } from '../../../../functions'
+// import DateTimePicker from '@react-native-community/datetimepicker';
+import { arrayUnion } from "firebase/firestore";
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 
 
 const CreateEvent = ({ props }) => {
-    const [locations, setLocations] = useState();
+    const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
     const [duration, setDuration] = useState(0);
@@ -21,7 +22,7 @@ const CreateEvent = ({ props }) => {
     const [mins, setMins] = useState('')
     const [secs, setSecs] = useState('')
     const [hrs, setHrs] = useState('')
-    const [code, setCode] = useState('XN0K8Q')
+    const [code, setCode] = useState()
     const [hasAttended, setHasAttended] = useState(false)
 
     // eventTimer = (end) => {
@@ -53,10 +54,11 @@ const CreateEvent = ({ props }) => {
         // getAttendance()
     }, [])
 
-    getLocations().then(res => {
-        setLocations(res)
-    })
-    // console.log(cancelEvent())
+    if (locations == '') {
+        getLocations().then(res => {
+            setLocations(res)
+        })
+    }
 
     getCurrentEvent = () => {
         firebase.firestore()
@@ -82,6 +84,8 @@ const CreateEvent = ({ props }) => {
                             })
                         }
                         getAttendance()
+                    } else {
+                        setCurrentEvent('')
                     }
 
                     // eventTimer(event[0]['end_date'])
@@ -104,7 +108,7 @@ const CreateEvent = ({ props }) => {
         subscriber();
     }
 
-    handleAttendify = (code, eventId, userId) => {
+    handleAttendify = (code, eventId) => {
         if (currentEvent['code'] === code) {
             firebase.firestore()
                 .collection('events')
@@ -138,18 +142,10 @@ const CreateEvent = ({ props }) => {
             });
     }
 
-    const [startDate, setStartDate] = useState(new Date())
-    const [endDate, setEndDate] = useState(new Date())
-    const [show, setShow] = useState(false)
+    const [time, setTime] = useState(new Date(Date.now()))
 
-    setStartDateEvent = (event, startDate) => {
-        setShow(Platform.OS === 'ios' ? true : false)
-        setStartDate(startDate)
-    }
-
-    setEndDateEvent = (event, endDate) => {
-        setShow(Platform.OS === 'ios' ? true : false)
-        setEndDate(endDate)
+    function onTimeSelected(event, time) {
+        setTime(time);
     }
 
 
@@ -169,7 +165,7 @@ const CreateEvent = ({ props }) => {
                         <Button
                             title={'Cancel'}
                             onPress={() => {
-                                alertCancelEvent(currentEvent['id'])
+                                alertCancelEvent(currentEvent['id']), getCurrentEvent()
                             }}
                         />
                         {hasAttended ? <Text>Thank you for attending</Text> :
@@ -185,7 +181,7 @@ const CreateEvent = ({ props }) => {
                                 <Button
                                     title={'Attendify'}
                                     onPress={() => {
-                                        handleAttendify(code, currentEvent['id'], props.empId)
+                                        handleAttendify(code, currentEvent['id'])
                                     }}
                                 />
                             </View>
@@ -232,21 +228,18 @@ const CreateEvent = ({ props }) => {
                     autoCorrect={false}
                 />
                 <View>
-                    <Text>End date and time</Text>
-                    <DateTimePicker
-                        value={endDate}
-                        minimumDate={new Date()}
-                        mode='datetime'
-                        is24Hour={true}
-                        display="default"
-                        onChange={setEndDateEvent}
+                    <RNDateTimePicker
+                        value={time}
+                        mode={'datetime'}
+                        display={Platform.OS === `ios` ? `default` : `default`}
+                        is24Hour={false}
+                        onChange={onTimeSelected}
                     />
                 </View>
                 <Button
-
                     title={'CreateEvent'}
                     onPress={() => {
-                        hanldeCreateEvent(selectedLocation, title, endDate), getCurrentEvent()
+                        hanldeCreateEvent(selectedLocation, title, time), getCurrentEvent()
                     }}
                 />
             </View>
