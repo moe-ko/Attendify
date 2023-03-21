@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { firebase } from '../../../config'
 
@@ -10,7 +10,9 @@ const SignIn = ({ navigation }) => {
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
         } catch (error) {
-            console.log(error.message);
+            Alert.alert('Error', `${error.message}`, [
+                { text: 'Ok' },
+            ]);
         }
     }
 
