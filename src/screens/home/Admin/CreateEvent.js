@@ -7,6 +7,7 @@ import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent } fr
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { arrayUnion } from "firebase/firestore";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+import PieChart from './PieChart'
 
 
 const CreateEvent = ({ props }) => {
@@ -131,6 +132,10 @@ const CreateEvent = ({ props }) => {
 
     return (
         <View>
+            {(currentEvent) ? (
+                <PieChart props={{ id: currentEvent['id'] }} />
+            ) : null}
+
             {(currentEventVisible && currentEvent) ? (
                 <View>
                     <View>
