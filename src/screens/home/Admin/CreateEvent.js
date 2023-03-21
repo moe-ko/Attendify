@@ -13,10 +13,8 @@ const CreateEvent = ({ props }) => {
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
-    const [duration, setDuration] = useState(0);
     const [createEventVisible, setCreateEventVisible] = useState(true);
     const [currentEventVisible, setCurrentEventVisible] = useState(true);
-    const [currentEventId, setCurrentEventId] = useState([]);
     const [currentEvent, setCurrentEvent] = useState([]);
     const [locationName, setLocationName] = useState();
     const [mins, setMins] = useState('')
@@ -24,35 +22,28 @@ const CreateEvent = ({ props }) => {
     const [hrs, setHrs] = useState('')
     const [code, setCode] = useState()
     const [hasAttended, setHasAttended] = useState(false)
+    const [time, setTime] = useState(new Date())
 
-    // eventTimer = (end) => {
-    //     const eventExpirationDate = new Date(end)
-    //     setInterval(() => {
-    //         const now = new Date().getTime()
-    //         const timeLeft = eventExpirationDate - now
-    //         const hrs = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    //         const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
-    //         const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
-    //         setHrs(hrs)
-    //         setMins(mins)
-    //         setSecs(secs)
-    //         if (timeLeft < 0) {
-    //             clearInterval(eventTimer)
-    //             setHrs(0)
-    //             setMins(0)
-    //             setSecs(0)
+    eventTimer = (end) => {
+        const eventExpirationDate = new Date(end)
+        setInterval(() => {
+            const now = new Date().getTime()
+            const timeLeft = eventExpirationDate - now
+            const hrs = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
+            const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
+            setHrs(hrs)
+            setMins(mins)
+            setSecs(secs)
+            if (timeLeft < 0) {
+                clearInterval(eventTimer)
+                setHrs(0)
+                setMins(0)
+                setSecs(0)
 
-    //         }
-    //     }, 1000);
-    // }
-
-    useEffect(() => {
-        // if (currentEvent.length == 0) {
-        //     getCurrentEvent()
-        //     console.log(currentEvent)
-        // }
-        // getAttendance()
-    }, [])
+            }
+        }, 1000);
+    }
 
     if (locations == '') {
         getLocations().then(res => {
@@ -74,7 +65,6 @@ const CreateEvent = ({ props }) => {
                             title: docSnapshot.data()['title'],
                             end: docSnapshot.data()['end'],
                         }
-
                     ))
                     if (res.length > 0) {
                         setCurrentEvent(res[0])
@@ -83,21 +73,19 @@ const CreateEvent = ({ props }) => {
                                 setLocationName(res)
                             })
                         }
+                        // eventTimer(res[0]['end'])
                         getAttendance()
                     } else {
                         setCurrentEvent('')
                     }
-
-                    // eventTimer(event[0]['end_date'])
-                    // eventTimer()
-                    // eventTimer()
-
                 }
             })
     }
+
     if (currentEvent.length == 0) {
         getCurrentEvent()
     }
+
     updateStatusEvent = (event_id) => {
         const subscriber = firebase.firestore()
             .collection('events')
@@ -125,7 +113,6 @@ const CreateEvent = ({ props }) => {
                 { text: 'Ok' },
             ]);
         }
-
     }
 
     getAttendance = () => {
@@ -142,13 +129,6 @@ const CreateEvent = ({ props }) => {
             });
     }
 
-    const [time, setTime] = useState(new Date(Date.now()))
-
-    function onTimeSelected(event, time) {
-        setTime(time);
-    }
-
-
     return (
         <View>
             {(currentEventVisible && currentEvent) ? (
@@ -160,7 +140,8 @@ const CreateEvent = ({ props }) => {
                         <Text>{locationName}</Text>
                         <Text>Session Code</Text>
                         <Text >{currentEvent['code']}</Text>
-                        <Text>Expire in {hrs}:{mins}:{secs}</Text>
+                        <Text>Expire {currentEvent['end']}</Text>
+                        <Text>in {hrs}:{mins}:{secs}</Text>
 
                         <Button
                             title={'Cancel'}
@@ -233,7 +214,7 @@ const CreateEvent = ({ props }) => {
                         mode={'datetime'}
                         display={Platform.OS === `ios` ? `default` : `default`}
                         is24Hour={false}
-                        onChange={onTimeSelected}
+                        onChange={() => setTime(time)}
                     />
                 </View>
                 <Button
