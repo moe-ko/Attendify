@@ -133,7 +133,7 @@ const CreateEvent = ({ props }) => {
     return (
         <View>
             {(currentEvent) ? (
-                <PieChart props={{ id: currentEvent['id'] }} />
+                <PieChart />
             ) : null}
 
             {(currentEventVisible && currentEvent) ? (

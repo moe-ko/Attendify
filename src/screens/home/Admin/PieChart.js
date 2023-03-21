@@ -2,32 +2,30 @@ import React, { useEffect, useState } from 'react'
 import { Text, View, Dimensions } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
-import colors from '../../../constants/colors'
 import { COLORS } from '../../..'
 import AttendanceList from './AttendanceList'
 import { firebase } from '../../../../config'
 
-
-
-const PieChart = ({ props }) => {
-
+const PieChart = () => {
+    const [eventId, setEventId] = useState('')
     const [attend, setAttend] = useState(0)
     const [absent, setAbsent] = useState(0)
     const [sickLeave, setSickLeave] = useState(0)
     const [annualLeave, setAnnualLeave] = useState(0)
     const [totalAssitance, setTotalAssistance] = useState(0)
     const [viewChart, setViewChart] = useState(false)
-    const attendPercent = Math.round(attend / totalAssitance * 100)
-    const absentPercent = Math.round(absent / totalAssitance * 100)
-    const slPercent = Math.round(sickLeave / totalAssitance * 100)
-    const alPercent = Math.round(annualLeave / totalAssitance * 100)
 
-    const graphicData = [
-        { x: `Attend ${attend}`, y: attendPercent },
-        { x: `Absent ${absent}`, y: absentPercent },
-        { x: `Sick ${sickLeave}`, y: slPercent },
-        { x: `On Leave ${annualLeave}`, y: alPercent }
-    ]
+    getCurrentEventId = () => {
+        firebase.firestore()
+            .collection('events')
+            .orderBy('end', 'asc')
+            .onSnapshot({
+                next: querySnapshot => {
+                    const res = querySnapshot.docs.map(docSnapshot => ({ id: docSnapshot.id }))
+                    if (res.length > 0) (setEventId(res[0]['id']), getTotalAttendance(res[0]['id']))
+                }
+            })
+    }
 
     const getTotalAttendance = (id) => {
         const subscriber = firebase.firestore()
@@ -45,9 +43,22 @@ const PieChart = ({ props }) => {
         // Stop listening for updates when no longer required
         return () => subscriber();
     }
-    if (props.id != undefined) {
-        getTotalAttendance(props.id)
+    if (eventId == '') {
+        getCurrentEventId()
     }
+
+    const attendPercent = Math.round(attend / totalAssitance * 100)
+    const absentPercent = Math.round(absent / totalAssitance * 100)
+    const slPercent = Math.round(sickLeave / totalAssitance * 100)
+    const alPercent = Math.round(annualLeave / totalAssitance * 100)
+
+    const graphicData = [
+        { x: `Attend ${attend}`, y: attendPercent },
+        { x: `Absent ${absent}`, y: absentPercent },
+        { x: `Sick ${sickLeave}`, y: slPercent },
+        { x: `On Leave ${annualLeave}`, y: alPercent }
+    ]
+
     return (
         <View>
             {viewChart ? (
