@@ -7,6 +7,7 @@ import EnterOTP from "../screens/auth/EnterOTP";
 import  Checkin from "../screens/auth/Checkin";
 
 import Forgotpassword from "../screens/auth/Forgotpassword";
+import ResetPassword from "../screens/auth/ResetPassword";
 
 const Stack = createStackNavigator();
 
@@ -97,16 +98,30 @@ const WelcomeStackNavigator = () => {
                 name='EnterOTP'
                 component={EnterOTP}
                 options={{
-                    // headerTitle: () => <Header name='Attendify' />,
-                    headerShown: false,
+                    // headerTitle: () => <Header name='Sign Up' />,
                     headerBackTitleVisible: false,
+                    headerTitleStyle: { display: 'none' },
                     headerStyle: {
-                        height: 150,
-                        backgroundColor: '#62ABEF',
-                        elevation: 25
+                        backgroundColor: '#ECF0F3',
+                        elevation: 25,
                     }
                 }}
             />
+            <Stack.Screen
+                name='ResetPassword'
+                component={ResetPassword}
+                
+                options={{
+                    // headerTitle: () => <Header name='Sign Up' />,
+                    headerBackTitleVisible: false,
+                    headerTitleStyle: { display: 'none' },
+                    headerStyle: {
+                        backgroundColor: '#ECF0F3',
+                        elevation: 25,
+                    }
+                }}
+            />
+
         </Stack.Navigator>
     );
 };

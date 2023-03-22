@@ -29,9 +29,9 @@ const BottomTabNavigator = () => {
             })}
 
         >
-            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} />
-            <Tab.Screen name={ROUTES.EVENT_TAB} component={CurrentEvent} />
-            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} />
+            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{headerShown:false}} />
+            <Tab.Screen name={ROUTES.EVENT_TAB} component={CurrentEvent} options={{headerShown:false}} />
+            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{headerShown:false}}/>
         </Tab.Navigator>
     );
 };

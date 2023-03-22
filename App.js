@@ -9,6 +9,7 @@ import BottomTabNavigator from './src/navigations/BottomNavigator';
 import 'react-native-gesture-handler';
 import { checkConnection } from './functions';
 import { Offline } from './src/screens/Offline';
+import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
 
 const Stack = createStackNavigator();
 
@@ -41,7 +42,7 @@ export default function App() {
   return (
     connection ? (
       <NavigationContainer>
-        {(user) ? <BottomTabNavigator /> : <WelcomeStackNavigator />}
+        {(user) ? <MenuDrawerNavigator /> : <WelcomeStackNavigator />}
       </NavigationContainer>
     ) : (<Offline onCheck={checkConnection} />)
   )

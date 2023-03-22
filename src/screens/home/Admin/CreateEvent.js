@@ -324,7 +324,7 @@ const CreateEvent = ({ props }) => {
                     />
                 </View>
             ) : null}
-        </View >
+        </View>
     )
 
 }
