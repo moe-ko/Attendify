@@ -40,6 +40,7 @@ const SignUp = ({ navigation }) => {
         return () => subscriber();
     }
 
+
     return (
         <View style={style.container}>
             <View>

@@ -13,7 +13,6 @@ export const checkConnection = () => {
 export const checkIpAddress = () => {
     return NetInfo.fetch().then(state => {
         return state.details.ipAddress
-
     });
 }
 

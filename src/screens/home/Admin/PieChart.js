@@ -17,6 +17,7 @@ const PieChart = () => {
     const [totalAssitance, setTotalAssistance] = useState(0)
     const [viewChart, setViewChart] = useState(false)
     const dates = []
+    const emp = []
 
     useEffect(() => {
         getDates()
@@ -28,6 +29,17 @@ const PieChart = () => {
             .orderBy('end', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
+                    querySnapshot.docs.map(docSnapshot => (
+                        docSnapshot.data()['attendance'].forEach(id => {
+                            firebase.firestore()
+                                .collection('employees')
+                                .doc(id)
+                                .onSnapshot(documentSnapshot => {
+                                    console.log('here', documentSnapshot.data())
+                                    // emp.push({ key: documentSnapshot.id, value: `${documentSnapshot.data()['name'] + ' > ' + subunit_name}` })
+                                });
+                        })
+                    ))
                     const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
                     if (res.length > 0) {
                         setEventDate(res[0]['date'])
@@ -128,7 +140,7 @@ const PieChart = () => {
                     colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
                 />
             ) : null}
-            <AttendanceList />
+            {/* <AttendanceList props={eventDate} /> */}
         </View>
     )
 }

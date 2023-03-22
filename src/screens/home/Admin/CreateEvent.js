@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, Suspense } from 'react'
 import { View, Text, Button, Alert, TextInput, Platform, TouchableOpacity } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -24,6 +24,11 @@ const CreateEvent = ({ props }) => {
     const [code, setCode] = useState()
     const [hasAttended, setHasAttended] = useState(false)
     const [time, setTime] = useState(new Date())
+
+    useEffect(() => {
+        getEmployees()
+    })
+
 
     eventTimer = (end) => {
         const eventExpirationDate = new Date(end)
@@ -129,7 +134,6 @@ const CreateEvent = ({ props }) => {
                 }
             });
     }
-
     return (
         <View>
             {(currentEvent) ? (
