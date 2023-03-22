@@ -1,14 +1,15 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
-import { StyleSheet } from 'react-native';
 import { firebase } from './config';
 // Navigator
-import WelcomeStackNavigator from './navigation/StackNavigator';
-import BottomTabNavigator from './navigation/BottomNavigator';
-
+import WelcomeStackNavigator from './src/navigations/AuthNavigator';
+//import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
+import BottomTabNavigator from './src/navigations/BottomNavigator';
+import 'react-native-gesture-handler';
 import { checkConnection } from './functions';
 import { Offline } from './src/screens/Offline';
+import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
 
 const Stack = createStackNavigator();
 
@@ -40,20 +41,11 @@ export default function App() {
 
   return (
     connection ? (
-
       <NavigationContainer>
-        {(user) ? <BottomTabNavigator /> : <WelcomeStackNavigator />}
+        {(user) ? <MenuDrawerNavigator /> : <WelcomeStackNavigator />}
       </NavigationContainer>
     ) : (<Offline onCheck={checkConnection} />)
   )
 
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
