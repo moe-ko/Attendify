@@ -1,8 +1,9 @@
-import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
+import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 
 const SignUp = ({ navigation }) => {
@@ -14,32 +15,12 @@ const SignUp = ({ navigation }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
     const [subunitSelected, setSubunitSelected] = useState('');
-    const [avatar, setAvatar] = useState('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.kindpng.com%2Fpicc%2Fm%2F52-526237_avatar-profile-hd-png-download.png&f=1&nofb=1&ipt=24bd667f767c21e1dac6ead1b76d80cdee852d105be78ddc85daab385ad432d2&ipo=images')
     const units = []
 
-    handleSignUp = (empId, email, password, name) => {
-        firebase.auth()
-            .createUserWithEmailAndPassword(email, password)
-            .then(() => { addEmployeeDetails(empId, email, name, subunitSelected, avatar) })
-            .then(() => { navigation.navigate('Sign In') })
-            .catch(error => {
-                console.log(error)
-            });
-    }
-    addEmployeeDetails = (empId, email, name, subunitSelected, avatar) => {
-        firebase
-            .firestore()
-            .collection('employees')
-            .doc(empId)
-            .set({
-                createdAt: format(new Date(), "dd MMMM yyyy - H:mm:ss"),
-                email: email,
-                full_name: name,
-                status_id: 1,
-                subunit_id: parseInt(subunitSelected),
-                avatar: avatar
-            })
-    }
+    useEffect(() => {
+        getSubunits()
+    })
+
     getSubunits = () => {
         firebase.firestore()
             .collection('subunits')
@@ -59,9 +40,6 @@ const SignUp = ({ navigation }) => {
             });
         return () => subscriber();
     }
-    useEffect(() => {
-        getSubunits()
-    })
 
     return (
         <ScrollView>
