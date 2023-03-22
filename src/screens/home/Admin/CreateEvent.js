@@ -26,7 +26,7 @@ const CreateEvent = ({ props }) => {
     const [time, setTime] = useState(new Date())
 
     useEffect(() => {
-        getEmployees()
+        // getEmployees()
     })
 
 
