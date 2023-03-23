@@ -41,6 +41,7 @@ const SignUp = ({ navigation }) => {
         return () => subscriber();
     }
 
+
     return (
         <ScrollView>
             <KeyboardAvoidingView behavior={'position'}>
