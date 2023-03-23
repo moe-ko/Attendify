@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvoidingView } from 'react-native'
 import React, { useState } from 'react'
 import { firebase } from '../../../config'
 import tailwind from '../../constants/tailwind'
