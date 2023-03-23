@@ -37,7 +37,7 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
             full_name: name,
             status_id: '1',
             subunit_id: subunitSelected,
-            avatar: `https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fwww.kindpng.com%2Fpicc%2Fm%2F52-526237_avatar-profile-hd-png-download.png&f=1&nofb=1&ipt=24bd667f767c21e1dac6ead1b76d80cdee852d105be78ddc85daab385ad432d2&ipo=images`,
+            avatar: `https://source.unsplash.com/random/150x150/?animal`,
             permission_id: '0'
         })
 }
