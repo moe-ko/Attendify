@@ -7,10 +7,10 @@ import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent } fr
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { arrayUnion } from "firebase/firestore";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
-import PieChart from './PieChart'
+import PieChart from './Chart'
 
 
-const CreateEvent = ({ props }) => {
+const Event = ({ props }) => {
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
@@ -136,10 +136,6 @@ const CreateEvent = ({ props }) => {
     }
     return (
         <View>
-            {(currentEvent) ? (
-                <PieChart />
-            ) : null}
-
             {(currentEventVisible && currentEvent) ? (
                 <View>
                     <View>
@@ -158,24 +154,25 @@ const CreateEvent = ({ props }) => {
                                 alertCancelEvent(currentEvent['id']), getCurrentEvent()
                             }}
                         />
-                        {hasAttended ? <Text>Thank you for attending</Text> :
-                            <View>
-                                <TextInput
-                                    value={code}
-                                    placeholder='Enter code event'
-                                    onChangeText={(text) => setCode(text)}
-                                    autoCorrect={false}
-                                    required
-                                    placeholderTextColor="#666"
-                                />
-                                <Button
-                                    title={'Attendify'}
-                                    onPress={() => {
-                                        handleAttendify(code, currentEvent['id'])
-                                    }}
-                                />
-                            </View>
-                        }
+                        <Text>Thank you for attending</Text>
+                        {/* {hasAttended ? <Text>Thank you for attending</Text> : */}
+                        <View>
+                            <TextInput
+                                value={code}
+                                placeholder='Enter code event'
+                                onChangeText={(text) => setCode(text)}
+                                autoCorrect={false}
+                                required
+                                placeholderTextColor="#666"
+                            />
+                            <Button
+                                title={'Attendify'}
+                                onPress={() => {
+                                    handleAttendify(code, currentEvent['id'])
+                                }}
+                            />
+                        </View>
+                        {/* } */}
                     </View >
                 </View>
             ) : null}
@@ -240,4 +237,4 @@ const CreateEvent = ({ props }) => {
 }
 
 
-export default CreateEvent
+export default Event

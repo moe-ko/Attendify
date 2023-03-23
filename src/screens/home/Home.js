@@ -3,8 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress, getEmployeeId, isAdmin } from '../../../functions'
-import CreateEvent from './Admin/CreateEvent'
-import CurrentEvent from './CurrentEvent'
+import Event from './Admin/Event'
 
 const Home = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
@@ -30,7 +29,7 @@ const Home = ({ navigation }) => {
                 {/* {loading ? (
                     <Text>Loading</Text>
                 ) : ( */}
-                <CreateEvent props={{ ipAddress: ipAddress, empId: empId }} />
+                <Event props={{ ipAddress: ipAddress, empId: empId }} />
                 {/* )} */}
 
             </View>

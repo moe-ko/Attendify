@@ -1,10 +1,10 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Welcome, SignIn, SignUp, Home} from "../screens";
+import { Welcome, SignIn, SignUp, Home } from "../screens";
 import { ROUTES } from "..";
 import BottomTabNavigator from "./BottomNavigator";
 import EnterOTP from "../screens/auth/EnterOTP";
-import  Checkin from "../screens/auth/Checkin";
+import Checkin from "../screens/auth/Checkin";
 
 import Forgotpassword from "../screens/auth/Forgotpassword";
 import ResetPassword from "../screens/auth/ResetPassword";
@@ -110,7 +110,7 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen
                 name='ResetPassword'
                 component={ResetPassword}
-                
+
                 options={{
                     // headerTitle: () => <Header name='Sign Up' />,
                     headerBackTitleVisible: false,
