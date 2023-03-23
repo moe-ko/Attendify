@@ -154,24 +154,25 @@ const Event = ({ props }) => {
                                 alertCancelEvent(currentEvent['id']), getCurrentEvent()
                             }}
                         />
-                        {hasAttended ? <Text>Thank you for attending</Text> :
-                            <View>
-                                <TextInput
-                                    value={code}
-                                    placeholder='Enter code event'
-                                    onChangeText={(text) => setCode(text)}
-                                    autoCorrect={false}
-                                    required
-                                    placeholderTextColor="#666"
-                                />
-                                <Button
-                                    title={'Attendify'}
-                                    onPress={() => {
-                                        handleAttendify(code, currentEvent['id'])
-                                    }}
-                                />
-                            </View>
-                        }
+                        <Text>Thank you for attending</Text>
+                        {/* {hasAttended ? <Text>Thank you for attending</Text> : */}
+                        <View>
+                            <TextInput
+                                value={code}
+                                placeholder='Enter code event'
+                                onChangeText={(text) => setCode(text)}
+                                autoCorrect={false}
+                                required
+                                placeholderTextColor="#666"
+                            />
+                            <Button
+                                title={'Attendify'}
+                                onPress={() => {
+                                    handleAttendify(code, currentEvent['id'])
+                                }}
+                            />
+                        </View>
+                        {/* } */}
                     </View >
                 </View>
             ) : null}
