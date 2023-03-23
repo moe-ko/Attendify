@@ -4,7 +4,6 @@ import { format } from 'date-fns'
 import { Alert } from 'react-native'
 
 export const checkConnection = () => {
-    // alert('Checking connection')
     return NetInfo.fetch().then(state => {
         return state.isConnected
     });

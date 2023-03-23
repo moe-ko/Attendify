@@ -11,7 +11,7 @@ export default {
     PROFILE_TAB: 'Profile',
     PROFILE_DRAWER: 'Profile',
 
-    EVENT: 'CurrentEvent',
-    EVENT_TAB: 'CurrentEvent',
-    EVENT_DRAWER: 'CurrentEvent'
+    CHART: 'Chart',
+    CHART_TAB: 'Chart',
+    CHART_DRAWER: 'Chart'
 }

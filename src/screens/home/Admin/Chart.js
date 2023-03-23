@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Dimensions, FlatList, Avatar, Button, TouchableOpacity } from 'react-native'
+import { Text, View, Dimensions, FlatList, Button, TouchableOpacity } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
 import { COLORS } from '../../..'
-import AttendanceList from './AttendanceList'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { setDate } from 'date-fns'
-import { ListItem } from '@rneui/themed';
+import { ListItem, Avatar } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 
-const PieChart = () => {
+const Chart = () => {
     const [eventDate, setEventDate] = useState('')
     const [attend, setAttend] = useState(100)
     const [absent, setAbsent] = useState(0)
@@ -18,14 +17,15 @@ const PieChart = () => {
     const [annualLeave, setAnnualLeave] = useState(0)
     const [totalAssitance, setTotalAssistance] = useState(0)
     const [viewChart, setViewChart] = useState(false)
+    const [clear, setClear] = useState([])
     const dates = []
-    const [emp, setEmp] = useState([])
+    let details = clear
 
     useEffect(() => {
         getDates()
     })
 
-    getCurrentEventDate = () => {
+    const getCurrentEventDate = () => {
         firebase.firestore()
             .collection('events')
             .orderBy('end', 'desc')
@@ -40,7 +40,7 @@ const PieChart = () => {
             })
     }
 
-    getDates = () => {
+    const getDates = () => {
         firebase.firestore()
             .collection('events')
             .orderBy('end', 'desc')
@@ -72,17 +72,20 @@ const PieChart = () => {
                     setAnnualLeave(documentSnapshot.data()['annual_leave'].length);
                     setTotalAssistance(documentSnapshot.data()['attendance'].length + documentSnapshot.data()['absent'].length + documentSnapshot.data()['sick_leave'].length + documentSnapshot.data()['annual_leave'].length);
                     setViewChart(true)
-                });
-                querySnapshot.docs.map(docSnapshot => {
-                    docSnapshot.data()['attendance'].forEach(id => {
-                        firebase.firestore()
-                            .collection('employees')
-                            .doc(id)
-                            .onSnapshot(documentSnapshot => {
-                                setEmp(...emp, [{ id: documentSnapshot.id, name: `${documentSnapshot.data()['full_name']}`, avatar: `${documentSnapshot.data()['avatar']}` }])
-                            });
+                    setClear([])
+                    documentSnapshot.data()['attendance'].forEach(id => {
+                        employeeDetails(id)
                     })
-                })
+                });
+            });
+        return () => subscriber();
+    }
+    employeeDetails = (id) => {
+        const subscriber = firebase.firestore()
+            .collection('employees')
+            .doc(id)
+            .onSnapshot(documentSnapshot => {
+                details.push({ id: id, name: `${documentSnapshot.data()['full_name']}`, avatar: `${documentSnapshot.data()['avatar']}` })
             });
         return () => subscriber();
     }
@@ -96,78 +99,38 @@ const PieChart = () => {
         { x: `Attend ${attend}`, y: attendPercent },
         { x: `Absent ${absent}`, y: absentPercent },
         { x: `Sick ${sickLeave}`, y: slPercent },
-        { x: `On Leave ${annualLeave}`, y: alPercent }
+        { x: `On Leave ${alPercent} %`, y: alPercent }
     ]
 
-    const Item = ({ id, name }) => (
-        <>
-            <ListItem.Swipeable
-                rightWidth={90}
-                minSlideWidth={10}
-                rightContent={(action) => (
-                    <TouchableOpacity
-                        style={{ backgroundColor: '#62ABEF', padding: 15, height: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex' }}
-                        onPress={() => {
-                            console.log('Options clicked')
-                        }}
-                    >
-                        <Text>Options</Text>
-                    </TouchableOpacity>
-                )}
-            >
-                <Icon name='person-circle-sharp' size={50} color='gray' />
-                <ListItem.Content>
-                    <ListItem.Title>{name}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
-            <ListItem.Swipeable
-                rightWidth={90}
-                minSlideWidth={10}
-                rightContent={(action) => (
 
-                    <TouchableOpacity
-                        style={{ backgroundColor: '#62ABEF', padding: 15, height: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex' }}
-                        onPress={() => {
-                            console.log('Options clicked')
-                        }}
-                    >
-                        <Text>Options</Text>
-                    </TouchableOpacity>
-                )}
-            >
-                <Icon name='person-circle-sharp' size={50} color='gray' />
-                <ListItem.Content>
-                    <ListItem.Title>{name}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
-            <ListItem.Swipeable
-                rightWidth={90}
-                minSlideWidth={40}
-                rightContent={(action) => (
+    const Item = ({ id, name, avatar }) => (
+        <ListItem.Swipeable
+            rightWidth={90}
+            minSlideWidth={10}
+            rightContent={(action) => (
+                <TouchableOpacity
+                    style={{ backgroundColor: '#62ABEF', padding: 15, height: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex' }}
+                    onPress={() => {
+                        console.log('Options clicked')
+                    }}
+                >
+                    <Text>Options</Text>
+                </TouchableOpacity>
+            )}
+        >
+            <Avatar
+                rounded
+                source={{ uri: `${avatar}` }}
+            />
+            <ListItem.Content>
+                <ListItem.Title>{name}</ListItem.Title>
+                <ListItem.Subtitle>{id}</ListItem.Subtitle>
+            </ListItem.Content>
+            <ListItem.Chevron />
+        </ListItem.Swipeable>
+    )
 
-                    <TouchableOpacity
-                        style={{ backgroundColor: '#62ABEF', padding: 15, height: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex' }}
-                        onPress={() => {
-                            console.log('Options clicked')
-                        }}
-                    >
-                        <Text>Options</Text>
-                    </TouchableOpacity>
-                )}
-            >
-                <Icon name='person-circle-sharp' size={50} color='gray' />
-                <ListItem.Content>
-                    <ListItem.Title>{name}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
-        </>
-    );
+        ;
     return (
         <View>
 
@@ -213,16 +176,15 @@ const PieChart = () => {
                             colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
                         />
                         <FlatList
-                            data={emp}
-                            renderItem={({ item }) => <Item id={item.id} name={item.name} />}
+                            data={details}
+                            renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} />}
                             keyExtractor={item => item.id}
                         />
                     </>
                 ) : null
             }
-            {/* <AttendanceList props={eventDate} /> */}
         </View >
     )
 }
 
-export default PieChart
+export default Chart

@@ -2,9 +2,9 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home, Profile, } from "../screens";
-import CurrentEvent from "../screens/home/CurrentEvent";
+// import Event from "../screens/home/CurrentEvent";
 import Icon from 'react-native-vector-icons/Ionicons'
-
+import Chart from "../screens/home/Admin/Chart";
 import { ROUTES } from "..";
 
 const Tab = createBottomTabNavigator();
@@ -21,7 +21,7 @@ const BottomTabNavigator = () => {
                         iconName = focused ? 'ios-home-sharp' : 'ios-home-outline'
                     } else if (route.name == ROUTES.PROFILE_TAB) {
                         iconName = focused ? 'person-circle-sharp' : 'person-circle-outline'
-                    } else if (route.name == ROUTES.EVENT_TAB) {
+                    } else if (route.name == ROUTES.CHART_TAB) {
                         iconName = focused ? 'stats-chart' : 'stats-chart-outline'
                     }
                     return <Icon name={iconName} size={22} color={color} />
@@ -29,9 +29,9 @@ const BottomTabNavigator = () => {
             })}
 
         >
-            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{headerShown:false}} />
-            <Tab.Screen name={ROUTES.EVENT_TAB} component={CurrentEvent} options={{headerShown:false}} />
-            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{headerShown:false}}/>
+            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.CHART_TAB} component={Chart} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{ headerShown: false }} />
         </Tab.Navigator>
     );
 };
