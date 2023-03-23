@@ -1,4 +1,4 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import { format } from 'date-fns'
