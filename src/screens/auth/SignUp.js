@@ -4,6 +4,7 @@ import { firebase } from '../../../config'
 import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
+import tailwind from '../../constants/tailwind'
 
 const SignUp = ({ navigation }) => {
 
@@ -42,129 +43,110 @@ const SignUp = ({ navigation }) => {
 
 
     return (
-        <View style={style.container}>
-            <View>
-                <TextInput
-                    style={style.input}
-                    onChangeText={(text) => setEmpId(text)}
-                    placeholder="Employee ID"
-                    placeholderTextColor="#666"
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                />
-            </View>
-            <View>
-                <TextInput
-                    style={style.input}
-                    onChangeText={(text) => setName(text)}
-                    placeholder="Full Name"
-                    placeholderTextColor="#666"
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                />
-            </View>
-            <View>
-                <TextInput
-                    style={style.input}
-                    onChangeText={(text) => setEmail(text)}
-                    placeholder="Email"
-                    placeholderTextColor="#666"
-                    autoCapitalize='none'
-                    autoCorrect={false}
-                />
-            </View>
-            <View>
-                <SelectList
-                    data={units}
-                    setSelected={setSubunitSelected}
-                    placeholder='Select Unit/Subunit'
-                    inputStyles={{
-                        color: "#666",
-                        padding: 0,
-                        margin: 0,
-                    }}
-                    boxStyles={{
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#000',
-                        color: '#fff',
-                        margin: 5,
-                    }}
-                    dropdownStyles={{
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#DDDDDD',
-                        backgroundColor: '#DDDDDD',
-                        color: '#fff',
-                        marginLeft: 5,
-                        marginRight: 5,
-                        marginBottom: 5,
-                        marginTop: 0,
-                        position: 'relative'
-                    }}
-                />
-            </View>
-            <View>
-                <TextInput
-                    style={style.input}
-                    onChangeText={(text) => setPassword(text)}
-                    placeholder="Password"
-                    placeholderTextColor="#666"
-                    autoCapitalize='none'
-                    secureTextEntry={true}
-                    autoCorrect={false}
-                />
-            </View>
-            <View>
-                <TextInput
-                    style={style.input}
-                    onChangeText={(text) => setConfirmPassword(text)}
-                    placeholder="Confirm Password"
-                    placeholderTextColor="#666"
-                    autoCapitalize='none'
-                    secureTextEntry={true}
-                    autoCorrect={false}
-                />
-            </View>
-            <TouchableOpacity
-                style={style.buttonGray}
-                onPress={() => { handleSignUp(navigation.navigate('Sign In'), empId, email, password, name, subunitSelected) }}
-                disabled={(!email.trim() || !password.trim())}
-            >
-                <Text>Sign Up </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={style.buttonBlue}
-                onPress={() => { navigation.navigate('Sign In') }}>
-                <Text>Sign In </Text>
-            </TouchableOpacity>
-        </View>
+        <ScrollView>
+            <KeyboardAvoidingView behavior={'position'}>
+                <View className={`${tailwind.container}`}>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
+                        <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            onChangeText={(text) => setEmpId(text)}
+                            placeholder="Employee ID"
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            onChangeText={(text) => setName(text)}
+                            placeholder="Full Name"
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            onChangeText={(text) => setEmail(text)}
+                            placeholder="Email"
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <SelectList
+                            data={units}
+                            setSelected={setSubunitSelected}
+                            placeholder='Select Unit/Subunit'
+                            placeholderTextColor='#000'
+                            inputStyles={{
+                                padding: 0,
+                                margin: 0,
+                            }}
+                            boxStyles={{
+                                borderRadius: 15,
+                                borderColor: '#fff',
+                                color: '#fff',
+                                backgroundColor: '#fff'
+                            }}
+                            dropdownStyles={{
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                borderColor: '#DDDDDD',
+                                backgroundColor: '#DDDDDD',
+                                color: '#fff',
+                                marginLeft: 5,
+                                marginRight: 5,
+                                marginBottom: 5,
+                                marginTop: 0,
+                                position: 'relative'
+                            }}
+                        />
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            onChangeText={(text) => setPassword(text)}
+                            placeholder="Password"
+                            autoCapitalize='none'
+                            secureTextEntry={true}
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            onChangeText={(text) => setConfirmPassword(text)}
+                            placeholder="Confirm Password"
+                            autoCapitalize='none'
+                            secureTextEntry={true}
+                            autoCorrect={false}
+                        />
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TouchableOpacity
+                            className={`${tailwind.buttonBlue}`}
+                            onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
+                            disabled={(!email.trim() || !password.trim())}
+                        >
+                            <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View className={`flex-row justify-center items-center`}>
+                        <Text className={`text-center`}>Already an account?
+                        </Text>
+                        <TouchableOpacity
+                            onPress={() => { navigation.navigate('Sign In') }}>
+                            <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </KeyboardAvoidingView>
+        </ScrollView>
     );
 };
-const style = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 36,
-    },
-    input: {
-        padding: 10,
-        borderWidth: 1,
-        borderRadius: 4,
-        margin: 5
-    },
-    buttonGray: {
-        alignItems: 'center',
-        backgroundColor: '#DDDDDD',
-        padding: 10,
-        borderRadius: 4,
-        margin: 5
-    },
-    buttonBlue: {
-        alignItems: 'center',
-        backgroundColor: '#62ABEF',
-        padding: 10,
-        borderRadius: 4,
-        margin: 5
-    },
-})
 export default SignUp;
