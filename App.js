@@ -10,10 +10,13 @@ import 'react-native-gesture-handler';
 import { checkConnection } from './functions';
 import { Offline } from './src/screens/Offline';
 import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
+import { LogBox } from 'react-native';
 
+LogBox.ignoreAllLogs()
 const Stack = createStackNavigator();
 
 export default function App() {
+
   const [initializing, setInitializing] = useState(true);
   const [user, setUser] = useState();
   const [connection, setConnection] = useState(false)

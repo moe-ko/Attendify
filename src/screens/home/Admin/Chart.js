@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 
 const Chart = () => {
     const [eventDate, setEventDate] = useState('')
-    const [attend, setAttend] = useState(100)
+    const [attend, setAttend] = useState(0)
     const [absent, setAbsent] = useState(0)
     const [sickLeave, setSickLeave] = useState(0)
     const [annualLeave, setAnnualLeave] = useState(0)
@@ -23,7 +23,7 @@ const Chart = () => {
 
     useEffect(() => {
         getCurrentEventDate()
-    }, [])
+    })
 
     const getCurrentEventDate = () => {
         firebase.firestore()
@@ -34,6 +34,11 @@ const Chart = () => {
                     const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
                     if (res.length > 0) {
                         setEventDate(res[0]['date'])
+
+                        setAttend(0)
+                        setAbsent(0)
+                        setSickLeave(0)
+                        setAnnualLeave(0)
                         getTotalAttendance(res[0]['date'])
                     }
                 }
