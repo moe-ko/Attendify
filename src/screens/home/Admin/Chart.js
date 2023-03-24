@@ -22,8 +22,8 @@ const Chart = () => {
     let details = clear
 
     useEffect(() => {
-        getDates()
-    })
+        getCurrentEventDate()
+    }, [])
 
     const getCurrentEventDate = () => {
         firebase.firestore()
@@ -40,7 +40,7 @@ const Chart = () => {
             })
     }
 
-    const getDates = () => {
+    getDates = () => {
         firebase.firestore()
             .collection('events')
             .orderBy('end', 'desc')
@@ -52,11 +52,14 @@ const Chart = () => {
                             dates.push(documentSnapshot['date'])
                         })
                     }
+
                 }
             })
+        // getCurrentEventDate()
     }
 
-    if (eventDate == '') { getCurrentEventDate() }
+
+    if (dates.length == 0) { getDates() }
 
     const getTotalAttendance = (date) => {
         setEventDate(date)
@@ -66,12 +69,17 @@ const Chart = () => {
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
+
                     setAttend(documentSnapshot.data()['attendance'].length);
                     setAbsent(documentSnapshot.data()['absent'].length);
                     setSickLeave(documentSnapshot.data()['sick_leave'].length);
                     setAnnualLeave(documentSnapshot.data()['annual_leave'].length);
                     setTotalAssistance(documentSnapshot.data()['attendance'].length + documentSnapshot.data()['absent'].length + documentSnapshot.data()['sick_leave'].length + documentSnapshot.data()['annual_leave'].length);
-                    setViewChart(true)
+                    if (documentSnapshot.data()['attendance'].length > 0 || documentSnapshot.data()['absent'].length > 0 || documentSnapshot.data()['sick_leave'].length > 0 || documentSnapshot.data()['annual_leave'].length > 0) {
+                        setViewChart(true)
+                    } else {
+                        setViewChart(false)
+                    }
                     setClear([])
                     documentSnapshot.data()['attendance'].forEach(id => {
                         employeeDetails(id)
@@ -96,10 +104,10 @@ const Chart = () => {
     const alPercent = Math.round(annualLeave / totalAssitance * 100)
 
     const graphicData = [
-        { x: `Attend ${attend}`, y: attendPercent },
-        { x: `Absent ${absent}`, y: absentPercent },
-        { x: `Sick ${sickLeave}`, y: slPercent },
-        { x: `On Leave ${alPercent} %`, y: alPercent }
+        { x: `${attendPercent}%`, y: attendPercent },
+        { x: `${absentPercent}%`, y: absentPercent },
+        { x: `${slPercent}%`, y: slPercent },
+        { x: `${alPercent}%`, y: alPercent }
     ]
 
 
@@ -170,9 +178,11 @@ const Chart = () => {
                             data={graphicData}
                             width={Dimensions.get('window').width}
                             style={{
-                                width: '90%',
-                                labels: { fontSize: 10, fill: "black" }
+                                width: '100%',
+                                labels: { fill: "white", fontSize: 20, fontWeight: "light" }
                             }}
+                            labelRadius={({ innerRadius }) => innerRadius + 60}
+                            innerRadius={20}
                             colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
                         />
                         <FlatList
@@ -181,7 +191,7 @@ const Chart = () => {
                             keyExtractor={item => item.id}
                         />
                     </>
-                ) : null
+                ) : <Text>No registered data yet for the event {eventDate}</Text>
             }
         </View >
     )

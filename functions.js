@@ -145,7 +145,10 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
             wifi_name: 'test_wifi',
             status_id: '1',
             title: title,
-            attendance: []
+            attendance: [],
+            attend: [],
+            sick_leave: [],
+            annual_leave: [],
         })
         .then(() => {
             Alert.alert('Event Created', 'New event has been created', [
