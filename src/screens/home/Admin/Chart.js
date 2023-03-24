@@ -34,11 +34,6 @@ const Chart = () => {
                     const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
                     if (res.length > 0) {
                         setEventDate(res[0]['date'])
-
-                        setAttend(0)
-                        setAbsent(0)
-                        setSickLeave(0)
-                        setAnnualLeave(0)
                         getTotalAttendance(res[0]['date'])
                     }
                 }
@@ -60,7 +55,7 @@ const Chart = () => {
 
                 }
             })
-        // getCurrentEventDate()
+        getCurrentEventDate()
     }
 
 
@@ -74,17 +69,12 @@ const Chart = () => {
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
-
                     setAttend(documentSnapshot.data()['attendance'].length);
                     setAbsent(documentSnapshot.data()['absent'].length);
                     setSickLeave(documentSnapshot.data()['sick_leave'].length);
                     setAnnualLeave(documentSnapshot.data()['annual_leave'].length);
                     setTotalAssistance(documentSnapshot.data()['attendance'].length + documentSnapshot.data()['absent'].length + documentSnapshot.data()['sick_leave'].length + documentSnapshot.data()['annual_leave'].length);
-                    if (documentSnapshot.data()['attendance'].length > 0 || documentSnapshot.data()['absent'].length > 0 || documentSnapshot.data()['sick_leave'].length > 0 || documentSnapshot.data()['annual_leave'].length > 0) {
-                        setViewChart(true)
-                    } else {
-                        setViewChart(false)
-                    }
+                    setViewChart(true)
                     setClear([])
                     documentSnapshot.data()['attendance'].forEach(id => {
                         employeeDetails(id)
@@ -149,7 +139,7 @@ const Chart = () => {
 
             <SelectList
                 data={dates}
-                setSelected={setEventDate => getTotalAttendance(setEventDate)}
+                setSelected={setEventDate => { getTotalAttendance(setEventDate), setViewChart(false) }}
                 placeholder={eventDate}
                 inputStyles={{
                     color: "#666",
