@@ -146,7 +146,6 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
             status_id: '1',
             title: title,
             attendance: [],
-            attend: [],
             sick_leave: [],
             annual_leave: [],
         })
@@ -205,4 +204,37 @@ export const cancelEvent = async (id) => {
             deleted = true
         })
     return deleted
+}
+
+export const getDates = async () => {
+    let data = []
+    await new firebase.firestore()
+        .collection('events')
+        .orderBy('end', 'desc')
+        .then(querySnapshot => {
+            querySnapshot.forEach(docSnapshot => {
+                console.log(docSnapshot.data()['end'])
+                // locations.push({ key: `${documentSnapshot.id}`, value: `${documentSnapshot.data()["name"]}` });
+            });
+        });
+    // .onSnapshot({
+    //     next: querySnapshot => {
+    //         const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
+    //         if (res.length > 0) {
+    //             res.forEach(documentSnapshot => {
+    //                 data.push(documentSnapshot['date'])
+    //             })
+    //         }
+    //     }
+    // })
+
+    // firebase.firestore()
+    //     .collection('locations')
+    //     .get()
+    //     .then(querySnapshot => {
+    //         querySnapshot.forEach(documentSnapshot => {
+    //             locations.push({ key: `${documentSnapshot.id}`, value: `${documentSnapshot.data()["name"]}` });
+    //         });
+    //     });
+    // return data
 }

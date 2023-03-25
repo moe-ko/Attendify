@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Text, View, Dimensions, FlatList, Button, TouchableOpacity } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
@@ -8,6 +8,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { setDate } from 'date-fns'
 import { ListItem, Avatar } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
+// import { getDates } from '../../../../functions'
 
 const Chart = () => {
     const [eventDate, setEventDate] = useState('')
@@ -18,71 +19,57 @@ const Chart = () => {
     const [totalAssitance, setTotalAssistance] = useState(0)
     const [viewChart, setViewChart] = useState(false)
     const [clear, setClear] = useState([])
-    const dates = []
+    const [dates, setDates] = useState()
     let details = clear
 
     useEffect(() => {
-        getCurrentEventDate()
-    })
+        if (eventDate == '') {
+            getCurrentEventDate()
+        } else {
+            getTotalAttendance(eventDate)
+        }
+    }, [eventDate])
 
-    const getCurrentEventDate = () => {
+    getCurrentEventDate = async () => {
         firebase.firestore()
             .collection('events')
             .orderBy('end', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
-                    const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
+                    const res = querySnapshot.docs.map(docSnapshot => ({ key: docSnapshot.data()['end'], value: docSnapshot.data()['end'] }))
                     if (res.length > 0) {
-                        setEventDate(res[0]['date'])
-                        getTotalAttendance(res[0]['date'])
+                        setDates(res)
+                        getTotalAttendance(res[0]['key'])
                     }
                 }
             })
     }
 
-    getDates = () => {
+    getTotalAttendance = (date) => {
         firebase.firestore()
-            .collection('events')
-            .orderBy('end', 'desc')
-            .onSnapshot({
-                next: querySnapshot => {
-                    const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
-                    if (res.length > 0) {
-                        res.forEach(documentSnapshot => {
-                            dates.push(documentSnapshot['date'])
-                        })
-                    }
-
-                }
-            })
-        getCurrentEventDate()
-    }
-
-
-    if (dates.length == 0) { getDates() }
-
-    const getTotalAttendance = (date) => {
-        setEventDate(date)
-        const subscriber = firebase.firestore()
             .collection('events')
             .where('end', '==', date)
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
-                    setAttend(documentSnapshot.data()['attendance'].length);
-                    setAbsent(documentSnapshot.data()['absent'].length);
-                    setSickLeave(documentSnapshot.data()['sick_leave'].length);
-                    setAnnualLeave(documentSnapshot.data()['annual_leave'].length);
-                    setTotalAssistance(documentSnapshot.data()['attendance'].length + documentSnapshot.data()['absent'].length + documentSnapshot.data()['sick_leave'].length + documentSnapshot.data()['annual_leave'].length);
+                    const attendance = documentSnapshot.data()['attendance'].length
+                    const absent = documentSnapshot.data()['absent'].length
+                    const sl = documentSnapshot.data()['sick_leave'].length
+                    const al = documentSnapshot.data()['annual_leave'].length
+                    setAttend(attendance)
+                    setAbsent(absent)
+                    setSickLeave(sl)
+                    setAnnualLeave(al)
+                    setTotalAssistance(attendance + absent + sl + al)
                     setViewChart(true)
                     setClear([])
                     documentSnapshot.data()['attendance'].forEach(id => {
-                        employeeDetails(id)
+                        return employeeDetails(id)
                     })
                 });
             });
-        return () => subscriber();
     }
+
     employeeDetails = (id) => {
         const subscriber = firebase.firestore()
             .collection('employees')
@@ -133,13 +120,12 @@ const Chart = () => {
         </ListItem.Swipeable>
     )
 
-        ;
     return (
-        <View>
 
+        <View>
             <SelectList
                 data={dates}
-                setSelected={setEventDate => { getTotalAttendance(setEventDate), setViewChart(false) }}
+                setSelected={selectedDate => { setEventDate(selectedDate) }}
                 placeholder={eventDate}
                 inputStyles={{
                     color: "#666",
