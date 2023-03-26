@@ -21,7 +21,7 @@ const Chart = () => {
     const [viewDetails, setViewDetails] = useState(false)
     const [clear, setClear] = useState([])
     const [dates, setDates] = useState()
-    let details = clear
+    let employees = clear
 
     useEffect(() => {
         if (eventDate == '') {
@@ -76,7 +76,7 @@ const Chart = () => {
             .collection('employees')
             .doc(id)
             .onSnapshot(documentSnapshot => {
-                details.push({ id: id, name: `${documentSnapshot.data()['full_name']}`, avatar: `${documentSnapshot.data()['avatar']}` })
+                employees.push({ id: id, name: `${documentSnapshot.data()['full_name']}`, avatar: `${documentSnapshot.data()['avatar']}` })
             });
         return () => subscriber();
     }
@@ -158,7 +158,7 @@ const Chart = () => {
             </View>
         </View>
     );
-    console.log(details)
+
     return (
         <View>
             <SelectList
@@ -220,7 +220,7 @@ const Chart = () => {
                             </View>
 
                             <FlatList
-                                data={details}
+                                data={employees}
                                 renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} />}
                                 keyExtractor={item => item.id}
                             />
