@@ -158,7 +158,7 @@ const Chart = () => {
             </View>
         </View>
     );
-
+    console.log(details)
     return (
         <View>
             <SelectList
