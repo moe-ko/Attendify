@@ -1,13 +1,14 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Text, View, Dimensions, FlatList, Button, TouchableOpacity } from 'react-native'
+import { Text, View, Dimensions, FlatList, Button, TouchableOpacity, ScrollView } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
 import { COLORS } from '../../..'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { setDate } from 'date-fns'
-import { ListItem, Avatar } from '@rneui/themed';
+import { ListItem, Avatar, Chip } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
+// import { ScrollView } from 'react-native-gesture-handler'
 // import { getDates } from '../../../../functions'
 
 const Chart = () => {
@@ -17,7 +18,7 @@ const Chart = () => {
     const [sickLeave, setSickLeave] = useState(0)
     const [annualLeave, setAnnualLeave] = useState(0)
     const [totalAssitance, setTotalAssistance] = useState(0)
-    const [viewChart, setViewChart] = useState(false)
+    const [viewDetails, setViewDetails] = useState(false)
     const [clear, setClear] = useState([])
     const [dates, setDates] = useState()
     let details = clear
@@ -61,7 +62,7 @@ const Chart = () => {
                     setSickLeave(sl)
                     setAnnualLeave(al)
                     setTotalAssistance(attendance + absent + sl + al)
-                    setViewChart(true)
+                    setViewDetails(true)
                     setClear([])
                     documentSnapshot.data()['attendance'].forEach(id => {
                         return employeeDetails(id)
@@ -92,9 +93,9 @@ const Chart = () => {
         { x: `${alPercent}%`, y: alPercent }
     ]
 
-
     const Item = ({ id, name, avatar }) => (
         <ListItem.Swipeable
+            bottomDivider
             rightWidth={90}
             minSlideWidth={10}
             rightContent={(action) => (
@@ -120,8 +121,45 @@ const Chart = () => {
         </ListItem.Swipeable>
     )
 
-    return (
+    const BoxInfo = ({ bg, label }) => (
+        <View
+            style={{
+                flex: 1,
+                flexWrap: 'wrap',
+                marginBottom: 5,
+                flexDirection: 'column',
+                display: 'flex',
+                width: '100%',
+            }}>
+            <View
+                style={{
+                    width: '90%',
+                    padding: 8,
+                    borderRadius: 4,
+                    marginTop: 8,
+                    backgroundColor: `${bg}`,
+                }}>
 
+            </View>
+            <View
+                style={{
+                    alignItems: 'center',
+                    text: 'center',
+                    margin: 'auto',
+                }}>
+                <Text
+                    style={{
+                        fontSize: 16,
+                        fontWeight: '400',
+                        text: 'center',
+                    }}>
+                    {label}
+                </Text>
+            </View>
+        </View>
+    );
+
+    return (
         <View>
             <SelectList
                 data={dates}
@@ -153,24 +191,40 @@ const Chart = () => {
                 }}
             />
             {
-                viewChart ? (
+                viewDetails ? (
                     <>
-                        <VictoryPie
-                            data={graphicData}
-                            width={Dimensions.get('window').width}
-                            style={{
-                                width: '100%',
-                                labels: { fill: "white", fontSize: 20, fontWeight: "light" }
-                            }}
-                            labelRadius={({ innerRadius }) => innerRadius + 60}
-                            innerRadius={20}
-                            colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
-                        />
-                        <FlatList
-                            data={details}
-                            renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} />}
-                            keyExtractor={item => item.id}
-                        />
+                        <ScrollView>
+                            <VictoryPie
+                                data={graphicData}
+                                width={Dimensions.get('window').width}
+                                style={{
+                                    width: '100%',
+                                    labels: { fill: "white", fontSize: 20, fontWeight: "light" }
+                                }}
+                                labelRadius={({ innerRadius }) => innerRadius + 60}
+                                innerRadius={20}
+                                colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
+                            />
+                            <View
+                                style={{
+                                    flex: 1,
+                                    paddingHorizontal: 10,
+                                    flexDirection: 'row',
+                                    alignContent: 'space-between',
+                                    marginBottom: 20
+                                }}>
+                                <BoxInfo bg={COLORS.primary} label='Attend' />
+                                <BoxInfo bg={COLORS.lightblue700} label='Absent' />
+                                <BoxInfo bg={COLORS.lightblue600} label='Sick' />
+                                <BoxInfo bg={COLORS.lightblue500} label='Holiday' />
+                            </View>
+
+                            <FlatList
+                                data={details}
+                                renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} />}
+                                keyExtractor={item => item.id}
+                            />
+                        </ScrollView>
                     </>
                 ) : <Text>No registered data yet for the event {eventDate}</Text>
             }
