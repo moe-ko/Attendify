@@ -15,10 +15,10 @@ export const checkIpAddress = () => {
     });
 }
 
-export const handleSignUp = (navigation, empId, email, password, name, subunitSelected, permissionId, statusId) => {
+export const handleSignUp = (navigation, empId, email, password, name, subunitSelected) => {
     firebase.auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => { addEmployeeDetails(empId, email, name, subunitSelected, permissionId, statusId) })
+        .then(() => { addEmployeeDetails(empId, email, name, subunitSelected) })
         .then(() => { navigation })
         .catch(error => {
             console.log(error)

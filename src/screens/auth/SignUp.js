@@ -9,7 +9,7 @@ import tailwind from '../../constants/tailwind'
 const SignUp = ({ navigation }) => {
 
     const [empId, setEmpId] = useState('');
-    const [name, setName] = useState('');
+    const [name, setName] = useState(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -130,7 +130,7 @@ const SignUp = ({ navigation }) => {
                     <View className={`${tailwind.viewWrapper}`}>
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
-                            onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
+                            onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
                             disabled={(!email.trim() || !password.trim())}
                         >
                             <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
