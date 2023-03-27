@@ -13,5 +13,9 @@ export default {
 
     CHART: 'Chart',
     CHART_TAB: 'Chart',
-    CHART_DRAWER: 'Chart'
+    CHART_DRAWER: 'Chart',
+
+    EMPLOYEES: 'Employees',
+    EMPLOYEES_TAB: 'Employees',
+    EMPLOYEES_DRAWER: 'Employees'
 }

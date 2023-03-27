@@ -6,6 +6,7 @@ import { Home, Profile, } from "../screens";
 import Icon from 'react-native-vector-icons/Ionicons'
 import Chart from "../screens/home/Admin/Chart";
 import { ROUTES } from "..";
+import Employees from "../screens/home/Admin/Employees";
 
 const Tab = createBottomTabNavigator();
 
@@ -23,15 +24,17 @@ const BottomTabNavigator = () => {
                         iconName = focused ? 'person-circle-sharp' : 'person-circle-outline'
                     } else if (route.name == ROUTES.CHART_TAB) {
                         iconName = focused ? 'stats-chart' : 'stats-chart-outline'
+                    } else if (route.name == ROUTES.EMPLOYEES_TAB) {
+                        iconName = focused ? 'people' : 'people-outline'
                     }
                     return <Icon name={iconName} size={22} color={color} />
                 }
             })}
-
         >
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.CHART_TAB} component={Chart} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.EMPLOYEES_TAB} component={Employees} options={{ headerShown: false }} />
         </Tab.Navigator>
     );
 };

@@ -22,11 +22,10 @@ const MenuDrawerNavigator = () => {
                 drawerActiveTintColor: 'white'
             }}
         >
-
             <Drawer.Screen name={ROUTES.HOME} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
-
             <Drawer.Screen name={ROUTES.CHART} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
             <Drawer.Screen name={ROUTES.PROFILE} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
+            <Drawer.Screen name={ROUTES.EMPLOYEES} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
         </Drawer.Navigator>
 
     )
