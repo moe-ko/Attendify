@@ -5,7 +5,7 @@ import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 import tailwind from '../../../constants/tailwind';
 import { ScrollView } from 'react-native-gesture-handler';
-import { COLORS } from '../../..';
+import { COLORS, ROUTES } from '../../..';
 
 const Employees = ({ navigation }) => {
     const [filteredData, setFilteredData] = useState([])
@@ -65,7 +65,7 @@ const Employees = ({ navigation }) => {
             icon = 'rocket-outline'
         }
         return (
-            <TouchableOpacity onPress={() => { navigation.navigate('Employee') }}>
+            <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE) }}>
                 <ListItem bottomDivider>
                     <Avatar rounded source={{ uri: `${data['avatar']}` }} />
                     <ListItem.Content>

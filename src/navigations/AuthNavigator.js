@@ -23,10 +23,11 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen name='Sign In' component={SignIn} options={optionsHeaderWithHeight} />
             <Stack.Screen name='Sign Up' component={SignUp} options={optionsHeader} />
             <Stack.Screen name='Forgotpassword' component={Forgotpassword} options={optionsHeader} />
-            <Stack.Screen name={ROUTES.HOME} component={BottomTabNavigator} options={optionsHeader} />
             <Stack.Screen name='Checkin' component={Checkin} options={optionsHeaderWithHeight} />
             <Stack.Screen name='EnterOTP' component={EnterOTP} options={optionsHeader} />
             <Stack.Screen name='ResetPassword' component={ResetPassword} options={optionsHeader} />
+            {/* HOME STACK */}
+            <Stack.Screen name={ROUTES.HOME} component={BottomTabNavigator} options={{ headerShown: false }} />
         </Stack.Navigator>
     );
 };

@@ -2,6 +2,10 @@ export default {
     SIGNIN: 'Sign In',
     SIGNUP: 'Sign Up',
     WELCOME: 'Welcome',
+    FORGOT_PASS: 'Forgotpassword',
+    RESET_PASS: 'ResetPassword',
+    ENTER_OTP: 'EnterOTP',
+    CHECKIN: 'Checkin',
 
     HOME: 'Home',
     HOME_TAB: 'Home',
@@ -21,5 +25,7 @@ export default {
 
     EMPLOYEE: 'Employee',
     EMPLOYEE_TAB: 'Employee',
-    EMPLOYEE_DRAWER: 'Employee'
+    EMPLOYEE_DRAWER: 'Employee',
+
+
 }

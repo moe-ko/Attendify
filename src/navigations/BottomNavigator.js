@@ -17,7 +17,7 @@ const BottomTabNavigator = () => {
                 headerShown: false,
                 tabBarShowLabel: false,
                 tabBarActiveTintColor: '#62ABEF',
-                tabBarIcon: ({ color, size, focused }) => {
+                tabBarIcon: ({ color, focused }) => {
                     let iconName;
                     if (route.name == ROUTES.HOME_TAB) {
                         iconName = focused ? 'ios-home-sharp' : 'ios-home-outline'
@@ -28,7 +28,7 @@ const BottomTabNavigator = () => {
                     } else if (route.name == ROUTES.EMPLOYEES_NAVIGATOR) {
                         iconName = focused ? 'people' : 'people-outline'
                     }
-                    return <Icon name={iconName} size={22} color={color} />
+                    return <Icon name={iconName} size={30} color={color} />
                 }
             })}
         >

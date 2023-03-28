@@ -7,9 +7,8 @@ import { ROUTES } from '..'
 const Stack = createStackNavigator()
 
 const EmployeesNavigator = () => {
-    console.log(Stack)
     return (
-        <Stack.Navigator screenOptions={{}} initialRouteName={ROUTES.EMPLOYEES}>
+        <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName={ROUTES.EMPLOYEES_DRAWER}>
             <Stack.Screen name={ROUTES.EMPLOYEES} component={Employees} />
             <Stack.Screen name={ROUTES.EMPLOYEE} component={Employee} />
         </Stack.Navigator>

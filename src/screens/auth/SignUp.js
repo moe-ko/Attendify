@@ -5,6 +5,7 @@ import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
+import { ROUTES } from '../..'
 
 const SignUp = ({ navigation }) => {
 
@@ -140,7 +141,7 @@ const SignUp = ({ navigation }) => {
                         <Text className={`text-center`}>Already an account?
                         </Text>
                         <TouchableOpacity
-                            onPress={() => { navigation.navigate('Sign In') }}>
+                            onPress={() => { navigation.navigate(ROUTES.SIGNIN) }}>
                             <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
                         </TouchableOpacity>
                     </View>
