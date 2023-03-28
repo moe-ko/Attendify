@@ -52,17 +52,19 @@ const Employees = ({ navigation }) => {
 
     const Item = ({ id, data }) => {
         let icon = ''
-        if (data['status_id'] == '1') {
-            icon = 'checkmark'
-        }
-        if (data['status_id'] == '0') {
-            icon = 'close'
-        }
-        if (data['status_id'] == '2') {
-            icon = 'pulse-outline'
-        }
-        if (data['status_id'] == '3') {
-            icon = 'rocket-outline'
+        switch (data['status_id']) {
+            case '0':
+                icon = 'close'
+                break;
+            case '1':
+                icon = 'checkmark'
+                break;
+            case '2':
+                icon = 'pulse-outline'
+                break;
+            case '3':
+                icon = 'rocket-outline'
+                break;
         }
         return (
             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE) }}>
