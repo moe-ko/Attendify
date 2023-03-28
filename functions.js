@@ -147,6 +147,7 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
             status_id: '1',
             title: title,
             attendance: [],
+            absent: [],
             sick_leave: [],
             annual_leave: [],
         })
