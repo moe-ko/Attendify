@@ -135,7 +135,7 @@ const Chart = () => {
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
                 </TouchableOpacity>
             )}>
-                <Avatar rounded source={{ uri: `${avatar}` }} />
+                <Avatar rounded size={50} source={{ uri: `${avatar}` }} />
                 <ListItem.Content>
                     <ListItem.Title>{name}</ListItem.Title>
                     <ListItem.Subtitle>{id}</ListItem.Subtitle>

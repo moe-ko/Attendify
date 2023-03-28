@@ -67,7 +67,7 @@ const Employees = ({ navigation }) => {
         return (
             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE) }}>
                 <ListItem bottomDivider>
-                    <Avatar rounded source={{ uri: `${data['avatar']}` }} />
+                    <Avatar rounded size={50} source={{ uri: `${data['avatar']}` }} />
                     <ListItem.Content>
                         <ListItem.Title>{data['full_name']}</ListItem.Title>
                         <ListItem.Subtitle style={{ color: 'gray' }}>{id}</ListItem.Subtitle>

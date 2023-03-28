@@ -1,22 +1,26 @@
 import React from 'react'
 import { createDrawerNavigator } from '@react-navigation/drawer'
 import BottomTabNavigator from './BottomNavigator';
-import { ROUTES } from '..';
+import { COLORS, ROUTES } from '..';
+import Icon from 'react-native-vector-icons/Ionicons'
+import CustomDrawerComponent from '../../components/CustomDrawerComponent';
 
 const Drawer = createDrawerNavigator();
 
-const MenuDrawerNavigator = () => {
+const MenuDrawerNavigator = ({ nav }) => {
+    const drawerIcon = (icon) => {
+        return {
+            drawerIcon: ({ focused, color }) => (
+                <Icon name={icon} size={18} color={color} />
+            )
+        }
+    }
     return (
-        <Drawer.Navigator
-            screenOptions={{
-                // headerShown: false,
-                drawerActiveBackgroundColor: 'red',
-                drawerActiveTintColor: 'white'
-            }}
-        >
-            <Drawer.Screen name={ROUTES.HOME_DRAWER} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
-            <Drawer.Screen name={ROUTES.CHART_DRAWER} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
-            <Drawer.Screen name={ROUTES.PROFILE_DRAWER} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
+        <Drawer.Navigator drawerContent={props => <CustomDrawerComponent {...props} />}
+            screenOptions={{ headerShown: false, drawerActiveBackgroundColor: COLORS.primary, drawerActiveTintColor: 'white' }} >
+            <Drawer.Screen name={ROUTES.HOME_DRAWER} component={BottomTabNavigator} options={drawerIcon('ios-home-sharp')} />
+            <Drawer.Screen name={ROUTES.CHART_DRAWER} component={BottomTabNavigator} options={drawerIcon('stats-chart')} />
+            <Drawer.Screen name={ROUTES.PROFILE_DRAWER} component={BottomTabNavigator} options={drawerIcon('person-circle-sharp')} />
         </Drawer.Navigator>
     )
 }
