@@ -5,8 +5,9 @@ import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 import tailwind from '../../../constants/tailwind';
 import { ScrollView } from 'react-native-gesture-handler';
+import { COLORS } from '../../..';
 
-const Employees = () => {
+const Employees = ({ navigation }) => {
     const [filteredData, setFilteredData] = useState([])
     const [masterData, setMasterData] = useState([])
     const [search, setSearch] = useState('')
@@ -50,24 +51,30 @@ const Employees = () => {
     }
 
     const Item = ({ id, data }) => {
+        let icon = ''
+        if (data['status_id'] == '1') {
+            icon = 'checkmark'
+        }
+        if (data['status_id'] == '0') {
+            icon = 'close'
+        }
+        if (data['status_id'] == '2') {
+            icon = 'pulse-outline'
+        }
+        if (data['status_id'] == '3') {
+            icon = 'rocket-outline'
+        }
         return (
-            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={(action) => (
-                <TouchableOpacity
-                    style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
-                // onPress={() => { setIsVisible(true), setEmployeeSelected(id), setCurrentStatus(status) }}
-                >
-                    <Icon name="ellipsis-horizontal" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
-                </TouchableOpacity>
-            )}>
-                <Avatar rounded source={{ uri: `${data['avatar']}` }} />
-                <ListItem.Content>
-                    <ListItem.Title>{data['full_name']}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-                {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
+            <TouchableOpacity onPress={() => { navigation.navigate('Employee') }}>
+                <ListItem bottomDivider>
+                    <Avatar rounded source={{ uri: `${data['avatar']}` }} />
+                    <ListItem.Content>
+                        <ListItem.Title>{data['full_name']}</ListItem.Title>
+                        <ListItem.Subtitle style={{ color: 'gray' }}>{id}</ListItem.Subtitle>
+                    </ListItem.Content>
+                    <Icon name={icon} size={30} color={COLORS.primary} />
+                </ListItem>
+            </TouchableOpacity>
         )
     }
 

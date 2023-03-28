@@ -16,6 +16,10 @@ export default {
     CHART_DRAWER: 'Chart',
 
     EMPLOYEES: 'Employees',
-    EMPLOYEES_TAB: 'Employees',
-    EMPLOYEES_DRAWER: 'Employees'
+    EMPLOYEES_NAVIGATOR: 'Employees',
+    EMPLOYEES_DRAWER: 'Employees',
+
+    EMPLOYEE: 'Employee',
+    EMPLOYEE_TAB: 'Employee',
+    EMPLOYEE_DRAWER: 'Employee'
 }

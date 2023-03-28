@@ -6,7 +6,7 @@ import { Home, Profile, } from "../screens";
 import Icon from 'react-native-vector-icons/Ionicons'
 import Chart from "../screens/home/Admin/Chart";
 import { ROUTES } from "..";
-import Employees from "../screens/home/Admin/Employees";
+import EmployeesNavigator from "./EmployeesNavigator";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,17 +14,18 @@ const BottomTabNavigator = () => {
     return (
         <Tab.Navigator
             screenOptions={({ route }) => ({
+                headerShown: false,
                 tabBarShowLabel: false,
                 tabBarActiveTintColor: '#62ABEF',
                 tabBarIcon: ({ color, size, focused }) => {
                     let iconName;
                     if (route.name == ROUTES.HOME_TAB) {
                         iconName = focused ? 'ios-home-sharp' : 'ios-home-outline'
-                    } else if (route.name == ROUTES.PROFILE_TAB) {
+                    } else if (route.name == ROUTES.PROFILE) {
                         iconName = focused ? 'person-circle-sharp' : 'person-circle-outline'
-                    } else if (route.name == ROUTES.CHART_TAB) {
+                    } else if (route.name == ROUTES.CHART) {
                         iconName = focused ? 'stats-chart' : 'stats-chart-outline'
-                    } else if (route.name == ROUTES.EMPLOYEES_TAB) {
+                    } else if (route.name == ROUTES.EMPLOYEES_NAVIGATOR) {
                         iconName = focused ? 'people' : 'people-outline'
                     }
                     return <Icon name={iconName} size={22} color={color} />
@@ -32,9 +33,9 @@ const BottomTabNavigator = () => {
             })}
         >
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.CHART_TAB} component={Chart} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.EMPLOYEES_TAB} component={Employees} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ headerShown: false }} />
         </Tab.Navigator>
     );
 };
