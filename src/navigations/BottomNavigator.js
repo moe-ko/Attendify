@@ -44,10 +44,10 @@ const BottomTabNavigator = () => {
 
             })}
         >
-            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} />
-            <Tab.Screen name={ROUTES.CHART} component={Chart} />
-            <Tab.Screen name={ROUTES.PROFILE} component={Profile} />
-            <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} />
+            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ title: 'Dashboard' }} />
+            <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ title: 'Chart' }} />
+            <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: 'Profile' }} />
+            <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ title: 'Employees' }} />
         </Tab.Navigator>
     );
 };
