@@ -31,6 +31,7 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
         .collection('employees')
         .doc(empId)
         .set({
+            employee_id: empId,
             createdAt: format(new Date(), "dd MMMM yyyy - H:mm:ss"),
             email: email,
             full_name: name,
