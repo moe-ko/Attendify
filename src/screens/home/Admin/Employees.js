@@ -67,7 +67,7 @@ const Employees = ({ navigation }) => {
                 break;
         }
         return (
-            <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE) }}>
+            <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE, data) }}>
                 <ListItem bottomDivider>
                     <Avatar rounded size={50} source={{ uri: `${data['avatar']}` }} />
                     <ListItem.Content>
@@ -97,9 +97,7 @@ const Employees = ({ navigation }) => {
                     <FlatList
                         data={filteredData}
                         keyExtractor={item => item['data']['employee_id']}
-                        renderItem={(item) =>
-                            <Item id={item.item['data']['employee_id']} data={item.item['data']} />
-                        }
+                        renderItem={(item) => <Item id={item.item['data']['employee_id']} data={item.item['data']} />}
                     />
                 </ScrollView>
             </View>
