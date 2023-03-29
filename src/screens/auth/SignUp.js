@@ -5,11 +5,12 @@ import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
+import { ROUTES } from '../..'
 
 const SignUp = ({ navigation }) => {
 
     const [empId, setEmpId] = useState('');
-    const [name, setName] = useState('');
+    const [name, setName] = useState(null);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -130,7 +131,7 @@ const SignUp = ({ navigation }) => {
                     <View className={`${tailwind.viewWrapper}`}>
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
-                            onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
+                            onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
                             disabled={(!email.trim() || !password.trim())}
                         >
                             <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
@@ -140,7 +141,7 @@ const SignUp = ({ navigation }) => {
                         <Text className={`text-center`}>Already an account?
                         </Text>
                         <TouchableOpacity
-                            onPress={() => { navigation.navigate('Sign In') }}>
+                            onPress={() => { navigation.navigate(ROUTES.SIGNIN) }}>
                             <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
                         </TouchableOpacity>
                     </View>

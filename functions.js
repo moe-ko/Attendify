@@ -15,10 +15,10 @@ export const checkIpAddress = () => {
     });
 }
 
-export const handleSignUp = (navigation, empId, email, password, name, subunitSelected, permissionId, statusId) => {
+export const handleSignUp = (navigation, empId, email, password, name, subunitSelected) => {
     firebase.auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => { addEmployeeDetails(empId, email, name, subunitSelected, permissionId, statusId) })
+        .then(() => { addEmployeeDetails(empId, email, name, subunitSelected) })
         .then(() => { navigation })
         .catch(error => {
             console.log(error)
@@ -31,6 +31,7 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
         .collection('employees')
         .doc(empId)
         .set({
+            employee_id: empId,
             createdAt: format(new Date(), "dd MMMM yyyy - H:mm:ss"),
             email: email,
             full_name: name,
@@ -146,6 +147,7 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
             status_id: '1',
             title: title,
             attendance: [],
+            absent: [],
             sick_leave: [],
             annual_leave: [],
         })

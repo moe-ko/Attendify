@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   Text,
   View,
@@ -10,18 +10,19 @@ import {
 import tailwind from '../../constants/tailwind'
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ROUTES } from '../..';
 
-const EnterOTP = ({navigation}) => {
-  resendOTP = () => {};
- 
-    return (
-        <KeyboardAvoidingView>
-            <View className={`${tailwind.containerWrapper}bg-[#ECF0F3] items-center h-full`}>
-         <View>
-         <Pressable onPress={() => navigation.goBack(null)}>
-                        {/* <SvgIcon icon={'back'} width={30} height={30} />*/}
+const EnterOTP = ({ navigation }) => {
+  resendOTP = () => { };
+
+  return (
+    <KeyboardAvoidingView>
+      <View className={`${tailwind.containerWrapper}bg-[#ECF0F3] items-center h-full`}>
+        <View>
+          <Pressable onPress={() => navigation.goBack(null)}>
+            {/* <SvgIcon icon={'back'} width={30} height={30} />*/}
           </Pressable>
-         </View>
+        </View>
         <View>
           {/*<View style={styles.loginIcon}>
                     {/*<SvgIcon icon={'enterOtp'} width={280} height={280} />
@@ -40,22 +41,22 @@ const EnterOTP = ({navigation}) => {
               <OTPInputView
                 pinCount={4}
                 autoFocusOnLoad
-                style={{width: '80%', height: 70}}
-                codeInputFieldStyle={{color: '#62ABEF'}}
+                style={{ width: '80%', height: 70 }}
+                codeInputFieldStyle={{ color: '#62ABEF' }}
                 onCodeFilled={code =>
-                  navigation.navigate('ResetPassword')
+                  navigation.navigate(ROUTES.RESET_PASS)
                 }
               />
-                 <TouchableOpacity onPress={() => this.resendOTP()} className={`${tailwind.buttonBlue} mt-7`}>
+              <TouchableOpacity onPress={() => this.resendOTP()} className={`${tailwind.buttonBlue} mt-7`}>
                 <Text className={`${tailwind.buttonWhiteText}`}>Resend OTP</Text>
               </TouchableOpacity>
             </View>
           </View>
-            </View>
-            </View>
-      </KeyboardAvoidingView>
-    );
-    }
+        </View>
+      </View>
+    </KeyboardAvoidingView>
+  );
+}
 
 
 
@@ -81,7 +82,7 @@ const styles = StyleSheet.create({
   loginLbl: {
     color: '#000',
     fontSize: 40,
-   
+
   },
   forgotDes: {
     position: 'relative',
@@ -89,8 +90,8 @@ const styles = StyleSheet.create({
   },
   forgotDesLbl: {
     color: '#000',
-  
+
   },
- 
+
 });
 export default EnterOTP;

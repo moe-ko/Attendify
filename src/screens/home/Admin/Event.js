@@ -25,11 +25,6 @@ const Event = ({ props }) => {
     const [hasAttended, setHasAttended] = useState(false)
     const [time, setTime] = useState(new Date())
 
-    useEffect(() => {
-        // getEmployees()
-    })
-
-
     eventTimer = (end) => {
         const eventExpirationDate = new Date(end)
         setInterval(() => {

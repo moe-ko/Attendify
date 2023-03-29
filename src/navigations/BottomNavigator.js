@@ -5,33 +5,58 @@ import { Home, Profile, } from "../screens";
 // import Event from "../screens/home/CurrentEvent";
 import Icon from 'react-native-vector-icons/Ionicons'
 import Chart from "../screens/home/Admin/Chart";
-import { ROUTES } from "..";
+import { COLORS, ROUTES } from "..";
+import EmployeesNavigator from "./EmployeesNavigator";
+import { TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
-    return (
-        <Tab.Navigator
-            screenOptions={({ route }) => ({
-                tabBarShowLabel: false,
-                tabBarActiveTintColor: '#62ABEF',
-                tabBarIcon: ({ color, size, focused }) => {
-                    let iconName;
-                    if (route.name == ROUTES.HOME_TAB) {
-                        iconName = focused ? 'ios-home-sharp' : 'ios-home-outline'
-                    } else if (route.name == ROUTES.PROFILE_TAB) {
-                        iconName = focused ? 'person-circle-sharp' : 'person-circle-outline'
-                    } else if (route.name == ROUTES.CHART_TAB) {
-                        iconName = focused ? 'stats-chart' : 'stats-chart-outline'
-                    }
-                    return <Icon name={iconName} size={22} color={color} />
-                }
-            })}
+    const navigation = useNavigation()
 
-        >
-            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.CHART_TAB} component={Chart} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{ headerShown: false }} />
+    const iconName = (route, focused) => {
+        let iconName = '';
+        switch (route.name) {
+            case ROUTES.HOME_TAB:
+                iconName = focused ? 'ios-home-sharp' : 'ios-home-outline'
+                break;
+            case ROUTES.PROFILE:
+                iconName = focused ? 'person-circle-sharp' : 'person-circle-outline'
+                break;
+            case ROUTES.CHART:
+                iconName = focused ? 'stats-chart' : 'stats-chart-outline'
+                break;
+            case ROUTES.EMPLOYEES_NAVIGATOR:
+                iconName = focused ? 'people' : 'people-outline'
+                break;
+        }
+        return iconName
+    }
+
+    const screenOptions = (route) => {
+        return {
+            headerShown: true,
+            tabBarShowLabel: false,
+            tabBarInactiveTintColor: COLORS.inactiveIcon,
+            tabBarActiveTintColor: '#62ABEF',
+            tabBarIcon: ({ color, focused }) => { return <Icon name={iconName(route, focused)} size={30} color={color} /> },
+            headerRight: () => {
+                return (
+                    <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                        <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
+                    </TouchableOpacity>
+                )
+            }
+        }
+    }
+
+    return (
+        <Tab.Navigator screenOptions={({ route }) => (screenOptions(route))} >
+            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ title: 'Dashboard' }} />
+            <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ title: 'Chart' }} />
+            <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: 'Profile' }} />
+            <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ title: 'Employees' }} />
         </Tab.Navigator>
     );
 };
