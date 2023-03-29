@@ -26,7 +26,16 @@ const MenuDrawerNavigator = () => {
             <Drawer.Screen name={ROUTES.HOME} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
 
             <Drawer.Screen name={ROUTES.CHART} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
-            <Drawer.Screen name={ROUTES.PROFILE} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
+            <Drawer.Screen name={ROUTES.PROFILE} component={BottomTabNavigator}
+                options={{
+                    headerShown: true,
+                    headerStyle: {
+                        height: 150,
+                        backgroundColor: '#62ABEF',
+                        elevation: 25
+                    }
+
+                }} />
         </Drawer.Navigator>
 
     )

@@ -31,7 +31,12 @@ const BottomTabNavigator = () => {
         >
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ headerShown: false }} />
             <Tab.Screen name={ROUTES.CHART_TAB} component={Chart} options={{ headerShown: false }} />
-            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile} options={{ headerShown: false }} />
+            <Tab.Screen name={ROUTES.PROFILE_TAB} component={Profile}
+                options={{
+                    headerShown: false,
+
+
+                }} />
         </Tab.Navigator>
     );
 };

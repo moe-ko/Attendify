@@ -5,9 +5,10 @@ import { ROUTES } from "..";
 import BottomTabNavigator from "./BottomNavigator";
 import EnterOTP from "../screens/auth/EnterOTP";
 import Checkin from "../screens/auth/Checkin";
-
+import UserProfile from "../screens/home/UserProfile";
 import Forgotpassword from "../screens/auth/Forgotpassword";
 import ResetPassword from "../screens/auth/ResetPassword";
+
 
 const Stack = createStackNavigator();
 
@@ -111,6 +112,19 @@ const WelcomeStackNavigator = () => {
                 name='ResetPassword'
                 component={ResetPassword}
 
+                options={{
+                    // headerTitle: () => <Header name='Sign Up' />,
+                    headerBackTitleVisible: false,
+                    headerTitleStyle: { display: 'none' },
+                    headerStyle: {
+                        backgroundColor: '#ECF0F3',
+                        elevation: 25,
+                    }
+                }}
+            />
+            <Stack.Screen
+                name='UserProfile'
+                component={UserProfile}
                 options={{
                     // headerTitle: () => <Header name='Sign Up' />,
                     headerBackTitleVisible: false,
