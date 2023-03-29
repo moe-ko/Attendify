@@ -3,6 +3,8 @@ import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
+import tailwind from '../../constants/tailwind'
+
 
 const Profile = ({ navigation }) => {
     const [status, setStatus] = useState('');
@@ -82,37 +84,49 @@ const Profile = ({ navigation }) => {
 
 
     return (
+
         <View>
+        
+            <View className={`${tailwind.containerWrapper2}`}>
+                <View className={`${tailwind.container2}`}>
+                    </View>
             <View>
+            
                 <Image
-                    style={{
-                        width: 50,
-                        height: 50,
-                    }}
+                    className="h-20 w-20 rounded-full mx-auto my-[-80] mb-3"
                     source={{
                         uri: `${avatar}`,
                     }}
 
                 />
             </View>
+                    
+            <View className="py-1 shadow-2xl justify-center items-center">
             <View><Text>User: {name}</Text></View>
-
-            <View><Text>Employee Id: {empId}</Text></View>
-            <View><Text>Email: {email}</Text></View>
-            <View><Text>Unit: {unit} | {subunit}</Text></View>
+            <View className="py-1"><Text>Employee Id: {empId}</Text></View>
+             <View className=" bg-white mb-7 mt-7 rounded-2xl w-96 h-28 shadow-2xl"> 
+                     
+            <View className="flex-row ml-2 mt-7"><Text>Email:    </Text><Text>{email}</Text>
+            </View>
+            <View className="flex-row ml-2 mt-5"><Text>Unit:      </Text><Text>{unit} | {subunit}</Text></View>
+            
+            </View> 
             {permission == '1' ? (
-                <TouchableOpacity onPress={() => { console.log('Make admin') }}>
+                 <TouchableOpacity onPress={() => { console.log('Make admin')}}>
                     <Text>Make user an admin</Text>
-                </TouchableOpacity>
+                 </TouchableOpacity>
             ) : null}
-            <TouchableOpacity onPress={() => { console.log('Link to SeeVee') }}>
-                <Text>SeeVee</Text>
-            </TouchableOpacity>
+               <TouchableOpacity className={`${tailwind.buttonBlue} bg-black w-96 mb-7`} onPress={() => { console.log('Link to SeeVee') }}>
+                 <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
+                 </TouchableOpacity>
 
-            <TouchableOpacity onPress={() => { handleSignOut() }}>
-                <Text>Sign Out</Text>
-            </TouchableOpacity>
-        </View>
+                 <TouchableOpacity  className={`${tailwind.buttonBlue} w-96 mb-7`} onPress={() => { handleSignOut()}}>
+                 <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
+                 </TouchableOpacity>
+            </View>
+            
+            </View>
+            </View>
     )
 }
 
