@@ -166,28 +166,28 @@ const Chart = () => {
         {
             title: 'Attend',
             icon: statusIcon('attendance'),
-            containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
             onPress: () => { currentStatus == 'attendance' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'attendance') }
         },
         {
             title: 'Absent',
             icon: statusIcon('absent'),
-            containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
             onPress: () => { currentStatus == 'absent' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'absent') }
         },
         {
             title: 'Sick',
             icon: statusIcon('sick_leave'),
-            containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
             onPress: () => { currentStatus == 'sick_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'sick_leave') }
         },
         {
             title: 'Holiday',
             icon: statusIcon('annual_leave'),
-            containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
             onPress: () => { currentStatus == 'annual_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'annual_leave') }
         },
-        { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsVisible(false) },
+        { title: 'Cancel', containerStyle: { backgroundColor: 'white', marginBottom: 30, padding: 20, marginHorizontal: 15, borderRadius: 20 }, onPress: () => setIsVisible(false) },
     ];
 
     updateEmployeeStatus = (employeeSelected, currentStatus, newStatus) => {
@@ -322,7 +322,7 @@ const Chart = () => {
             ) : <Text>No registered data yet for the event {eventDate}</Text>}
             <BottomSheet isVisible={isVisible}>
                 {bottomSheetList.map((l, i) => (
-                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
+                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
                         <Icon name={l.icon} size={30} color={COLORS.primary} />
                         <ListItem.Content>
                             <ListItem.Title >{l.title}</ListItem.Title>
