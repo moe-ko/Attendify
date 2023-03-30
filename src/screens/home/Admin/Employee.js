@@ -11,7 +11,8 @@ const Employee = ({ route }) => {
     const [permission, setPermission] = useState(route.params['permission'])
     const [unit, setUnit] = useState('')
     const [subunit, setSubunit] = useState('')
-    const [isVisible, setIsVisible] = useState(false);
+    const [isPermissionVisible, setIsPermissionVisible] = useState(false);
+    const [isUnitVisible, setIsUnitVisible] = useState(false);
 
     useEffect(() => {
         getSubunits(subunitId)
@@ -41,7 +42,7 @@ const Employee = ({ route }) => {
             });
     }
 
-    const bottomSheetList = [
+    const bottomSheetPermission = [
         {
             title: 'Super Admin',
             icon: 'person-add-outline',
@@ -60,7 +61,28 @@ const Employee = ({ route }) => {
             containerStyle: { backgroundColor: permission == 'Associate' ? COLORS.lightblue500 : 'white' },
             onPress: () => { permission == 'Associate' ? '' : updatePermission(route.params['employee_id'], 'Associate') }
         },
-        { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsVisible(false) },
+        { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsPermissionVisible(false) },
+    ];
+    const bottomSheetUnit = [
+        {
+            title: 'Unit',
+            icon: 'person-add-outline',
+            // containerStyle: { backgroundColor: permission == 'Super Admin' ? COLORS.lightblue500 : 'white' },
+            // onPress: () => { permission == 'Super Admin' ? '' : updatePermission(route.params['employee_id'], 'Super Admin') }
+        },
+        {
+            title: 'Unit 2',
+            icon: 'person-outline',
+            // containerStyle: { backgroundColor: permission == 'Admin' ? COLORS.lightblue500 : 'white' },
+            // onPress: () => { permission == 'Admin' ? '' : updatePermission(route.params['employee_id'], 'Admin') }
+        },
+        {
+            title: 'Unit 3',
+            icon: 'people-outline',
+            // containerStyle: { backgroundColor: permission == 'Associate' ? COLORS.lightblue500 : 'white' },
+            // onPress: () => { permission == 'Associate' ? '' : updatePermission(route.params['employee_id'], 'Associate') }
+        },
+        { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsUnitVisible(false) },
     ];
 
     updatePermission = (id, newPermission) => {
@@ -73,7 +95,7 @@ const Employee = ({ route }) => {
             .then(() => {
                 console.log('User updated!');
             });
-        setIsVisible(false)
+        setIsPermissionVisible(false)
         setPermission(newPermission)
     }
 
@@ -85,7 +107,7 @@ const Employee = ({ route }) => {
             <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
                 <TouchableOpacity
                     style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
-                    onPress={() => { setIsVisible(true) }}>
+                    onPress={() => { setIsPermissionVisible(true) }}>
                     <Icon name="ellipsis-horizontal" size={30} color="white" />
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
                 </TouchableOpacity>
@@ -125,7 +147,7 @@ const Employee = ({ route }) => {
             <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
                 <TouchableOpacity
                     style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
-                    onPress={() => { setIsVisible(true) }}>
+                    onPress={() => { setIsUnitVisible(true) }}>
                     <Icon name="ellipsis-horizontal" size={30} color="white" />
                     <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
                 </TouchableOpacity>
@@ -151,8 +173,18 @@ const Employee = ({ route }) => {
             <Text>Bench Projects</Text>
             <Text>Project name</Text>
             <Text>Project name</Text>
-            <BottomSheet isVisible={isVisible}>
-                {bottomSheetList.map((l, i) => (
+            <BottomSheet isVisible={isPermissionVisible}>
+                {bottomSheetPermission.map((l, i) => (
+                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
+                        <Icon name={l.icon} size={30} color={COLORS.primary} />
+                        <ListItem.Content>
+                            <ListItem.Title >{l.title}</ListItem.Title>
+                        </ListItem.Content>
+                    </ListItem>
+                ))}
+            </BottomSheet>
+            <BottomSheet isVisible={isUnitVisible}>
+                {bottomSheetUnit.map((l, i) => (
                     <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
                         <Icon name={l.icon} size={30} color={COLORS.primary} />
                         <ListItem.Content>
