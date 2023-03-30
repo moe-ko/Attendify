@@ -46,22 +46,22 @@ const Employee = ({ route }) => {
         {
             title: 'Super Admin',
             icon: 'person-add-outline',
-            containerStyle: { backgroundColor: permission == 'Super Admin' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: permission == 'Super Admin' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
             onPress: () => { permission == 'Super Admin' ? '' : updatePermission(route.params['employee_id'], 'Super Admin') }
         },
         {
             title: 'Admin',
             icon: 'person-outline',
-            containerStyle: { backgroundColor: permission == 'Admin' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: permission == 'Admin' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
             onPress: () => { permission == 'Admin' ? '' : updatePermission(route.params['employee_id'], 'Admin') }
         },
         {
             title: 'Associate',
             icon: 'people-outline',
-            containerStyle: { backgroundColor: permission == 'Associate' ? COLORS.lightblue500 : 'white' },
+            containerStyle: { backgroundColor: permission == 'Associate' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
             onPress: () => { permission == 'Associate' ? '' : updatePermission(route.params['employee_id'], 'Associate') }
         },
-        { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsPermissionVisible(false) },
+        { title: 'Cancel', icon: 'arrow-down', containerStyle: { marginBottom: 30, padding: 20, marginHorizontal: 15, borderRadius: 20 }, titleStyle: { color: 'white' }, onPress: () => setIsPermissionVisible(false) },
     ];
     const bottomSheetUnit = [
         {
@@ -126,7 +126,6 @@ const Employee = ({ route }) => {
                 </ListItem.Content>
                 <Text>{permission}</Text>
                 <ListItem.Chevron />
-                {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
             </ListItem.Swipeable>
             <ListItem bottomDivider>
                 <Avatar
@@ -142,7 +141,6 @@ const Employee = ({ route }) => {
                     <ListItem.Title>Email</ListItem.Title>
                 </ListItem.Content>
                 <Text>{route.params['email']}</Text>
-                {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
             </ListItem>
             <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
                 <TouchableOpacity
@@ -166,7 +164,6 @@ const Employee = ({ route }) => {
                 </ListItem.Content>
                 <Text>{unit}/{subunit}</Text>
                 <ListItem.Chevron />
-                {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
             </ListItem.Swipeable>
             <Button title="SeeVee" />
             <Button title="Check Report" />
