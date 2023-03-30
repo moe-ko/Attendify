@@ -100,11 +100,7 @@ const Profile = ({ navigation }) => {
             <View><Text>Employee Id: {empId}</Text></View>
             <View><Text>Email: {email}</Text></View>
             <View><Text>Unit: {unit} | {subunit}</Text></View>
-            {permission == '1' ? (
-                <TouchableOpacity onPress={() => { console.log('Make admin') }}>
-                    <Text>Make user an admin</Text>
-                </TouchableOpacity>
-            ) : null}
+
             <TouchableOpacity onPress={() => { console.log('Link to SeeVee') }}>
                 <Text>SeeVee</Text>
             </TouchableOpacity>

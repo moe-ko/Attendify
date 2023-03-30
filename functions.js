@@ -38,7 +38,7 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
             status_id: '1',
             subunit_id: subunitSelected,
             avatar: `https://source.unsplash.com/random/150x150/?animal`,
-            permission_id: '0'
+            permission: 'Associate'
         })
 }
 // export const getSubunits = async () => {

@@ -26,12 +26,13 @@ const Chart = () => {
     let employees = clear
 
     useEffect(() => {
-        // if (eventDate == '') {
-        getCurrentEventDate()
-        // } else {
-        //     getTotalAttendance(eventDate)
-        // }
-    }, [])
+        if (eventDate == '') {
+            getCurrentEventDate()
+        } else {
+            getTotalAttendance()
+            console.log('Date has changed')
+        }
+    }, [eventDate])
 
     getCurrentEventDate = async () => {
         firebase.firestore()
@@ -43,16 +44,16 @@ const Chart = () => {
                     if (res.length > 0) {
                         setEventDate(res[0]['key'])
                         setDates(res)
-                        getTotalAttendance(res[0]['key'])
+                        getTotalAttendance()
                     }
                 }
             })
     }
 
-    getTotalAttendance = (date) => {
-        firebase.firestore()
+    getTotalAttendance = () => {
+        const conn = firebase.firestore()
             .collection('events')
-            .where('end', '==', date)
+            .where('end', '==', eventDate)
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
@@ -78,6 +79,7 @@ const Chart = () => {
                     }
                 });
             });
+        return () => conn()
     }
 
     getData = (data, field) => {
@@ -129,7 +131,7 @@ const Chart = () => {
 
     Item = ({ id, name, avatar, status }) => {
         return (
-            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={(action) => (
+            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
                 <TouchableOpacity
                     style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
                     onPress={() => { setIsVisible(true), setEmployeeSelected(id), setCurrentStatus(status) }}>
@@ -213,7 +215,6 @@ const Chart = () => {
                     let index = employees.indexOf(employeeSelected)
                     employees.splice(index, 1)
                     updateStatus(currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
-                    // updateStatus(currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
                 });
             });
     }
@@ -261,14 +262,13 @@ const Chart = () => {
             .update(
                 query
             )
-
     }
 
     return (
         <View>
             <SelectList
                 data={dates}
-                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance(selectedDate) }}
+                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
                 placeholder={eventDate}
                 inputStyles={{
                     color: "#666",

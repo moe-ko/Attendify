@@ -6,9 +6,12 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { firebase } from '../../../../config'
 
 const Employee = ({ route }) => {
+    console.log(route)
     const [subunitId, setSubunitId] = useState(route.params['subunit_id'])
+    const [permission, setPermission] = useState(route.params['permission'])
     const [unit, setUnit] = useState('')
     const [subunit, setSubunit] = useState('')
+
     useEffect(() => {
         getSubunits(subunitId)
     }, [subunitId])
@@ -44,6 +47,14 @@ const Employee = ({ route }) => {
             <Text>{route.params['employee_id']}</Text>
             <ListItem bottomDivider>
                 <ListItem.Content>
+                    <ListItem.Title>User</ListItem.Title>
+                </ListItem.Content>
+                <Text>{permission}</Text>
+                <ListItem.Chevron />
+                {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
+            </ListItem>
+            <ListItem bottomDivider>
+                <ListItem.Content>
                     <ListItem.Title>Email</ListItem.Title>
                 </ListItem.Content>
                 <Text>{route.params['email']}</Text>
@@ -57,6 +68,7 @@ const Employee = ({ route }) => {
                 <ListItem.Chevron />
                 {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
             </ListItem>
+
 
             <Button title="Make Admin" />
             <Button title="SeeVee" />
