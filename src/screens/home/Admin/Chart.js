@@ -103,13 +103,6 @@ const Chart = () => {
     const slPercent = Math.round(sickLeave / totalAssitance * 100)
     const alPercent = Math.round(annualLeave / totalAssitance * 100)
 
-    const graphicData = [
-        { x: `${attendPercent}%`, y: attendPercent },
-        { x: `${absentPercent}%`, y: absentPercent },
-        { x: `${slPercent}%`, y: slPercent },
-        { x: `${alPercent}%`, y: alPercent }
-    ]
-
     const statusIcon = (status) => {
         let icon = ''
         switch (status) {
@@ -128,6 +121,14 @@ const Chart = () => {
         }
         return icon
     }
+
+    const graphicData = [
+        { x: `${attendPercent}%`, y: attendPercent },
+        { x: `${absentPercent}%`, y: absentPercent },
+        { x: `${slPercent}%`, y: slPercent },
+        { x: `${alPercent}%`, y: alPercent },
+    ]
+
 
     Item = ({ id, name, avatar, status }) => {
         return (
@@ -150,12 +151,11 @@ const Chart = () => {
         )
     }
 
-    BoxInfo = ({ bg, label }) => (
-        <View style={{ flex: 1, flexWrap: 'wrap', marginBottom: 5, flexDirection: 'column', display: 'flex', width: '100%' }}>
-            <View style={{ width: '90%', padding: 8, borderRadius: 4, marginTop: 8, backgroundColor: `${bg}`, }}>
-            </View>
-            <View style={{ alignItems: 'center', text: 'center', margin: 'auto' }}>
-                <Text style={{ fontSize: 16, fontWeight: 'light', text: 'center' }}>
+    BoxInfo = ({ bg, label, status }) => (
+        <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', display: 'flex', width: '100%' }}>
+            <View style={{ width: '90%', padding: 2, borderRadius: 4, marginTop: 8, backgroundColor: `${bg}`, alignItems: 'center', }}>
+                <Icon name={statusIcon(status)} size={20} color={COLORS.secondary} fontWeight='bold' />
+                <Text style={{ fontSize: 16, fontWeight: 600, text: 'center', color: COLORS.secondary }}>
                     {label}
                 </Text>
             </View>
@@ -307,10 +307,10 @@ const Chart = () => {
                             colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
                         />
                         <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
-                            <BoxInfo bg={COLORS.primary} label='Attend' />
-                            <BoxInfo bg={COLORS.lightblue700} label='Absent' />
-                            <BoxInfo bg={COLORS.lightblue600} label='Sick' />
-                            <BoxInfo bg={COLORS.lightblue500} label='Holiday' />
+                            <BoxInfo bg={COLORS.primary} label='Attend' status='attendance' />
+                            <BoxInfo bg={COLORS.lightblue700} label='Absent' status='absent' />
+                            <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
+                            <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
                         </View>
                         <FlatList
                             data={employees}
