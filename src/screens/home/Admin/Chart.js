@@ -26,11 +26,11 @@ const Chart = () => {
     let employees = clear
 
     useEffect(() => {
-        if (eventDate == '') {
-            getCurrentEventDate()
-        } else {
-            getTotalAttendance(eventDate)
-        }
+        // if (eventDate == '') {
+        getCurrentEventDate()
+        // } else {
+        //     getTotalAttendance(eventDate)
+        // }
     }, [eventDate])
 
     getCurrentEventDate = async () => {
@@ -41,8 +41,9 @@ const Chart = () => {
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => ({ key: docSnapshot.data()['end'], value: docSnapshot.data()['end'] }))
                     if (res.length > 0) {
+                        setEventDate(res[0]['key'])
                         setDates(res)
-                        getTotalAttendance(res[0]['key'])
+                        getTotalAttendance(eventDate)
                     }
                 }
             })
@@ -59,32 +60,36 @@ const Chart = () => {
                     const absent = documentSnapshot.data()['absent'].length
                     const sl = documentSnapshot.data()['sick_leave'].length
                     const al = documentSnapshot.data()['annual_leave'].length
-                    setAttend(attendance)
-                    setAbsent(absent)
-                    setSickLeave(sl)
-                    setAnnualLeave(al)
-                    setTotalAssistance(attendance + absent + sl + al)
-                    setViewDetails(true)
-                    setClear([])
-                    if (attendance > 0) {
-                        documentSnapshot.data()['attendance'].forEach(id => {
-                            return employeeDetails(id, 'attendance')
-                        })
-                    }
-                    if (absent > 0) {
-                        documentSnapshot.data()['absent'].forEach(id => {
-                            return employeeDetails(id, 'absent')
-                        })
-                    }
-                    if (sl > 0) {
-                        documentSnapshot.data()['sick_leave'].forEach(id => {
-                            return employeeDetails(id, 'sick_leave')
-                        })
-                    }
-                    if (al > 0) {
-                        documentSnapshot.data()['annual_leave'].forEach(id => {
-                            return employeeDetails(id, 'annual_leave')
-                        })
+                    if (attendance == 0 && absent == 0 && sl == 0 && al == 0) {
+                        setViewDetails(false)
+                    } else {
+                        setAttend(attendance)
+                        setAbsent(absent)
+                        setSickLeave(sl)
+                        setAnnualLeave(al)
+                        setTotalAssistance(attendance + absent + sl + al)
+                        setViewDetails(true)
+                        setClear([])
+                        if (attendance > 0) {
+                            documentSnapshot.data()['attendance'].forEach(id => {
+                                return employeeDetails(id, 'attendance')
+                            })
+                        }
+                        if (absent > 0) {
+                            documentSnapshot.data()['absent'].forEach(id => {
+                                return employeeDetails(id, 'absent')
+                            })
+                        }
+                        if (sl > 0) {
+                            documentSnapshot.data()['sick_leave'].forEach(id => {
+                                return employeeDetails(id, 'sick_leave')
+                            })
+                        }
+                        if (al > 0) {
+                            documentSnapshot.data()['annual_leave'].forEach(id => {
+                                return employeeDetails(id, 'annual_leave')
+                            })
+                        }
                     }
                 });
             });
