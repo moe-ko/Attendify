@@ -43,31 +43,39 @@ const Employee = ({ route }) => {
 
     const bottomSheetList = [
         {
-            title: 'Attend',
-            // icon: statusIcon('attendance'),
-            // containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white' },
-            // onPress: () => { currentStatus == 'attendance' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'attendance') }
+            title: 'Super Admin',
+            icon: 'person-add-outline',
+            containerStyle: { backgroundColor: permission == 'Super Admin' ? COLORS.lightblue500 : 'white' },
+            onPress: () => { permission == 'Super Admin' ? '' : updatePermission(route.params['employee_id'], 'Super Admin') }
         },
-        // {
-        //     title: 'Absent',
-        //     icon: statusIcon('absent'),
-        //     containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white' },
-        //     onPress: () => { currentStatus == 'absent' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'absent') }
-        // },
-        // {
-        //     title: 'Sick',
-        //     icon: statusIcon('sick_leave'),
-        //     containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white' },
-        //     onPress: () => { currentStatus == 'sick_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'sick_leave') }
-        // },
-        // {
-        //     title: 'Holiday',
-        //     icon: statusIcon('annual_leave'),
-        //     containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white' },
-        //     onPress: () => { currentStatus == 'annual_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'annual_leave') }
-        // },
+        {
+            title: 'Admin',
+            icon: 'person-outline',
+            containerStyle: { backgroundColor: permission == 'Admin' ? COLORS.lightblue500 : 'white' },
+            onPress: () => { permission == 'Admin' ? '' : updatePermission(route.params['employee_id'], 'Admin') }
+        },
+        {
+            title: 'Associate',
+            icon: 'people-outline',
+            containerStyle: { backgroundColor: permission == 'Associate' ? COLORS.lightblue500 : 'white' },
+            onPress: () => { permission == 'Associate' ? '' : updatePermission(route.params['employee_id'], 'Associate') }
+        },
         { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsVisible(false) },
     ];
+
+    updatePermission = (id, newPermission) => {
+        firebase.firestore()
+            .collection('employees')
+            .doc(id)
+            .update({
+                permission: newPermission,
+            })
+            .then(() => {
+                console.log('User updated!');
+            });
+        setIsVisible(false)
+        setPermission(newPermission)
+    }
 
     return (
         <View>
