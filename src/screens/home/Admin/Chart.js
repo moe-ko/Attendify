@@ -31,7 +31,7 @@ const Chart = () => {
         // } else {
         //     getTotalAttendance(eventDate)
         // }
-    }, [eventDate])
+    }, [])
 
     getCurrentEventDate = async () => {
         firebase.firestore()
@@ -43,7 +43,7 @@ const Chart = () => {
                     if (res.length > 0) {
                         setEventDate(res[0]['key'])
                         setDates(res)
-                        getTotalAttendance(eventDate)
+                        getTotalAttendance(res[0]['key'])
                     }
                 }
             })
@@ -56,10 +56,12 @@ const Chart = () => {
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
-                    const attendance = documentSnapshot.data()['attendance'].length
-                    const absent = documentSnapshot.data()['absent'].length
-                    const sl = documentSnapshot.data()['sick_leave'].length
-                    const al = documentSnapshot.data()['annual_leave'].length
+                    let data = documentSnapshot.data()
+                    const attendance = data['attendance'].length
+                    const absent = data['absent'].length
+                    const sl = data['sick_leave'].length
+                    const al = data['annual_leave'].length
+                    setClear([])
                     if (attendance == 0 && absent == 0 && sl == 0 && al == 0) {
                         setViewDetails(false)
                     } else {
@@ -69,30 +71,19 @@ const Chart = () => {
                         setAnnualLeave(al)
                         setTotalAssistance(attendance + absent + sl + al)
                         setViewDetails(true)
-                        setClear([])
-                        if (attendance > 0) {
-                            documentSnapshot.data()['attendance'].forEach(id => {
-                                return employeeDetails(id, 'attendance')
-                            })
-                        }
-                        if (absent > 0) {
-                            documentSnapshot.data()['absent'].forEach(id => {
-                                return employeeDetails(id, 'absent')
-                            })
-                        }
-                        if (sl > 0) {
-                            documentSnapshot.data()['sick_leave'].forEach(id => {
-                                return employeeDetails(id, 'sick_leave')
-                            })
-                        }
-                        if (al > 0) {
-                            documentSnapshot.data()['annual_leave'].forEach(id => {
-                                return employeeDetails(id, 'annual_leave')
-                            })
-                        }
+                        attendance > 0 ? getData(data, 'attendance') : null
+                        absent > 0 ? getData(data, 'absent') : null
+                        sl > 0 ? getData(data, 'sick_leave') : null
+                        al > 0 ? getData(data, 'annual_leave') : null
                     }
                 });
             });
+    }
+
+    getData = (data, field) => {
+        data[field].forEach(id => {
+            return employeeDetails(id, field)
+        })
     }
 
     employeeDetails = (id, status) => {
@@ -258,7 +249,7 @@ const Chart = () => {
         <View>
             <SelectList
                 data={dates}
-                setSelected={selectedDate => { setEventDate(selectedDate) }}
+                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance(selectedDate) }}
                 placeholder={eventDate}
                 inputStyles={{
                     color: "#666",
