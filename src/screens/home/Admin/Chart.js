@@ -112,20 +112,26 @@ const Chart = () => {
         { x: `${alPercent}%`, y: alPercent }
     ]
 
-    Item = ({ id, name, avatar, status }) => {
+    const statusIcon = (status) => {
         let icon = ''
-        if (status == 'attendance') {
-            icon = 'checkmark'
+        switch (status) {
+            case 'attendance':
+                icon = 'checkmark'
+                break;
+            case 'absent':
+                icon = 'close'
+                break;
+            case 'sick_leave':
+                icon = 'pulse-outline'
+                break;
+            case 'annual_leave':
+                icon = 'rocket-outline'
+                break;
         }
-        if (status == 'absent') {
-            icon = 'close'
-        }
-        if (status == 'sick_leave') {
-            icon = 'pulse-outline'
-        }
-        if (status == 'annual_leave') {
-            icon = 'rocket-outline'
-        }
+        return icon
+    }
+
+    Item = ({ id, name, avatar, status }) => {
         return (
             <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={(action) => (
                 <TouchableOpacity
@@ -140,7 +146,7 @@ const Chart = () => {
                     <ListItem.Title>{name}</ListItem.Title>
                     <ListItem.Subtitle>{id}</ListItem.Subtitle>
                 </ListItem.Content>
-                <Icon name={icon} size={30} color={COLORS.primary} />
+                <Icon name={statusIcon(status)} size={30} color={COLORS.primary} />
                 <ListItem.Chevron />
             </ListItem.Swipeable>
         )
@@ -161,25 +167,25 @@ const Chart = () => {
     const bottomSheetList = [
         {
             title: 'Attend',
-            icon: 'checkmark',
+            icon: statusIcon('attendance'),
             containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white' },
             onPress: () => { currentStatus == 'attendance' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'attendance') }
         },
         {
             title: 'Absent',
-            icon: 'close',
+            icon: statusIcon('absent'),
             containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white' },
             onPress: () => { currentStatus == 'absent' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'absent') }
         },
         {
             title: 'Sick',
-            icon: 'pulse-outline',
+            icon: statusIcon('sick_leave'),
             containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white' },
             onPress: () => { currentStatus == 'sick_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'sick_leave') }
         },
         {
             title: 'Holiday',
-            icon: 'rocket-outline',
+            icon: statusIcon('annual_leave'),
             containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white' },
             onPress: () => { currentStatus == 'annual_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'annual_leave') }
         },
