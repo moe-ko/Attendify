@@ -212,37 +212,56 @@ const Chart = () => {
                     }
                     let index = employees.indexOf(employeeSelected)
                     employees.splice(index, 1)
-                    updateStatus('from', currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
-                    updateStatus('to', currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
+                    updateStatus(currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
+                    // updateStatus(currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
                 });
             });
     }
 
-    updateStatus = (where, currentStatus, id, newArray, employeeSelected, newStatus) => {
+    updateStatus = (currentStatus, id, newArray, employeeSelected, newStatus) => {
         let query = ''
         let union = arrayUnion(employeeSelected)
         switch (currentStatus) {
             case 'attendance':
-                query = { attendance: where == 'from' ? newArray : union }
+                query = { attendance: newArray }
                 break;
             case 'absent':
-                query = { absent: where == 'from' ? newArray : union }
+                query = { absent: newArray }
                 break;
             case 'sick_leave':
-                query = { sick_leave: where == 'from' ? newArray : union }
+                query = { sick_leave: newArray }
                 break;
             case 'annual_leave':
-                query = { annual_leave: where == 'from' ? newArray : union }
+                query = { annual_leave: newArray }
                 break;
         }
+        changeStatus(id, query)
+        switch (newStatus) {
+            case 'attendance':
+                query = { attendance: union }
+                break;
+            case 'absent':
+                query = { absent: union }
+                break;
+            case 'sick_leave':
+                query = { sick_leave: union }
+                break;
+            case 'annual_leave':
+                query = { annual_leave: union }
+                break;
+        }
+        changeStatus(id, query)
+        setIsVisible(false)
+    }
 
+    changeStatus = (id, query) => {
         firebase.firestore()
             .collection('events')
             .doc(id)
             .update(
                 query
             )
-        setIsVisible(false)
+
     }
 
     return (
