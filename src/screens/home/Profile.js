@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView } from 'react-native'
+import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
@@ -374,7 +374,7 @@ const Profile = ({ navigation }) => {
                         <Text>Make user an admin</Text>
                     </TouchableOpacity>
                 ) : null}
-                <TouchableOpacity className={`${tailwind.buttonBlue} bg-black w-96 mb-7`} onPress={() => { console.log('Link to SeeVee') }}>
+                <TouchableOpacity className={`${tailwind.buttonBlue} bg-black w-96 mb-7`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
                     <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
                 </TouchableOpacity>
 
