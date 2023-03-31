@@ -8,7 +8,8 @@ import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent } fr
 import { arrayUnion } from "firebase/firestore";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import PieChart from './Chart'
-
+import tailwind from '../../../constants/tailwind'
+import Icon from 'react-native-vector-icons/Ionicons'
 
 const Event = ({ props }) => {
     const [locations, setLocations] = useState('');
@@ -135,50 +136,69 @@ const Event = ({ props }) => {
             });
     }
     return (
-        <View>
+        <View className={`${tailwind.container}`}>
             {(currentEventVisible && currentEvent) ? (
-                <View>
-                    <View>
-                        <Text>Happenning now</Text>
+                <View className="bg-white rounded-3xl mb-2 mt-3">
+                    <View className="flex-row mt-4">
+                        <Icon name="location-outline" size={45} color="#62ABEF"/>
+                        <Text className={`${tailwind.inputs} text-xl text-[#BBBBBB]`}>{locationName}</Text>
                     </View>
-                    <View >
-                        <Text>{locationName}</Text>
-                        <Text>Session Code</Text>
-                        <Text >{currentEvent['code']}</Text>
-                        <Text>Expire {currentEvent['end']}</Text>
-                        <Text>in {hrs}:{mins}:{secs}</Text>
-
-                        <Button
-                            title={'Cancel'}
-                            onPress={() => {
-                                alertCancelEvent(currentEvent['id']), getCurrentEvent()
-                            }}
-                        />
-                        <Text>Thank you for attending</Text>
+                    <View>
+                        <Text className={`${tailwind.slogan} mr-52 ml-3`}>Happenning now</Text>
+                    </View>
+                    
+                    <View className="justify-center items-center">
+                        <View className=" h-52 bg-[#62ABEF] mt-3 rounded-3xl justify-center items-center w-80 mb-3">
+                        
+                        <Text className={`${tailwind.textLine} mb-1`}>Session Code</Text>
+                        <Text className={`${tailwind.textLine} mb-1`}>{currentEvent['code']}</Text>
+                        <Text className={`${tailwind.textLine} mb-1`}>Expire {currentEvent['end']}</Text>
+                        <Text className={`${tailwind.textLine} mb-3`}>in {hrs}:{mins}:{secs}</Text>
+                        
+                        
+                        {/* <Text>Thank you for attending</Text> */}
                         {/* {hasAttended ? <Text>Thank you for attending</Text> : */}
                         <View>
                             <TextInput
+                               className={`${tailwind.inputs}`}
                                 value={code}
                                 placeholder='Enter code event'
                                 onChangeText={(text) => setCode(text)}
                                 autoCorrect={false}
                                 required
                                 placeholderTextColor="#666"
-                            />
-                            <Button
-                                title={'Attendify'}
+                                />
+                            </View>
+                        </View>
+                        <View>
+                            <TouchableOpacity
+                                className={`${tailwind.buttonBlue} mb-3 w-60 rounded-full h-15`}
+                                
+                                //title={'Attendify'}
                                 onPress={() => {
                                     handleAttendify(code, currentEvent['id'])
-                                }}
-                            />
-                        </View>
+                            }}>
+                            <Text className={`${tailwind.buttonWhiteText}`}>Attendify</Text>
+                            </TouchableOpacity>
+                            
+                            
+                            </View>
+                        {/* <TouchableOpacity
+                            //title={'Cancel'}
+                            className={`${tailwind.buttonBlue} w-60 rounded-full h-15 mb-3`}
+                            onPress={() => {
+                                alertCancelEvent(currentEvent['id']), getCurrentEvent()
+                            }}>
+                            <Text className={`${tailwind.buttonWhiteText}`}>Cancel</Text>
+                            </TouchableOpacity> */}
+                        
                         {/* } */}
-                    </View >
+                    </View>
                 </View>
             ) : null}
             {/* {(createEventVisible) ? ( */}
             <View>
-                <Text>Create a new session</Text>
+                <Text className={`${tailwind.textLine} text-black mt-5`}>Create a new session</Text>
                 <SelectList
                     data={locations}
                     setSelected={setSelectedLocation}
@@ -231,7 +251,7 @@ const Event = ({ props }) => {
                 />
             </View>
             {/* ) : null} */}
-        </View >
+        </View>
     )
 
 }

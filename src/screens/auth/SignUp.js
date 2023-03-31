@@ -18,7 +18,8 @@ const SignUp = ({ navigation }) => {
     const [checkValidEmail, setCheckValidEmail] = useState(false);
     const [password, setPassword] = useState('');
     const [validpassword, setValidPassword] = useState(false);
-    const [validpassword1, setValidPassword1] = useState(false);
+    const [validpasswordSpace, setValidPasswordSpace] = useState(false);
+     const [validpasswordChar, setValidPasswordChar] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [validconfirmPassword, setValidConfirmPassword] = useState();
     const [error, setError] = useState('');
@@ -61,10 +62,11 @@ const SignUp = ({ navigation }) => {
         return () => subscriber();
     }
     const handleCheckEmail = (text) => {
-        let re = /\S+@\S+\.\S+/;
-        let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+       // let re = /\S+@\S+\.\S+/;
+       // let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+        let regex = /^[a-z]+\.[a-z]+(@infosys.com)$/;
         setEmail(text);
-        if (re.test(text) || regex.test(text)) {
+        if (regex.test(text)) {
             setCheckValidEmail(false);
         } else {
             setCheckValidEmail(true);
@@ -85,6 +87,7 @@ const SignUp = ({ navigation }) => {
     const checkPasswordValidity = value => {
       const isNonWhiteSpace = /^\S+$/;
         const isValidLength = /^.{8,16}$/;
+        const isValidChar = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/;
         setPassword(value);
       
         if ((!isValidLength.test(value))) 
@@ -100,11 +103,18 @@ const SignUp = ({ navigation }) => {
         
         }
         if (!isNonWhiteSpace.test(value))
-            {
-            setValidPassword1(true);
+        {
+            setValidPasswordSpace(true);
         }
         else {
-            setValidPassword1(false);
+            setValidPasswordSpace(false);
+        }
+        if (!isValidChar.test(value))
+        {
+            setValidPasswordChar(true);
+        }
+        else {
+            setValidPasswordChar(false);
         }
          
     };   
@@ -124,17 +134,19 @@ const SignUp = ({ navigation }) => {
                             placeholder="Employee ID"
                             autoCapitalize='none'
                             autoCorrect={false}
+                           // onBlur={(e) => this.handleEmpId(e.target.value)}
                         />
                     </View>
                    
-                    {validempId && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>}
+                    {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
+                    : null }
                     
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             className={`${tailwind.inputs}`}
                             onChangeText={(text) => setName(text)}
                             placeholder="Full Name"
-                            autoCapitalize='none'
+                            autoCapitalize="words"
                             autoCorrect={false}
                         />
                     </View>
@@ -237,8 +249,12 @@ const SignUp = ({ navigation }) => {
                             autoCorrect={false}
                         />
                     </View>
+                    {validpasswordSpace && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password shouldn`t contain space</Text>}
                     {validpassword && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password must be 8-16 characters long</Text>}
-                    {validpassword1 && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password shouldn`t contain space</Text>}
+                    
+                    {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast an uppercase </Text>}
+                    {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a lowercase</Text>}
+                    {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a number</Text>}
                        
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput

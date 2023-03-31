@@ -93,7 +93,7 @@ const Profile = ({ navigation }) => {
             <View>
             
                 <Image
-                    className="h-20 w-20 rounded-full mx-auto my-[-80] mb-3"
+                    className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
                     source={{
                         uri: `${avatar}`,
                     }}
