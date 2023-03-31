@@ -3,7 +3,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer'
 import BottomTabNavigator from './BottomNavigator';
 import { COLORS, ROUTES } from '..';
 import Icon from 'react-native-vector-icons/Ionicons'
-import CustomDrawerComponent from '../../components/CustomDrawerComponent';
+import CustomDrawerComponent from '../components/CustomDrawerComponent';
 import { Home, Profile } from '../screens';
 import Chart from '../screens/home/Admin/Chart';
 import Employees from '../screens/home/Admin/Employees';

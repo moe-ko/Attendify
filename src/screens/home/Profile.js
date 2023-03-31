@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
-import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
