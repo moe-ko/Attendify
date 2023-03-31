@@ -6,8 +6,7 @@ import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
-import { Picker } from '@react-native-picker/picker';
-
+import { ROUTES } from '../..'
 
 const SignUp = ({ navigation }) => {
 
@@ -274,20 +273,18 @@ const SignUp = ({ navigation }) => {
                         
                             <TouchableOpacity
                                 className={`${tailwind.buttonBlue}`}
-                                onPress={() => { handleSignUp(empId, email, password, name, subunitSelected) }}
+                                onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
                                 disabled={(!email.trim() || !password.trim())}
                             >
                                 <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
                             </TouchableOpacity>
                     
                         </View>
-                
-                        
                     <View className={`flex-row justify-center items-center`}>
                         <Text className={`text-center`}>Already an account?
                         </Text>
                         <TouchableOpacity
-                            onPress={() => { navigation.navigate('Sign In') }}>
+                            onPress={() => { navigation.navigate(ROUTES.SIGNIN) }}>
                             <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
                         </TouchableOpacity>
                     </View>

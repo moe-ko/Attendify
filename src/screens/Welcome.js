@@ -1,6 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native'
 import React from 'react'
 import tailwind from '../constants/tailwind'
+import { ROUTES } from '..'
 
 const Welcome = ({ navigation }) => {
     return (
@@ -16,7 +17,7 @@ const Welcome = ({ navigation }) => {
                     <View className={`${tailwind.viewWrapper} w-11/12 `}>
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
-                            onPress={() => { navigation.navigate('Sign In') }}
+                            onPress={() => { navigation.navigate(ROUTES.SIGNIN) }}
                         >
                             <Text className={`${tailwind.buttonWhiteText}`}>Login</Text>
                         </TouchableOpacity>
@@ -24,7 +25,7 @@ const Welcome = ({ navigation }) => {
                     <View className={`${tailwind.viewWrapper} w-11/12 mb-7`}>
                         <TouchableOpacity
                             className={`${tailwind.buttonWhite}`}
-                            onPress={() => { navigation.navigate('Sign Up') }}>
+                            onPress={() => { navigation.navigate(ROUTES.SIGNUP) }}>
                             <Text className={`${tailwind.buttonBlueText}`} >Sign Up</Text>
                         </TouchableOpacity>
                     </View>

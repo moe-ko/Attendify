@@ -1,11 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import React, { useState, useEffect } from 'react';
 import { firebase } from './config';
 // Navigator
 import WelcomeStackNavigator from './src/navigations/AuthNavigator';
-//import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
-import BottomTabNavigator from './src/navigations/BottomNavigator';
+//import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator'; 
 import 'react-native-gesture-handler';
 import { checkConnection } from './functions';
 import { Offline } from './src/screens/Offline';
@@ -13,7 +11,6 @@ import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreAllLogs()
-const Stack = createStackNavigator();
 
 export default function App() {
 

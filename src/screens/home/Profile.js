@@ -102,7 +102,7 @@ const Profile = ({ navigation }) => {
             </View>
                     
             <View className="py-1 shadow-2xl justify-center items-center">
-            <View><Text>User: {name}</Text></View>
+            <View><Text>User: {name}</Text></View> 
             <View className="py-1"><Text>Employee Id: {empId}</Text></View>
              <View className=" bg-white mb-7 mt-7 rounded-2xl w-96 h-28 shadow-2xl"> 
                      

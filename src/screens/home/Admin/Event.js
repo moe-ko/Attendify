@@ -26,11 +26,6 @@ const Event = ({ props }) => {
     const [hasAttended, setHasAttended] = useState(false)
     const [time, setTime] = useState(new Date())
 
-    useEffect(() => {
-        // getEmployees()
-    })
-
-
     eventTimer = (end) => {
         const eventExpirationDate = new Date(end)
         setInterval(() => {
@@ -61,7 +56,7 @@ const Event = ({ props }) => {
     getCurrentEvent = () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('end', 'asc')
+            .orderBy('end', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
