@@ -1,7 +1,7 @@
 //
 export default {
     primary: '#62ABEF',
-    secondary: 'red',
+    secondary: '#717171',
     inactiveIcon: '#6D6B6B',
     lightblue500: '#C1EDFA',
     lightblue600: '#AEE5FA',

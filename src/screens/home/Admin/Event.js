@@ -55,7 +55,7 @@ const Event = ({ props }) => {
     getCurrentEvent = () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('end', 'asc')
+            .orderBy('end', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (

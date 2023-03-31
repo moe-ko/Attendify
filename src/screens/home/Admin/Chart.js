@@ -29,7 +29,8 @@ const Chart = () => {
         if (eventDate == '') {
             getCurrentEventDate()
         } else {
-            getTotalAttendance(eventDate)
+            getTotalAttendance()
+            console.log('Date has changed')
         }
     }, [eventDate])
 
@@ -41,53 +42,50 @@ const Chart = () => {
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => ({ key: docSnapshot.data()['end'], value: docSnapshot.data()['end'] }))
                     if (res.length > 0) {
+                        setEventDate(res[0]['key'])
                         setDates(res)
-                        getTotalAttendance(res[0]['key'])
+                        getTotalAttendance()
                     }
                 }
             })
     }
 
-    getTotalAttendance = (date) => {
-        firebase.firestore()
+    getTotalAttendance = () => {
+        const conn = firebase.firestore()
             .collection('events')
-            .where('end', '==', date)
+            .where('end', '==', eventDate)
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
-                    const attendance = documentSnapshot.data()['attendance'].length
-                    const absent = documentSnapshot.data()['absent'].length
-                    const sl = documentSnapshot.data()['sick_leave'].length
-                    const al = documentSnapshot.data()['annual_leave'].length
-                    setAttend(attendance)
-                    setAbsent(absent)
-                    setSickLeave(sl)
-                    setAnnualLeave(al)
-                    setTotalAssistance(attendance + absent + sl + al)
-                    setViewDetails(true)
+                    let data = documentSnapshot.data()
+                    const attendance = data['attendance'].length
+                    const absent = data['absent'].length
+                    const sl = data['sick_leave'].length
+                    const al = data['annual_leave'].length
                     setClear([])
-                    if (attendance > 0) {
-                        documentSnapshot.data()['attendance'].forEach(id => {
-                            return employeeDetails(id, 'attendance')
-                        })
-                    }
-                    if (absent > 0) {
-                        documentSnapshot.data()['absent'].forEach(id => {
-                            return employeeDetails(id, 'absent')
-                        })
-                    }
-                    if (sl > 0) {
-                        documentSnapshot.data()['sick_leave'].forEach(id => {
-                            return employeeDetails(id, 'sick_leave')
-                        })
-                    }
-                    if (al > 0) {
-                        documentSnapshot.data()['annual_leave'].forEach(id => {
-                            return employeeDetails(id, 'annual_leave')
-                        })
+                    if (attendance == 0 && absent == 0 && sl == 0 && al == 0) {
+                        setViewDetails(false)
+                    } else {
+                        setAttend(attendance)
+                        setAbsent(absent)
+                        setSickLeave(sl)
+                        setAnnualLeave(al)
+                        setTotalAssistance(attendance + absent + sl + al)
+                        setViewDetails(true)
+                        attendance > 0 ? getData(data, 'attendance') : null
+                        absent > 0 ? getData(data, 'absent') : null
+                        sl > 0 ? getData(data, 'sick_leave') : null
+                        al > 0 ? getData(data, 'annual_leave') : null
                     }
                 });
             });
+        return () => conn()
+    }
+
+    getData = (data, field) => {
+        data[field].forEach(id => {
+            return employeeDetails(id, field)
+        })
     }
 
     employeeDetails = (id, status) => {
@@ -105,29 +103,36 @@ const Chart = () => {
     const slPercent = Math.round(sickLeave / totalAssitance * 100)
     const alPercent = Math.round(annualLeave / totalAssitance * 100)
 
+    const statusIcon = (status) => {
+        let icon = ''
+        switch (status) {
+            case 'attendance':
+                icon = 'checkmark'
+                break;
+            case 'absent':
+                icon = 'close'
+                break;
+            case 'sick_leave':
+                icon = 'pulse-outline'
+                break;
+            case 'annual_leave':
+                icon = 'rocket-outline'
+                break;
+        }
+        return icon
+    }
+
     const graphicData = [
         { x: `${attendPercent}%`, y: attendPercent },
         { x: `${absentPercent}%`, y: absentPercent },
         { x: `${slPercent}%`, y: slPercent },
-        { x: `${alPercent}%`, y: alPercent }
+        { x: `${alPercent}%`, y: alPercent },
     ]
 
+
     Item = ({ id, name, avatar, status }) => {
-        let icon = ''
-        if (status == 'attendance') {
-            icon = 'checkmark'
-        }
-        if (status == 'absent') {
-            icon = 'close'
-        }
-        if (status == 'sick_leave') {
-            icon = 'pulse-outline'
-        }
-        if (status == 'annual_leave') {
-            icon = 'rocket-outline'
-        }
         return (
-            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={(action) => (
+            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
                 <TouchableOpacity
                     style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
                     onPress={() => { setIsVisible(true), setEmployeeSelected(id), setCurrentStatus(status) }}>
@@ -140,18 +145,17 @@ const Chart = () => {
                     <ListItem.Title>{name}</ListItem.Title>
                     <ListItem.Subtitle>{id}</ListItem.Subtitle>
                 </ListItem.Content>
-                <Icon name={icon} size={30} color={COLORS.primary} />
+                <Icon name={statusIcon(status)} size={30} color={COLORS.primary} />
                 <ListItem.Chevron />
             </ListItem.Swipeable>
         )
     }
 
-    BoxInfo = ({ bg, label }) => (
-        <View style={{ flex: 1, flexWrap: 'wrap', marginBottom: 5, flexDirection: 'column', display: 'flex', width: '100%' }}>
-            <View style={{ width: '90%', padding: 8, borderRadius: 4, marginTop: 8, backgroundColor: `${bg}`, }}>
-            </View>
-            <View style={{ alignItems: 'center', text: 'center', margin: 'auto' }}>
-                <Text style={{ fontSize: 16, fontWeight: 'light', text: 'center' }}>
+    BoxInfo = ({ bg, label, status }) => (
+        <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', display: 'flex', width: '100%' }}>
+            <View style={{ width: '90%', padding: 2, borderRadius: 4, marginTop: 8, backgroundColor: `${bg}`, alignItems: 'center', }}>
+                <Icon name={statusIcon(status)} size={20} color={COLORS.secondary} fontWeight='bold' />
+                <Text style={{ fontSize: 16, fontWeight: 600, text: 'center', color: COLORS.secondary }}>
                     {label}
                 </Text>
             </View>
@@ -161,29 +165,29 @@ const Chart = () => {
     const bottomSheetList = [
         {
             title: 'Attend',
-            icon: 'checkmark',
-            containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white' },
+            icon: statusIcon('attendance'),
+            containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
             onPress: () => { currentStatus == 'attendance' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'attendance') }
         },
         {
             title: 'Absent',
-            icon: 'close',
-            containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white' },
+            icon: statusIcon('absent'),
+            containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
             onPress: () => { currentStatus == 'absent' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'absent') }
         },
         {
             title: 'Sick',
-            icon: 'pulse-outline',
-            containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white' },
+            icon: statusIcon('sick_leave'),
+            containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
             onPress: () => { currentStatus == 'sick_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'sick_leave') }
         },
         {
             title: 'Holiday',
-            icon: 'rocket-outline',
-            containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white' },
+            icon: statusIcon('annual_leave'),
+            containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
             onPress: () => { currentStatus == 'annual_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'annual_leave') }
         },
-        { title: 'Cancel', containerStyle: { backgroundColor: 'red', paddingBottom: 30 }, titleStyle: { color: 'white' }, onPress: () => setIsVisible(false) },
+        { title: 'Cancel', icon: 'arrow-down', containerStyle: { marginBottom: 30, padding: 20, marginHorizontal: 15, borderRadius: 20 }, onPress: () => setIsVisible(false) },
     ];
 
     updateEmployeeStatus = (employeeSelected, currentStatus, newStatus) => {
@@ -210,44 +214,61 @@ const Chart = () => {
                     }
                     let index = employees.indexOf(employeeSelected)
                     employees.splice(index, 1)
-                    updateStatus('from', currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
-                    updateStatus('to', currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
+                    updateStatus(currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
                 });
             });
     }
 
-    updateStatus = (where, currentStatus, id, newArray, employeeSelected, newStatus) => {
+    updateStatus = (currentStatus, id, newArray, employeeSelected, newStatus) => {
         let query = ''
         let union = arrayUnion(employeeSelected)
         switch (currentStatus) {
             case 'attendance':
-                query = { attendance: where == 'from' ? newArray : union }
+                query = { attendance: newArray }
                 break;
             case 'absent':
-                query = { absent: where == 'from' ? newArray : union }
+                query = { absent: newArray }
                 break;
             case 'sick_leave':
-                query = { sick_leave: where == 'from' ? newArray : union }
+                query = { sick_leave: newArray }
                 break;
             case 'annual_leave':
-                query = { annual_leave: where == 'from' ? newArray : union }
+                query = { annual_leave: newArray }
                 break;
         }
+        changeStatus(id, query)
+        switch (newStatus) {
+            case 'attendance':
+                query = { attendance: union }
+                break;
+            case 'absent':
+                query = { absent: union }
+                break;
+            case 'sick_leave':
+                query = { sick_leave: union }
+                break;
+            case 'annual_leave':
+                query = { annual_leave: union }
+                break;
+        }
+        changeStatus(id, query)
+        setIsVisible(false)
+    }
 
+    changeStatus = (id, query) => {
         firebase.firestore()
             .collection('events')
             .doc(id)
             .update(
                 query
             )
-        setIsVisible(false)
     }
 
     return (
         <View>
             <SelectList
                 data={dates}
-                setSelected={selectedDate => { setEventDate(selectedDate) }}
+                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
                 placeholder={eventDate}
                 inputStyles={{
                     color: "#666",
@@ -286,10 +307,10 @@ const Chart = () => {
                             colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
                         />
                         <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
-                            <BoxInfo bg={COLORS.primary} label='Attend' />
-                            <BoxInfo bg={COLORS.lightblue700} label='Absent' />
-                            <BoxInfo bg={COLORS.lightblue600} label='Sick' />
-                            <BoxInfo bg={COLORS.lightblue500} label='Holiday' />
+                            <BoxInfo bg={COLORS.primary} label='Attend' status='attendance' />
+                            <BoxInfo bg={COLORS.lightblue700} label='Absent' status='absent' />
+                            <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
+                            <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
                         </View>
                         <FlatList
                             data={employees}
@@ -301,7 +322,7 @@ const Chart = () => {
             ) : <Text>No registered data yet for the event {eventDate}</Text>}
             <BottomSheet isVisible={isVisible}>
                 {bottomSheetList.map((l, i) => (
-                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
+                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
                         <Icon name={l.icon} size={30} color={COLORS.primary} />
                         <ListItem.Content>
                             <ListItem.Title >{l.title}</ListItem.Title>
