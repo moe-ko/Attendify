@@ -33,7 +33,7 @@ const BottomTabNavigator = () => {
         }
         return iconName
     }
-
+    
     const screenOptions = (route) => {
         return {
             headerShown: true,

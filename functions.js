@@ -3,6 +3,7 @@ import { firebase } from './config'
 import { format } from 'date-fns'
 import { Alert } from 'react-native'
 
+
 export const checkConnection = () => {
     return NetInfo.fetch().then(state => {
         return state.isConnected
@@ -15,7 +16,7 @@ export const checkIpAddress = () => {
     });
 }
 
-export const handleSignUp = (navigation, empId, email, password, name, subunitSelected) => {
+export const handleSignUp = (navigation, empId, email, password, name, subunitSelected, permissionId, statusId) => {
     firebase.auth()
         .createUserWithEmailAndPassword(email, password)
         .then(() => { addEmployeeDetails(empId, email, name, subunitSelected) })

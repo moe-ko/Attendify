@@ -33,6 +33,7 @@ const MenuDrawerNavigator = () => {
             <Drawer.Screen name={ROUTES.CHART_DRAWER} component={Chart} options={drawerIcon('Charts', 'stats-chart')} />
             <Drawer.Screen name={ROUTES.PROFILE_DRAWER} component={Profile} options={drawerIcon('Profile', 'person-circle-sharp')} />
             <Drawer.Screen name={ROUTES.EMPLOYEES_DRAWER} component={Employees} options={drawerIcon('Employees', 'people')} />
+
         </Drawer.Navigator>
     )
 }
