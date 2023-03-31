@@ -18,13 +18,12 @@ const MenuDrawerNavigator = () => {
         <Drawer.Navigator
             screenOptions={{
                 // headerShown: false,
-                drawerActiveBackgroundColor: 'red',
+                drawerActiveBackgroundColor: '#62ABEF',
                 drawerActiveTintColor: 'white'
             }}
         >
 
             <Drawer.Screen name={ROUTES.HOME} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
-
             <Drawer.Screen name={ROUTES.CHART} component={BottomTabNavigator} screenOptions={{ headerShown: false }} />
             <Drawer.Screen name={ROUTES.PROFILE} component={BottomTabNavigator}
                 options={{

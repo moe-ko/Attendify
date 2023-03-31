@@ -6,13 +6,13 @@ import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
-import { Picker } from '@react-native-picker/picker';
 
 
 const SignUp = ({ navigation }) => {
 
     const [empId, setEmpId] = useState('');
     const [validempId, setValidEmpId] = useState(false);
+    const [validEmpName, setValidEmpName] = useState(false);
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [checkValidEmail, setCheckValidEmail] = useState(false);
@@ -25,9 +25,12 @@ const SignUp = ({ navigation }) => {
     const [subunitSelected, setSubunitSelected] = useState('');
     const units = []
 
+
     useEffect(() => {
         getSubunits()
     })
+
+    // const validator=(input,value)
 
     useEffect(() => {
         if (password === confirmPassword) {
@@ -92,9 +95,6 @@ const SignUp = ({ navigation }) => {
         }
         else {
             setValidPassword(false);
-
-
-
         }
         if (!isNonWhiteSpace.test(value)) {
             setValidPassword1(true);
@@ -103,6 +103,18 @@ const SignUp = ({ navigation }) => {
             setValidPassword1(false);
         }
 
+    };
+
+    const handleEmpName = (text) => {
+
+        let regex = /^[a-zA-Z]{*}\S[a-zA-Z]{*}$/;
+        setName(text);
+
+        if (regex.test(text)) {
+            setValidEmpName(false);
+        } else {
+            setValidEmpName(true);
+        }
     };
 
     return (
@@ -127,19 +139,24 @@ const SignUp = ({ navigation }) => {
 
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
+                            //keyboardType='name-phone-pad'
+
                             className={`${tailwind.inputs}`}
-                            onChangeText={(text) => setName(text)}
+                            onChangeText={(text) => handleEmpName(text)}
+                            //onChangeText={text => handleOnchange(text, 'name')}
+                            //onFocus={() => handleError(null, 'name')}
                             placeholder="Full Name"
-                            autoCapitalize='none'
+                            autoCapitalize='words'
                             autoCorrect={false}
                         />
                     </View>
+                    {validEmpName && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Name should be in alphabets </Text>}
                     <View className={`${tailwind.viewWrapper}`}>
                         <SelectList
                             data={units}
                             setSelected={setSubunitSelected}
                             placeholder='Select Unit/Subunit'
-                            placeholderTextColor='#000'
+                            placeholderTextColor='#fff'
                             inputStyles={{
                                 //  padding: 0,
                                 margin: 0,

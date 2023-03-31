@@ -1,5 +1,17 @@
 import React, { useState, useEffect, Suspense } from 'react'
-import { View, Text, Button, Alert, TextInput, Platform, TouchableOpacity } from 'react-native'
+import {
+    View,
+    Text,
+    Button,
+    Alert,
+    TextInput,
+    Platform,
+    TouchableOpacity,
+    KeyboardAvoidingView,
+    ScrollView,
+    StyleSheet
+
+} from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
@@ -8,6 +20,9 @@ import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent } fr
 import { arrayUnion } from "firebase/firestore";
 import RNDateTimePicker from '@react-native-community/datetimepicker';
 import PieChart from './Chart'
+import tailwind from '../../../constants/tailwind'
+import Icon from 'react-native-vector-icons/Ionicons'
+import DateTimePickerModal from '@react-native-community/datetimepicker';
 
 
 const Event = ({ props }) => {
@@ -24,10 +39,23 @@ const Event = ({ props }) => {
     const [code, setCode] = useState()
     const [hasAttended, setHasAttended] = useState(false)
     const [time, setTime] = useState(new Date())
+    const [date, setDate] = useState(new Date());
+    const [showDatePicker, setShowDatePicker] = useState(false);
 
     useEffect(() => {
         // getEmployees()
     })
+
+    const handleDateChange = (event, newDate) => {
+        if (newDate !== undefined) {
+            setDate(newDate);
+        }
+        setShowDatePicker(false);
+    };
+
+    const showPicker = () => {
+        setShowDatePicker(true);
+    };
 
 
     eventTimer = (end) => {
@@ -135,106 +163,184 @@ const Event = ({ props }) => {
             });
     }
     return (
-        <View>
-            {(currentEventVisible && currentEvent) ? (
+        <ScrollView>
+            <KeyboardAvoidingView>
                 <View>
-                    <View>
-                        <Text>Happenning now</Text>
-                    </View>
-                    <View >
-                        <Text>{locationName}</Text>
-                        <Text>Session Code</Text>
-                        <Text >{currentEvent['code']}</Text>
-                        <Text>Expire {currentEvent['end']}</Text>
-                        <Text>in {hrs}:{mins}:{secs}</Text>
-
-                        <Button
-                            title={'Cancel'}
-                            onPress={() => {
-                                alertCancelEvent(currentEvent['id']), getCurrentEvent()
-                            }}
-                        />
-                        <Text>Thank you for attending</Text>
-                        {/* {hasAttended ? <Text>Thank you for attending</Text> : */}
+                    {(currentEventVisible && currentEvent) ? (
                         <View>
-                            <TextInput
-                                value={code}
-                                placeholder='Enter code event'
-                                onChangeText={(text) => setCode(text)}
-                                autoCorrect={false}
-                                required
-                                placeholderTextColor="#666"
-                            />
-                            <Button
-                                title={'Attendify'}
-                                onPress={() => {
-                                    handleAttendify(code, currentEvent['id'])
-                                }}
-                            />
+
+                            <View>
+                                <View className="flex-row mt-4">
+                                    <Icon name="location-outline" size={30} color="#62ABEF" className="pr-5" />
+                                    <Text className={`${tailwind.inputs} text-xl text-[#BBBBBB]`}>
+                                        {locationName}</Text>
+                                </View>
+
+                                <Text className="text-2xl text-[#7E7E7E] mx-5">Happening now</Text>
+                            </View>
+
+                            <View >
+                                <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl w-11/12 h-72 mx-5`}>
+                                    <View className="my-5 justify-center items-center">
+                                        <Text className="">{locationName}</Text>
+                                        <Text className="text-white text-xl shadow-md">Session Code:</Text>
+                                        <Text className="text-white text-2xl">{currentEvent['code']}</Text>
+                                        <Text className="text-white">Expire {currentEvent['end']}</Text>
+                                        <Text className="text-white">in {hrs}:{mins}:{secs}</Text>
+
+                                        <TextInput
+                                            className={`${tailwind.inputs} w-80 mx-20 my-3`}
+                                            value={code}
+                                            placeholder='Enter event code'
+                                            onChangeText={(text) => setCode(text)}
+                                            autoCorrect={false}
+                                            required
+                                        // placeholderTextColor="#666"
+                                        />
+
+                                        <TouchableOpacity
+                                            className="p-[10] w-80 bg-white my-2 rounded-2xl justify-center items-center shadow-md"
+                                            onPress={() => {
+                                                alertCancelEvent(currentEvent['id']), getCurrentEvent()
+                                            }}>
+                                            <Text className={`${tailwind.buttonBlueText}`} >Cancel</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                </View>
+
+                                {/* {hasAttended ? <Text>Thank you for attending</Text> : */}
+                                <View>
+
+                                    <View className="justify-center items-center">
+                                        <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
+                                            onPress={() => {
+                                                handleAttendify(code, currentEvent['id'])
+                                            }}
+                                        >
+                                            <View>
+                                                <Text className={`${tailwind.buttonWhiteText}`}>Attendify</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <Text className=" mx-28">Thank you for attending</Text>
+                                </View>
+                                {/* } */}
+                            </View >
                         </View>
-                        {/* } */}
-                    </View >
-                </View>
-            ) : null}
-            {/* {(createEventVisible) ? ( */}
-            <View>
-                <Text>Create a new session</Text>
-                <SelectList
-                    data={locations}
-                    setSelected={setSelectedLocation}
-                    placeholder='Select Location'
-                    inputStyles={{
-                        color: "#666",
-                        padding: 0,
-                        margin: 0,
-                    }}
-                    boxStyles={{
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#000',
-                        color: '#fff',
-                        margin: 5,
-                    }}
-                    dropdownStyles={{
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        borderColor: '#DDDDDD',
-                        backgroundColor: '#DDDDDD',
-                        color: '#fff',
-                        marginLeft: 5,
-                        marginRight: 5,
-                        marginBottom: 5,
-                        marginTop: 0,
-                        position: 'relative'
-                    }}
-                />
-                <TextInput
-                    value={title}
-                    placeholder={'Event title'}
-                    onChangeText={(text) => setTitle(text)}
-                    autoCorrect={false}
-                />
-                <View>
-                    <RNDateTimePicker
-                        value={time}
-                        mode={'datetime'}
-                        display={Platform.OS === `ios` ? `default` : `default`}
-                        is24Hour={false}
-                        onChange={() => setTime(time)}
-                    />
-                </View>
-                <Button
-                    title={'CreateEvent'}
-                    onPress={() => {
-                        hanldeCreateEvent(selectedLocation, title, time), getCurrentEvent()
-                    }}
-                />
-            </View>
-            {/* ) : null} */}
-        </View >
+                    ) : null}
+                    {/* {(createEventVisible) ? ( */}
+                    <View>
+                        <View>
+                            <Text className="text-2xl text-[#7E7E7E] mx-5 my-5">Create a new session</Text>
+                        </View>
+                        <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl w-11/12 h-52 mx-5`}>
+                            <View className={`${tailwind.viewWrapper} w-80 my-5 mx-5`}>
+                                <SelectList
+                                    data={locations}
+                                    setSelected={setSelectedLocation}
+                                    placeholder='Select Location'
+                                    placeholderTextColor='#726F6F'
+                                    inputStyles={{
+                                        color: "#666",
+                                        padding: 0,
+                                        margin: 0,
+                                    }}
+                                    boxStyles={{
+                                        // borderWidth: 1,
+                                        borderRadius: 15,
+                                        borderColor: '#fff',
+                                        color: '#fff',
+                                        // margin: 5,
+                                        backgroundColor: '#fff'
+                                    }}
+                                    dropdownStyles={{
+                                        borderWidth: 1,
+                                        borderRadius: 4,
+                                        borderColor: '#DDDDDD',
+                                        backgroundColor: '#DDDDDD',
+                                        color: '#fff',
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                        marginBottom: 5,
+                                        marginTop: 0,
+                                        position: 'relative'
+                                    }}
+                                />
+                            </View>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <TextInput
+                                    className={`${tailwind.inputs} p-[10] w-80 my-[-10] mx-5`}
+                                    // placeholder="Bench Enablement Program"
+                                    //autoCapitalize='none'
+                                    //autoCorrect={false}                                   
+                                    value={title}
+                                    placeholder={'Event title'}
+                                    onChangeText={(text) => setTitle(text)}
+                                    autoCorrect={false}
+
+                                />
+
+                            </View>
+                            <View className={`${tailwind.viewWrapper} flex-row`}>
+                                <TextInput
+                                    className={`${tailwind.inputs} p-[10] w-80  mx-5`}
+                                    placeholder="Date:"
+                                />
+
+                                <TouchableOpacity onPress={showPicker}>
+                                    <Text className="mx-[-250] text-[#726F6F]" style={{
+                                        //borderWidth: 1,
+                                        // borderColor: 'gray',
+                                        padding: 5,
+                                        borderRadius: 5,
+                                        marginTop: 5,
+                                    }}>
+                                        {date.toLocaleDateString()}</Text>
+                                </TouchableOpacity>
+                                <DateTimePickerModal
+                                    value={date}
+                                    isVisible={showDatePicker}
+                                    mode="date"
+                                    onConfirm={handleDateChange}
+                                    onCancel={() => setShowDatePicker(false)}
+                                    date={date}
+                                />
+
+                            </View>
+
+                            <View>
+                                <RNDateTimePicker
+                                    value={time}
+                                    mode={'datetime'}
+                                    display={Platform.OS === `ios` ? `default` : `default`}
+                                    is24Hour={false}
+                                    onChange={() => setTime(time)}
+                                />
+
+                            </View>
+                        </View>
+
+                        <View className="justify-center items-center">
+                            <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
+                                onPress={() => {
+                                    hanldeCreateEvent(selectedLocation, title, time), getCurrentEvent()
+                                }}>
+                                <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    {/* ) : null} */}
+                </View >
+            </KeyboardAvoidingView>
+        </ScrollView>
     )
 
 }
+const styles = StyleSheet.create({
+
+});
 
 
 export default Event

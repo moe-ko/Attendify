@@ -18,7 +18,7 @@ const Welcome = ({ navigation }) => {
                             className={`${tailwind.buttonBlue}`}
                             onPress={() => { navigation.navigate('Sign In') }}
                         >
-                            <Text className={`${tailwind.buttonWhiteText}`}>Login</Text>
+                            <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>
                         </TouchableOpacity>
                     </View>
                     <View className={`${tailwind.viewWrapper} w-11/12`}>

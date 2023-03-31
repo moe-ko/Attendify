@@ -85,11 +85,13 @@ const Profile = ({ navigation }) => {
 
 
     return (
-        <View>
+        <View >
             <View className="bg-[#ECF0F3] mx-5">
+                <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-b-2xl w-screen mx-[-20] h-10`} />
+
 
                 <Image
-                    className="rounded-full h-20 w-20 mx-36 my-2"
+                    className="rounded-full h-20 w-20 mx-36 my-[-56]"
                     source={{
                         uri: `${avatar}`,
                     }}
@@ -97,7 +99,7 @@ const Profile = ({ navigation }) => {
                 />
             </View>
 
-            <View className="my-2">
+            <View className="my-14">
 
                 <View className="justify-center items-center">
                     <Text>User: {name}</Text>
@@ -107,7 +109,7 @@ const Profile = ({ navigation }) => {
                 </View>
             </View>
 
-            <View className={`${tailwind.viewWrapper} bg-white w-11/12 rounded-xl mx-4 h-28 shadow-2xl my-10`}>
+            <View className={`${tailwind.viewWrapper} bg-white w-11/12 rounded-xl mx-4 h-28 shadow-2xl my-2`}>
                 <View className="flex-row py-2 px-2">
                     <Text>Email </Text>
                     <Text className="px-12">{email}</Text>
@@ -145,7 +147,7 @@ const Profile = ({ navigation }) => {
                         onPress={() => { console.log('Link to SeeVee') }}
 
                     >
-                        <Text className={`${tailwind.buttonWhiteText}`}>Check Attendances</Text>
+                        <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
                     </TouchableOpacity>
                 </View>
             </View>
