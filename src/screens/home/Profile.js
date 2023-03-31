@@ -361,7 +361,7 @@ const Profile = ({ navigation }) => {
                             <View className={`${tailwind.viewWrapper} `}>
                                 <TouchableOpacity
                                     className={`${tailwind.buttonWhite}`}
-                                    onPress={() => setIsModalUnitsVisible(!isModalUnitsVisibl)}>
+                                    onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                                     <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                 </TouchableOpacity>
                             </View>
