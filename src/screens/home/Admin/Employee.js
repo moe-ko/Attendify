@@ -104,29 +104,24 @@ const Employee = ({ route }) => {
             <Avatar rounded size={70} source={{ uri: `${route.params['avatar']}` }} />
             <Text>{route.params['full_name']}</Text>
             <Text>{route.params['employee_id']}</Text>
-            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
-                <TouchableOpacity
-                    style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
-                    onPress={() => { setIsPermissionVisible(true) }}>
-                    <Icon name="ellipsis-horizontal" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
-                </TouchableOpacity>
-            )}>
-                <Avatar
-                    rounded
-                    icon={{
-                        name: 'person-outline',
-                        type: 'material',
-                        size: 26,
-                    }}
-                    containerStyle={{ backgroundColor: COLORS.primary }}
-                />
-                <ListItem.Content>
-                    <ListItem.Title>User</ListItem.Title>
-                </ListItem.Content>
-                <Text>{permission}</Text>
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
+            <TouchableOpacity onPress={() => { setIsPermissionVisible(true) }}>
+                <ListItem bottomDivider>
+                    <Avatar
+                        rounded
+                        icon={{
+                            name: 'person-outline',
+                            type: 'material',
+                            size: 26,
+                        }}
+                        containerStyle={{ backgroundColor: COLORS.primary }}
+                    />
+                    <ListItem.Content>
+                        <ListItem.Title>User</ListItem.Title>
+                    </ListItem.Content>
+                    <Text>{permission}</Text>
+                    <ListItem.Chevron />
+                </ListItem>
+            </TouchableOpacity>
             <ListItem bottomDivider>
                 <Avatar
                     rounded
@@ -142,29 +137,22 @@ const Employee = ({ route }) => {
                 </ListItem.Content>
                 <Text>{route.params['email']}</Text>
             </ListItem>
-            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
-                <TouchableOpacity
-                    style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
-                    onPress={() => { setIsUnitVisible(true) }}>
-                    <Icon name="ellipsis-horizontal" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
-                </TouchableOpacity>
-            )}>
-                <Avatar
-                    rounded
-                    icon={{
-                        name: 'people-outline',
-                        type: 'material',
-                        size: 26,
-                    }}
-                    containerStyle={{ backgroundColor: COLORS.primary }}
-                />
-                <ListItem.Content>
-                    <ListItem.Title>Unit/Subunit</ListItem.Title>
-                </ListItem.Content>
-                <Text>{unit}/{subunit}</Text>
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
+            <TouchableOpacity onPress={() => { setIsUnitVisible(true) }}>
+                <ListItem>
+                    <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
+                        icon={{
+                            name: 'people-outline',
+                            type: 'material',
+                            size: 26,
+                        }}
+                    />
+                    <ListItem.Content>
+                        <ListItem.Title>Unit/Subunit</ListItem.Title>
+                    </ListItem.Content>
+                    <Text>{unit}/{subunit}</Text>
+                    <ListItem.Chevron />
+                </ListItem>
+            </TouchableOpacity>
             <Button title="SeeVee" />
             <Button title="Check Report" />
             <Text>Bench Projects</Text>
