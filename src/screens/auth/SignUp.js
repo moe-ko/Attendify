@@ -18,7 +18,7 @@ const SignUp = ({ navigation }) => {
     const [password, setPassword] = useState('');
     const [validpassword, setValidPassword] = useState(false);
     const [validpasswordSpace, setValidPasswordSpace] = useState(false);
-     const [validpasswordChar, setValidPasswordChar] = useState(false);
+    const [validpasswordChar, setValidPasswordChar] = useState(false);
     const [confirmPassword, setConfirmPassword] = useState('');
     const [validconfirmPassword, setValidConfirmPassword] = useState();
     const [error, setError] = useState('');
@@ -29,17 +29,17 @@ const SignUp = ({ navigation }) => {
         getSubunits()
     })
 
-     useEffect(() => {
-         if (password === confirmPassword) {
-             setValidConfirmPassword(true);
-         }
-         else {
-             setValidConfirmPassword(false);
-             }
-         }, [ , confirmPassword]);
-            
-    
-    
+    useEffect(() => {
+        if (password === confirmPassword) {
+            setValidConfirmPassword(true);
+        }
+        else {
+            setValidConfirmPassword(false);
+        }
+    }, [, confirmPassword]);
+
+
+
 
     getSubunits = () => {
         firebase.firestore()
@@ -61,8 +61,8 @@ const SignUp = ({ navigation }) => {
         return () => subscriber();
     }
     const handleCheckEmail = (text) => {
-       // let re = /\S+@\S+\.\S+/;
-       // let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+        // let re = /\S+@\S+\.\S+/;
+        // let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
         let regex = /^[a-z]+\.[a-z]+(@infosys.com)$/;
         setEmail(text);
         if (regex.test(text)) {
@@ -72,7 +72,7 @@ const SignUp = ({ navigation }) => {
         }
     };
     const handleEmpId = (text) => {
-        
+
         let regex = /^[0-9]{7}$/;
         setEmpId(text);
         if (regex.test(text)) {
@@ -81,42 +81,39 @@ const SignUp = ({ navigation }) => {
             setValidEmpId(true);
         }
     };
-    
-    
+
+
     const checkPasswordValidity = value => {
-      const isNonWhiteSpace = /^\S+$/;
+        const isNonWhiteSpace = /^\S+$/;
         const isValidLength = /^.{8,16}$/;
         const isValidChar = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/;
         setPassword(value);
-      
-        if ((!isValidLength.test(value))) 
-        {
-           
+
+        if ((!isValidLength.test(value))) {
+
             setValidPassword(true);
-           
+
         }
         else {
             setValidPassword(false);
 
-           
-        
+
+
         }
-        if (!isNonWhiteSpace.test(value))
-        {
+        if (!isNonWhiteSpace.test(value)) {
             setValidPasswordSpace(true);
         }
         else {
             setValidPasswordSpace(false);
         }
-        if (!isValidChar.test(value))
-        {
+        if (!isValidChar.test(value)) {
             setValidPasswordChar(true);
         }
         else {
             setValidPasswordChar(false);
         }
-         
-    };   
+
+    };
 
     return (
         <ScrollView>
@@ -133,13 +130,13 @@ const SignUp = ({ navigation }) => {
                             placeholder="Employee ID"
                             autoCapitalize='none'
                             autoCorrect={false}
-                           // onBlur={(e) => this.handleEmpId(e.target.value)}
+                        // onBlur={(e) => this.handleEmpId(e.target.value)}
                         />
                     </View>
-                   
+
                     {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
-                    : null }
-                    
+                        : null}
+
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             className={`${tailwind.inputs}`}
@@ -150,19 +147,19 @@ const SignUp = ({ navigation }) => {
                         />
                     </View>
                     <View className={`${tailwind.viewWrapper}`}>
-                         <SelectList
+                        <SelectList
                             data={units}
                             setSelected={setSubunitSelected}
                             placeholder='Select Unit/Subunit'
                             placeholderTextColor='#000'
                             inputStyles={{
-                              //  padding: 0,
+                                //  padding: 0,
                                 margin: 0,
-                                
+
                             }}
                             boxStyles={{
                                 borderRadius: 15,
-                        
+
                                 borderColor: '#fff',
                                 color: '#fff',
                                 backgroundColor: '#fff'
@@ -179,22 +176,22 @@ const SignUp = ({ navigation }) => {
                                 marginTop: 0,
                                 position: 'relative'
                             }}
-                        /> 
-                      </View>
+                        />
+                    </View>
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             className={`${tailwind.inputs}`}
-                            value={email} 
+                            value={email}
                             onChangeText={text => handleCheckEmail(text)}
-                          //  onChangeText={(text) => setEmail( email)}
+                            //  onChangeText={(text) => setEmail( email)}
                             placeholder="Email"
                             autoCapitalize='none'
                             autoCorrect={false}
                         />
-    
+
                     </View>
                     {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Wrong Format email</Text>)}
-                      {/*}  : (
+                    {/*}  : (
                         <Text className="text-[#ff0000]"></Text>)
                      <View className={`${tailwind.viewWrapper}`}>
                          <SelectList
@@ -226,7 +223,7 @@ const SignUp = ({ navigation }) => {
                             }}
                         /> 
                       </View> */}
-                        {/* <Picker
+                    {/* <Picker
                            selectedValue={setSubunitSelected}
                             onValueChange={(itemValue) => setSubunitSelected(itemValue)}
                             placeholder='Select Unit/Subunit'
@@ -236,7 +233,7 @@ const SignUp = ({ navigation }) => {
                         <Picker.Item label="Python" value="python" />
                         <Picker.Item label="Ruby" value="ruby" />
                     </Picker> */}
-                    
+
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             className={`${tailwind.inputs}`}
@@ -250,11 +247,11 @@ const SignUp = ({ navigation }) => {
                     </View>
                     {validpasswordSpace && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password shouldn`t contain space</Text>}
                     {validpassword && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password must be 8-16 characters long</Text>}
-                    
+
                     {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast an uppercase </Text>}
                     {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a lowercase</Text>}
                     {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a number</Text>}
-                       
+
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             className={`${tailwind.inputs}`}
@@ -266,20 +263,20 @@ const SignUp = ({ navigation }) => {
                         />
                     </View>
                     {validconfirmPassword ? (<Text className="text-[#ff0000]"></Text>)
-                    :(<Text className=" text-red-500">Password should match</Text>)}
-                     
-                       
-                        <View className={`${tailwind.viewWrapper}`}>
-                        
-                            <TouchableOpacity
-                                className={`${tailwind.buttonBlue}`}
-                                onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
-                                disabled={(!email.trim() || !password.trim())}
-                            >
-                                <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
-                            </TouchableOpacity>
-                    
-                        </View>
+                        : (<Text className=" text-red-500">Password should match</Text>)}
+
+
+                    <View className={`${tailwind.viewWrapper}`}>
+
+                        <TouchableOpacity
+                            className={`${tailwind.buttonBlue}`}
+                            onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
+                            disabled={(!email.trim() || !password.trim())}
+                        >
+                            <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
+                        </TouchableOpacity>
+
+                    </View>
                     <View className={`flex-row justify-center items-center`}>
                         <Text className={`text-center`}>Already an account?
                         </Text>

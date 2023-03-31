@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking } from 'react-native'
+import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
@@ -28,7 +28,7 @@ const Profile = ({ navigation }) => {
         // getSubunits()
         getCurrentEmployee()
     }, [subunitId])
-    getSubunits()
+
 
     getSubunits = () => {
         firebase.firestore()
@@ -40,6 +40,7 @@ const Profile = ({ navigation }) => {
                 });
             });
     }
+    getSubunits()
     getUnits = (subunit_id, subunit_name, id) => {
         const subscriber = firebase.firestore()
             .collection('units')
@@ -75,7 +76,7 @@ const Profile = ({ navigation }) => {
                     setEmpId(documentSnapshot.id)
                     setEmail(documentSnapshot.data()['email'])
                     setName(documentSnapshot.data()['full_name'])
-                    setPermission(documentSnapshot.data()['permission_id'])
+                    setPermission(documentSnapshot.data()['permission'])
                     setAvatar(documentSnapshot.data()['avatar'])
                     getStatusEmployee(documentSnapshot.data()['status_id'])
                 });
@@ -130,81 +131,187 @@ const Profile = ({ navigation }) => {
     }
 
     return (
-        <View>
-            <View className={`${tailwind.containerWrapper2}`}>
-                <View className={`${tailwind.container2}`}>
-                </View>
-                <View>
+        <ScrollView>
+            <KeyboardAvoidingView>
+                <View className={`${tailwind.containerWrapper2}`}>
+                    <View className={`${tailwind.container2}`}>
+                    </View>
+                    <View>
 
-                    <Image
-                        className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                        source={{
-                            uri: `${avatar}`,
-                        }}
+                        <Image
+                            className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
+                            source={{
+                                uri: `${avatar}`,
+                            }}
 
-                    />
-                </View>
-                <View className="py-1 shadow-2xl justify-center items-center">
-                    <View><Text>User: {name}</Text></View>
-                    <View className="py-1"><Text>Employee Id: {empId}</Text></View>
-                </View>
-                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                    <Avatar
-                        rounded
-                        icon={{
-                            name: 'mail-outline',
-                            type: 'material',
-                            size: 26,
-                        }}
-                        containerStyle={{ backgroundColor: COLORS.primary }}
-                    />
-                    <ListItem.Content>
-                        <ListItem.Title>Email </ListItem.Title>
-                    </ListItem.Content>
-                    <Text>{email}</Text>
-                </ListItem>
-                <TouchableOpacity onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
+                        />
+                    </View>
+                    <View className="pb-4 justify-center items-center">
+                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
+                    </View>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                        <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
+                            icon={{
+                                name: 'trending-up',
+                                type: 'material',
+                                size: 26,
+                            }}
+                        />
+                        <ListItem.Content>
+                            <ListItem.Title>Permission</ListItem.Title>
+                        </ListItem.Content>
+                        <Text>{permission}</Text>
+                    </ListItem>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <Avatar
                             rounded
                             icon={{
-                                name: 'lock-open',
+                                name: 'mail-outline',
                                 type: 'material',
                                 size: 26,
                             }}
                             containerStyle={{ backgroundColor: COLORS.primary }}
                         />
                         <ListItem.Content>
-                            <ListItem.Title>Password</ListItem.Title>
+                            <ListItem.Title>Email </ListItem.Title>
                         </ListItem.Content>
-                        <Text>******</Text>
-                        <ListItem.Chevron />
+                        <Text>{email}</Text>
                     </ListItem>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                        <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
-                            icon={{
-                                name: 'people-outline',
-                                type: 'material',
-                                size: 26,
-                            }}
-                        />
-                        <ListItem.Content>
-                            <ListItem.Title>Unit/Subunit</ListItem.Title>
-                        </ListItem.Content>
-                        <Text>{unit}/{subunit}</Text>
-                        <ListItem.Chevron />
-                    </ListItem>
-                </TouchableOpacity>
-                <KeyboardAvoidingView>
+                    <TouchableOpacity onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
+                            <Avatar
+                                rounded
+                                icon={{
+                                    name: 'lock-open',
+                                    type: 'material',
+                                    size: 26,
+                                }}
+                                containerStyle={{ backgroundColor: COLORS.primary }}
+                            />
+                            <ListItem.Content>
+                                <ListItem.Title>Password</ListItem.Title>
+                            </ListItem.Content>
+                            <Text>******</Text>
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
+                            <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
+                                icon={{
+                                    name: 'people-outline',
+                                    type: 'material',
+                                    size: 26,
+                                }}
+                            />
+                            <ListItem.Content>
+                                <ListItem.Title>Unit/Subunit</ListItem.Title>
+                            </ListItem.Content>
+                            <Text>{unit}/{subunit}</Text>
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
+                    <KeyboardAvoidingView>
+                        <Modal
+                            animationType="slide"
+                            transparent={true}
+                            visible={isModalPasswordVisible}
+                            onRequestClose={() => {
+                                Alert.alert('Modal has been closed.');
+                                setIsModalPasswordVisible(!isModalPasswordVisible);
+                            }}>
+                            <View style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'rgba(0,0,0,0.5)'
+                            }}>
+                                <View style={{
+                                    width: '80%',
+                                    margin: 20,
+                                    backgroundColor: 'white',
+                                    borderRadius: 20,
+                                    padding: 10,
+                                    alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
+                                    <Text className={`${tailwind.titleText} py-5`}>Change password</Text>
+                                    <Text className={`py-5`}>(FUNCTIONS NOT IMPLEMENTED YET)</Text>
+                                    <TextInput
+                                        placeholderTextColor="#000"
+                                        style={{
+                                            marginBottom: 10,
+                                            backgroundColor: '#F5F5F5',
+                                            width: '100%'
+                                        }}
+                                        className={`${tailwind.inputs}`}
+                                        // onChangeText={setConfirmPassword}
+                                        placeholder="Old Password"
+                                        autoCapitalize='none'
+                                        secureTextEntry={true}
+                                        autoCorrect={false}
+                                    />
+                                    <TextInput
+                                        placeholderTextColor="#000"
+                                        style={{
+                                            marginBottom: 10,
+                                            backgroundColor: '#F5F5F5',
+                                            width: '100%'
+                                        }}
+                                        className={`${tailwind.inputs}`}
+                                        // onChangeText={setConfirmPassword}
+                                        placeholder="New Password"
+                                        autoCapitalize='none'
+                                        secureTextEntry={true}
+                                        autoCorrect={false}
+                                    />
+                                    <TextInput
+                                        className={`${tailwind.inputs}`}
+                                        placeholderTextColor="#000"
+                                        style={{
+                                            marginBottom: 10,
+                                            backgroundColor: '#F5F5F5',
+                                            width: '100%'
+                                        }}
+                                        // className={`${tailwind.inputs}`}
+                                        // onChangeText={setConfirmPassword}
+                                        placeholder="Confirm Password"
+                                        autoCapitalize='none'
+                                        secureTextEntry={true}
+                                        autoCorrect={false}
+                                    />
+                                    <View className={`${tailwind.viewWrapper}`}>
+                                        <TouchableOpacity
+                                            className={`${tailwind.buttonBlue}`}
+                                            onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                                            <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View className={`${tailwind.viewWrapper} `}>
+                                        <TouchableOpacity
+                                            className={`${tailwind.buttonWhite}`}
+                                            onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                                            <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                            </View>
+                        </Modal>
+                    </KeyboardAvoidingView>
                     <Modal
                         animationType="slide"
                         transparent={true}
-                        visible={isModalPasswordVisible}
+                        visible={isModalUnitsVisible}
                         onRequestClose={() => {
                             Alert.alert('Modal has been closed.');
-                            setIsModalPasswordVisible(!isModalPasswordVisible);
+                            setIsModalUnitsVisible(!isModalUnitsVisible);
                         }}>
                         <View style={{
                             flex: 1,
@@ -228,163 +335,67 @@ const Profile = ({ navigation }) => {
                                 shadowRadius: 4,
                                 elevation: 5,
                             }}>
-                                <Text className={`${tailwind.titleText} py-5`}>Change password</Text>
-                                <Text className={`py-5`}>(FUNCTIONS NOT IMPLEMENTED YET)</Text>
-                                <TextInput
-                                    placeholderTextColor="#000"
-                                    style={{
-                                        marginBottom: 10,
-                                        backgroundColor: '#F5F5F5',
-                                        width: '100%'
-                                    }}
-                                    className={`${tailwind.inputs}`}
-                                    // onChangeText={setConfirmPassword}
-                                    placeholder="Old Password"
-                                    autoCapitalize='none'
-                                    secureTextEntry={true}
-                                    autoCorrect={false}
-                                />
-                                <TextInput
-                                    placeholderTextColor="#000"
-                                    style={{
-                                        marginBottom: 10,
-                                        backgroundColor: '#F5F5F5',
-                                        width: '100%'
-                                    }}
-                                    className={`${tailwind.inputs}`}
-                                    // onChangeText={setConfirmPassword}
-                                    placeholder="New Password"
-                                    autoCapitalize='none'
-                                    secureTextEntry={true}
-                                    autoCorrect={false}
-                                />
-                                <TextInput
-                                    className={`${tailwind.inputs}`}
-                                    placeholderTextColor="#000"
-                                    style={{
-                                        marginBottom: 10,
-                                        backgroundColor: '#F5F5F5',
-                                        width: '100%'
-                                    }}
-                                    // className={`${tailwind.inputs}`}
-                                    // onChangeText={setConfirmPassword}
-                                    placeholder="Confirm Password"
-                                    autoCapitalize='none'
-                                    secureTextEntry={true}
-                                    autoCorrect={false}
-                                />
+                                <Text className={`${tailwind.titleText} py-5`}>Change Unit/Subunit</Text>
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <SelectList
+                                        data={units}
+                                        setSelected={selected => setSubunitSelected(selected)}
+                                        placeholder='Select Unit/Subunit'
+                                        placeholderTextColor='#F5F5F5'
+                                        inputStyles={{
+                                            margin: 0,
+                                        }}
+                                        boxStyles={{
+                                            borderRadius: 15,
+                                            borderColor: '#fff',
+                                            color: '#fff',
+                                            backgroundColor: '#F5F5F5'
+                                        }}
+                                        dropdownStyles={{
+                                            borderWidth: 1,
+                                            borderRadius: 4,
+                                            borderColor: '#DDDDDD',
+                                            backgroundColor: '#DDDDDD',
+                                            color: '#fff',
+                                            marginLeft: 5,
+                                            marginRight: 5,
+                                            marginBottom: 5,
+                                            marginTop: 0,
+                                            position: 'relative'
+                                        }}
+                                    />
+                                </View>
                                 <View className={`${tailwind.viewWrapper}`}>
                                     <TouchableOpacity
                                         className={`${tailwind.buttonBlue}`}
-                                        onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                                        onPress={() => updateUnit()}>
                                         <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View className={`${tailwind.viewWrapper} `}>
                                     <TouchableOpacity
                                         className={`${tailwind.buttonWhite}`}
-                                        onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                                        onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         </View>
                     </Modal>
-                </KeyboardAvoidingView>
-                <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={isModalUnitsVisible}
-                    onRequestClose={() => {
-                        Alert.alert('Modal has been closed.');
-                        setIsModalUnitsVisible(!isModalUnitsVisible);
-                    }}>
-                    <View style={{
-                        flex: 1,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        backgroundColor: 'rgba(0,0,0,0.5)'
-                    }}>
-                        <View style={{
-                            width: '80%',
-                            margin: 20,
-                            backgroundColor: 'white',
-                            borderRadius: 20,
-                            padding: 10,
-                            alignItems: 'center',
-                            shadowColor: '#000',
-                            shadowOffset: {
-                                width: 0,
-                                height: 2,
-                            },
-                            shadowOpacity: 0.25,
-                            shadowRadius: 4,
-                            elevation: 5,
-                        }}>
-                            <Text className={`${tailwind.titleText} py-5`}>Change Unit/Subunit</Text>
-                            <View className={`${tailwind.viewWrapper}`}>
-                                <SelectList
-                                    data={units}
-                                    setSelected={selected => setSubunitSelected(selected)}
-                                    placeholder='Select Unit/Subunit'
-                                    placeholderTextColor='#F5F5F5'
-                                    inputStyles={{
-                                        margin: 0,
-                                    }}
-                                    boxStyles={{
-                                        borderRadius: 15,
-                                        borderColor: '#fff',
-                                        color: '#fff',
-                                        backgroundColor: '#F5F5F5'
-                                    }}
-                                    dropdownStyles={{
-                                        borderWidth: 1,
-                                        borderRadius: 4,
-                                        borderColor: '#DDDDDD',
-                                        backgroundColor: '#DDDDDD',
-                                        color: '#fff',
-                                        marginLeft: 5,
-                                        marginRight: 5,
-                                        marginBottom: 5,
-                                        marginTop: 0,
-                                        position: 'relative'
-                                    }}
-                                />
-                            </View>
-                            <View className={`${tailwind.viewWrapper}`}>
-                                <TouchableOpacity
-                                    className={`${tailwind.buttonBlue}`}
-                                    onPress={() => updateUnit()}>
-                                    <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View className={`${tailwind.viewWrapper} `}>
-                                <TouchableOpacity
-                                    className={`${tailwind.buttonWhite}`}
-                                    onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+
+                    <View className={`${tailwind.viewWrapper} px-4`}>
+                        <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                            <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
+                            <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
+                        </TouchableOpacity>
                     </View>
-                </Modal>
-                {/* </View> */}
-                {permission == '1' ? (
-                    <TouchableOpacity onPress={() => { console.log('Make admin') }}>
-                        <Text>Make user an admin</Text>
-                    </TouchableOpacity>
-                ) : null}
-                <TouchableOpacity className={`${tailwind.buttonBlue} bg-black w-96 mb-7`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
-                    <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
-                </TouchableOpacity>
+                </View>
 
-                <TouchableOpacity className={`${tailwind.buttonBlue} w-96 mb-7`} onPress={() => { handleSignOut() }}>
-                    <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
-                </TouchableOpacity>
-
-
-            </View>
-        </View >
+            </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 
