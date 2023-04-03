@@ -13,4 +13,10 @@ export default {
     buttonWhite: 'p-[15] b-[7] bg-white rounded-2xl justify-center',
     //checkin
     textLine: 'text-white font-semibold mx-auto mb-5',
+
+    //profile
+    containerWrapper2: 'bg-[#ECF0F3] w-full h-full',
+    container2: 'bg-[#62ABEF] h-32 rounded-b-3xl mb-5',
+    
+
 }

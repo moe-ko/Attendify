@@ -2,7 +2,8 @@ import { View, Text, TextInput, TouchableOpacity, Alert, ScrollView, KeyboardAvo
 import React, { useState } from 'react'
 import { firebase } from '../../../config'
 import tailwind from '../../constants/tailwind'
-//import * as Animatable from 'react-native-animatable'
+import { ROUTES } from '../..'
+
 
 const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
@@ -26,7 +27,7 @@ const SignIn = ({ navigation }) => {
         <ScrollView>
             <KeyboardAvoidingView behavior={'position'}>
                 <View className={`${tailwind.containerWrapper}`}>
-                    <View className={`${tailwind.container}`}>
+                    <View className={`${tailwind.container} h-screen`}>
                         <View className={`${tailwind.title}`}>
                             <Text className={`${tailwind.titleText}`}>Sign In</Text>
                         </View>
@@ -59,7 +60,7 @@ const SignIn = ({ navigation }) => {
 
 
                         <View className={`${tailwind.viewWrapper}`}>
-                            <Text onPress={() => { navigation.navigate('Forgotpassword') }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
+                            <Text onPress={() => { navigation.navigate(ROUTES.FORGOT_PASS) }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
                         </View>
                         <View className={`${tailwind.viewWrapper}`}>
                             <TouchableOpacity
@@ -73,7 +74,7 @@ const SignIn = ({ navigation }) => {
                         </View>
                         <View className={`${tailwind.viewWrapper} bottom-0 flex-row justify-center`}>
                             <Text className={`text-right`}>New User? </Text>
-                            <TouchableOpacity onPress={() => { navigation.navigate('Sign Up') }}>
+                            <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.SIGNUP) }}>
                                 <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>
                             </TouchableOpacity>
 

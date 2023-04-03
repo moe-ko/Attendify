@@ -22,7 +22,9 @@ import { arrayUnion } from "firebase/firestore";
 import PieChart from './Chart'
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
+
 import DateTimePickerModal from '@react-native-community/datetimepicker';
+
 
 
 const Event = ({ props }) => {
@@ -88,7 +90,7 @@ const Event = ({ props }) => {
     getCurrentEvent = () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('end', 'asc')
+            .orderBy('end', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
@@ -163,6 +165,7 @@ const Event = ({ props }) => {
             });
     }
     return (
+
         <ScrollView>
             <KeyboardAvoidingView>
                 <View>
@@ -335,6 +338,13 @@ const Event = ({ props }) => {
                 </View >
             </KeyboardAvoidingView>
         </ScrollView>
+        
+                        
+                                
+                     
+            
+          
+           
     )
 
 }

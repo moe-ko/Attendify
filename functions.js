@@ -3,6 +3,7 @@ import { firebase } from './config'
 import { format } from 'date-fns'
 import { Alert } from 'react-native'
 
+
 export const checkConnection = () => {
     return NetInfo.fetch().then(state => {
         return state.isConnected
@@ -18,7 +19,7 @@ export const checkIpAddress = () => {
 export const handleSignUp = (navigation, empId, email, password, name, subunitSelected, permissionId, statusId) => {
     firebase.auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(() => { addEmployeeDetails(empId, email, name, subunitSelected, permissionId, statusId) })
+        .then(() => { addEmployeeDetails(empId, email, name, subunitSelected) })
         .then(() => { navigation })
         .catch(error => {
             console.log(error)
@@ -31,13 +32,14 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
         .collection('employees')
         .doc(empId)
         .set({
+            employee_id: empId,
             createdAt: format(new Date(), "dd MMMM yyyy - H:mm:ss"),
             email: email,
             full_name: name,
             status_id: '1',
             subunit_id: subunitSelected,
             avatar: `https://source.unsplash.com/random/150x150/?animal`,
-            permission_id: '0'
+            permission: 'Associate'
         })
 }
 // export const getSubunits = async () => {
@@ -146,6 +148,7 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
             status_id: '1',
             title: title,
             attendance: [],
+            absent: [],
             sick_leave: [],
             annual_leave: [],
         })

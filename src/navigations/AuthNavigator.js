@@ -1,140 +1,34 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import { Welcome, SignIn, SignUp, Home } from "../screens";
+import MenuDrawerNavigator from "./MenuDrawerNavigator";
+import { Welcome, SignIn, SignUp, EnterOTP, Checkin, Forgotpassword, ResetPassword } from "../screens";
 import { ROUTES } from "..";
-import BottomTabNavigator from "./BottomNavigator";
-import EnterOTP from "../screens/auth/EnterOTP";
-import Checkin from "../screens/auth/Checkin";
-import UserProfile from "../screens/home/UserProfile";
-import Forgotpassword from "../screens/auth/Forgotpassword";
-import ResetPassword from "../screens/auth/ResetPassword";
-
 
 const Stack = createStackNavigator();
 
 const WelcomeStackNavigator = () => {
+    const optionsHeaderWithHeight = {
+        headerShown: false,
+        headerBackTitleVisible: false,
+        headerStyle: { height: 150, backgroundColor: '#62ABEF', elevation: 25 }
+    }
+    const optionsHeader = {
+        headerBackTitleVisible: false,
+        headerTitleStyle: { display: 'none' },
+        headerStyle: { backgroundColor: '#ECF0F3', elevation: 25, }
+    }
     return (
-        <Stack.Navigator initialRouteName="Welcome">
-            <Stack.Screen
-                name='Welcome'
-                component={Welcome}
-                options={{
-                    // headerTitle: () => <Header name='Attendify' />,
-                    headerShown: false,
-                    headerBackTitleVisible: false,
-                    headerStyle: {
-                        height: 150,
-                        backgroundColor: '#62ABEF',
-                        elevation: 25
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='Sign In'
-                component={SignIn}
-                options={{
-                    headerShown: false,
-                    headerBackTitleVisible: false,
-                    headerStyle: {
-                        height: 150,
-                        display: 'none',
-                        backgroundColor: '#62ABEF',
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='Sign Up'
-                component={SignUp}
-                options={{
-                    // headerTitle: () => <Header name='Sign Up' />,
-                    headerBackTitleVisible: false,
-                    headerTitleStyle: { display: 'none' },
-                    headerStyle: {
-                        backgroundColor: '#ECF0F3',
-                        elevation: 25,
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='Forgotpassword'
-                component={Forgotpassword}
-                options={{
-                    // headerTitle: () => <Header name='Sign Up' />,
-                    headerBackTitleVisible: false,
-                    headerTitleStyle: { display: 'none' },
-                    headerStyle: {
-                        backgroundColor: '#ECF0F3',
-                        elevation: 25,
-                    }
-                }}
-            />
-            <Stack.Screen
-                name={ROUTES.HOME}
-                component={BottomTabNavigator}
-                options={{
-                    // headerTitle: () => <Header name='Sign Up' />,
-                    headerBackTitleVisible: false,
-                    headerTitleStyle: { display: 'none' },
-                    headerStyle: {
-                        backgroundColor: '#ECF0F3',
-                        elevation: 25,
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='Checkin'
-                component={Checkin}
-                options={{
-                    // headerTitle: () => <Header name='Attendify' />,
-                    headerShown: false,
-                    headerBackTitleVisible: false,
-                    headerStyle: {
-                        height: 150,
-                        backgroundColor: '#62ABEF',
-                        elevation: 25
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='EnterOTP'
-                component={EnterOTP}
-                options={{
-                    // headerTitle: () => <Header name='Sign Up' />,
-                    headerBackTitleVisible: false,
-                    headerTitleStyle: { display: 'none' },
-                    headerStyle: {
-                        backgroundColor: '#ECF0F3',
-                        elevation: 25,
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='ResetPassword'
-                component={ResetPassword}
+        <Stack.Navigator initialRouteName="Welcome">     
 
-                options={{
-                    // headerTitle: () => <Header name='Sign Up' />,
-                    headerBackTitleVisible: false,
-                    headerTitleStyle: { display: 'none' },
-                    headerStyle: {
-                        backgroundColor: '#ECF0F3',
-                        elevation: 25,
-                    }
-                }}
-            />
-            <Stack.Screen
-                name='UserProfile'
-                component={UserProfile}
-                options={{
-                    // headerTitle: () => <Header name='Sign Up' />,
-                    headerBackTitleVisible: false,
-                    headerTitleStyle: { display: 'none' },
-                    headerStyle: {
-                        backgroundColor: '#ECF0F3',
-                        elevation: 25,
-                    }
-                }}
-            />
+            <Stack.Screen name='Welcome' component={Welcome} options={optionsHeaderWithHeight} />
+            <Stack.Screen name='Sign In' component={SignIn} options={optionsHeaderWithHeight} />
+            <Stack.Screen name='Sign Up' component={SignUp} options={optionsHeader} />
+            <Stack.Screen name='Forgotpassword' component={Forgotpassword} options={optionsHeader} />
+            <Stack.Screen name='Checkin' component={Checkin} options={optionsHeaderWithHeight} />
+            <Stack.Screen name='EnterOTP' component={EnterOTP} options={optionsHeader} />
+            <Stack.Screen name='ResetPassword' component={ResetPassword} options={optionsHeader} />
+            {/* HOME STACK */}
+            <Stack.Screen name={ROUTES.HOME} component={MenuDrawerNavigator} options={{ headerShown: false }} />
 
         </Stack.Navigator>
     );
