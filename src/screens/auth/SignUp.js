@@ -135,22 +135,23 @@ const SignUp = ({ navigation }) => {
                         />
                     </View>
 
-                    {validempId && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>}
+                    {validempId && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 7 digits </Text>}
 
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             //keyboardType='name-phone-pad'
 
                             className={`${tailwind.inputs}`}
-                            onChangeText={(text) => handleEmpName(text)}
+                            onChangeText={(text) => setName(text)}
                             //onChangeText={text => handleOnchange(text, 'name')}
                             //onFocus={() => handleError(null, 'name')}
                             placeholder="Full Name"
-                            autoCapitalize='words'
+                            autoCapitalize='none'
                             autoCorrect={false}
                         />
                     </View>
-                    {validEmpName && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Name should be in alphabets </Text>}
+                    {/*    {validEmpName && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">
+                Employee Name should be in alphabets </Text>} */}
                     <View className={`${tailwind.viewWrapper}`}>
                         <SelectList
                             data={units}
