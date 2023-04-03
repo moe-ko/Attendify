@@ -1,7 +1,8 @@
 
 import { ListItem, Avatar, BottomSheet } from '@rneui/base'
 import React, { useState, useEffect } from 'react'
-import { View, Text, Button, TouchableOpacity } from 'react-native'
+import { View, Text, Button, TouchableOpacity, KeyboardAvoidingView } from 'react-native'
+import { ScrollView } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../..'
 import { firebase } from '../../../../config'
@@ -100,86 +101,89 @@ const Employee = ({ route }) => {
     }
 
     return (
-        <View>
-            <Avatar rounded size={70} source={{ uri: `${route.params['avatar']}` }} />
-            <Text>{route.params['full_name']}</Text>
-            <Text>{route.params['employee_id']}</Text>
-            <TouchableOpacity onPress={() => { setIsPermissionVisible(true) }}>
-                <ListItem bottomDivider>
-                    <Avatar
-                        rounded
-                        icon={{
-                            name: 'person-outline',
-                            type: 'material',
-                            size: 26,
-                        }}
-                        containerStyle={{ backgroundColor: COLORS.primary }}
-                    />
-                    <ListItem.Content>
-                        <ListItem.Title>User</ListItem.Title>
-                    </ListItem.Content>
-                    <Text>{permission}</Text>
-                    <ListItem.Chevron />
-                </ListItem>
-            </TouchableOpacity>
-            <ListItem bottomDivider>
-                <Avatar
-                    rounded
-                    icon={{
-                        name: 'mail-outline',
-                        type: 'material',
-                        size: 26,
-                    }}
-                    containerStyle={{ backgroundColor: COLORS.primary }}
-                />
-                <ListItem.Content>
-                    <ListItem.Title>Email</ListItem.Title>
-                </ListItem.Content>
-                <Text>{route.params['email']}</Text>
-            </ListItem>
-            <TouchableOpacity onPress={() => { setIsUnitVisible(true) }}>
-                <ListItem>
-                    <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
-                        icon={{
-                            name: 'people-outline',
-                            type: 'material',
-                            size: 26,
-                        }}
-                    />
-                    <ListItem.Content>
-                        <ListItem.Title>Unit/Subunit</ListItem.Title>
-                    </ListItem.Content>
-                    <Text>{unit}/{subunit}</Text>
-                    <ListItem.Chevron />
-                </ListItem>
-            </TouchableOpacity>
-            <Button title="SeeVee" />
-            <Button title="Check Report" />
-            <Text>Bench Projects</Text>
-            <Text>Project name</Text>
-            <Text>Project name</Text>
-            <BottomSheet isVisible={isPermissionVisible}>
-                {bottomSheetPermission.map((l, i) => (
-                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
-                        <Icon name={l.icon} size={30} color={COLORS.primary} />
+        <ScrollView>
+            <KeyboardAvoidingView>
+                <View>
+                    <Avatar rounded size={70} source={{ uri: `${route.params['avatar']}` }} />
+                    <Text>{route.params['full_name']}</Text>
+                    <Text>{route.params['employee_id']}</Text>
+                    <TouchableOpacity onPress={() => { setIsPermissionVisible(true) }}>
+                        <ListItem bottomDivider>
+                            <Avatar
+                                rounded
+                                icon={{
+                                    name: 'person-outline',
+                                    type: 'material',
+                                    size: 26,
+                                }}
+                                containerStyle={{ backgroundColor: COLORS.primary }}
+                            />
+                            <ListItem.Content>
+                                <ListItem.Title>User</ListItem.Title>
+                            </ListItem.Content>
+                            <Text>{permission}</Text>
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
+                    <ListItem bottomDivider>
+                        <Avatar
+                            rounded
+                            icon={{
+                                name: 'mail-outline',
+                                type: 'material',
+                                size: 26,
+                            }}
+                            containerStyle={{ backgroundColor: COLORS.primary }}
+                        />
                         <ListItem.Content>
-                            <ListItem.Title >{l.title}</ListItem.Title>
+                            <ListItem.Title>Email</ListItem.Title>
                         </ListItem.Content>
+                        <Text>{route.params['email']}</Text>
                     </ListItem>
-                ))}
-            </BottomSheet>
-            <BottomSheet isVisible={isUnitVisible}>
-                {bottomSheetUnit.map((l, i) => (
-                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
-                        <Icon name={l.icon} size={30} color={COLORS.primary} />
-                        <ListItem.Content>
-                            <ListItem.Title >{l.title}</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                ))}
-            </BottomSheet>
-        </View>
-
+                    <TouchableOpacity onPress={() => { setIsUnitVisible(true) }}>
+                        <ListItem>
+                            <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
+                                icon={{
+                                    name: 'people-outline',
+                                    type: 'material',
+                                    size: 26,
+                                }}
+                            />
+                            <ListItem.Content>
+                                <ListItem.Title>Unit/Subunit</ListItem.Title>
+                            </ListItem.Content>
+                            <Text>{unit}/{subunit}</Text>
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
+                    <Button title="SeeVee" />
+                    <Button title="Check Report" />
+                    <Text>Bench Projects</Text>
+                    <Text>Project name</Text>
+                    <Text>Project name</Text>
+                    <BottomSheet isVisible={isPermissionVisible}>
+                        {bottomSheetPermission.map((l, i) => (
+                            <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
+                                <Icon name={l.icon} size={30} color={COLORS.primary} />
+                                <ListItem.Content>
+                                    <ListItem.Title >{l.title}</ListItem.Title>
+                                </ListItem.Content>
+                            </ListItem>
+                        ))}
+                    </BottomSheet>
+                    <BottomSheet isVisible={isUnitVisible}>
+                        {bottomSheetUnit.map((l, i) => (
+                            <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} >
+                                <Icon name={l.icon} size={30} color={COLORS.primary} />
+                                <ListItem.Content>
+                                    <ListItem.Title >{l.title}</ListItem.Title>
+                                </ListItem.Content>
+                            </ListItem>
+                        ))}
+                    </BottomSheet>
+                </View>
+            </KeyboardAvoidingView>
+        </ScrollView>
     )
 }
 
