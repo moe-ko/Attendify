@@ -189,7 +189,7 @@ const Profile = ({ navigation }) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                            <ItemContent title={'Unit/Subunit'} data={`${unit} / ${subunit}`} iconName={'people-outline'} />
+                            <ItemContent title={'Unit || Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
@@ -292,7 +292,6 @@ const Profile = ({ navigation }) => {
                         transparent={true}
                         visible={isModalUnitsVisible}
                         onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
                             setIsModalUnitsVisible(!isModalUnitsVisible);
                         }}>
                         <View style={{
@@ -322,7 +321,7 @@ const Profile = ({ navigation }) => {
                                     <SelectList
                                         data={units}
                                         setSelected={selected => setSubunitSelected(selected)}
-                                        placeholder='Select Unit/Subunit'
+                                        placeholder={`${unit} || ${subunit}`}
                                         placeholderTextColor='#F5F5F5'
                                         inputStyles={{
                                             margin: 0,

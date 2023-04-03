@@ -299,7 +299,7 @@ const Employee = ({ route }) => {
                                     <SelectList
                                         data={permissions}
                                         setSelected={selected => setPermission(selected)}
-                                        placeholder='Select Unit/Subunit'
+                                        placeholder={permission}
                                         placeholderTextColor='#F5F5F5'
                                         inputStyles={{
                                             margin: 0,
