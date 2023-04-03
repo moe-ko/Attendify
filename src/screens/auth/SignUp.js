@@ -6,8 +6,7 @@ import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
-import { Picker } from '@react-native-picker/picker';
-
+import { Platform } from 'react-native'
 
 const SignUp = ({ navigation }) => {
 
@@ -24,6 +23,7 @@ const SignUp = ({ navigation }) => {
     const [validconfirmPassword, setValidConfirmPassword] = useState();
     const [error, setError] = useState('');
     const [subunitSelected, setSubunitSelected] = useState('');
+    const [touched, setTouched] = useState(false);
     const units = []
 
     useEffect(() => {
@@ -81,6 +81,7 @@ const SignUp = ({ navigation }) => {
         } else {
             setValidEmpId(true);
         }
+        
     };
     
     
@@ -121,7 +122,7 @@ const SignUp = ({ navigation }) => {
 
     return (
         <ScrollView>
-            <KeyboardAvoidingView>
+            <KeyboardAvoidingView behavior='relative'>
                 <View className=" h-screen items-center px-4 bg-[#ECF0F3] w-full">
                     <View className={`${tailwind.viewWrapper}`}>
                         <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
@@ -132,14 +133,17 @@ const SignUp = ({ navigation }) => {
                             className={`${tailwind.inputs}`}
                             onChangeText={(text) => handleEmpId(text)}
                             placeholder="Employee ID"
+                            keyboardType={Platform.OS === 'android' ? "numeric" : "number-pad"}
                             autoCapitalize='none'
+                            onBlur={() => setTouched(true)}
+                          //  onFocus={() => setTouched(false)}
                             autoCorrect={false}
                            // onBlur={(e) => this.handleEmpId(e.target.value)}
                         />
                     </View>
                    
-                    {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
-                    : null }
+                    {validempId ?(<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>):null
+                    }
                     
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
@@ -194,7 +198,7 @@ const SignUp = ({ navigation }) => {
                         />
     
                     </View>
-                    {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Wrong Format email</Text>)}
+                    {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Please enter the Infosys email</Text>)}
                       {/*}  : (
                         <Text className="text-[#ff0000]"></Text>)
                      <View className={`${tailwind.viewWrapper}`}>
@@ -267,7 +271,7 @@ const SignUp = ({ navigation }) => {
                         />
                     </View>
                     {validconfirmPassword ? (<Text className="text-[#ff0000]"></Text>)
-                    :(<Text className=" text-red-500">Password should match</Text>)}
+                    :(<Text className=" text-red-500 mb-2">Password should match</Text>)}
                      
                        
                         <View className={`${tailwind.viewWrapper}`}>

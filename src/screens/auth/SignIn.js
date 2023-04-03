@@ -19,7 +19,7 @@ const SignIn = ({ navigation }) => {
 
     return (
         <ScrollView>
-            <KeyboardAvoidingView behavior={'position'}>
+            <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper}`}>
                     <View className={`${tailwind.container} h-screen`}>
                         <View className={`${tailwind.title}`}>
