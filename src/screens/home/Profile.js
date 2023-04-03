@@ -64,7 +64,6 @@ const Profile = ({ navigation }) => {
     }
 
     getCurrentEmployee = () => {
-
         firebase.firestore()
             .collection('employees')
             .where('email', '==', firebase.auth().currentUser?.email)
@@ -126,7 +125,6 @@ const Profile = ({ navigation }) => {
             });
         getSubunit(subunitSelected)
         setIsModalUnitsVisible(false)
-
     }
 
     const icon = (name) => {
@@ -141,6 +139,25 @@ const Profile = ({ navigation }) => {
                 marginRight: 5
             }
         }
+    }
+
+    const ProfileHeader = () => {
+        return (
+            <>
+                <View className={`${tailwind.container2}`}>
+                </View>
+                <View>
+                    <Image className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
+                        source={{
+                            uri: `${avatar}`,
+                        }}
+                    />
+                </View>
+                <View className="pb-4 justify-center items-center">
+                    <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
+                </View>
+            </>
+        )
     }
 
     const ItemContent = ({ title, data, iconName }) => {
@@ -159,19 +176,7 @@ const Profile = ({ navigation }) => {
         <ScrollView>
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
-                    <View className={`${tailwind.container2}`}>
-                    </View>
-                    <View>
-                        <Image
-                            className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                            source={{
-                                uri: `${avatar}`,
-                            }}
-                        />
-                    </View>
-                    <View className="pb-4 justify-center items-center">
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
-                    </View>
+                    <ProfileHeader />
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                         <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
