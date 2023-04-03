@@ -4,16 +4,19 @@ import { firebase } from '../../../config'
 import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
 import tailwind from '../../constants/tailwind'
+
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../..'
 import { SelectList } from 'react-native-dropdown-select-list'
+
 
 const Profile = ({ navigation }) => {
     const [status, setStatus] = useState('');
     const [empId, setEmpId] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [unit, setUnit] = useState('');
     const [subunitId, setSubunitId] = useState();
     const [subunit, setSubunit] = useState('');
@@ -74,6 +77,7 @@ const Profile = ({ navigation }) => {
                 querySnapshot.forEach(documentSnapshot => {
                     setSubunitId(documentSnapshot.data()['subunit_id'])
                     setEmpId(documentSnapshot.id)
+                    setPassword(documentSnapshot.data()['password'])
                     setEmail(documentSnapshot.data()['email'])
                     setName(documentSnapshot.data()['full_name'])
                     setPermission(documentSnapshot.data()['permission'])
@@ -131,6 +135,8 @@ const Profile = ({ navigation }) => {
     }
 
     return (
+
+
         <ScrollView>
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
@@ -396,6 +402,7 @@ const Profile = ({ navigation }) => {
 
             </KeyboardAvoidingView>
         </ScrollView>
+
     )
 }
 

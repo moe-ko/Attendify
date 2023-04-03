@@ -4,9 +4,13 @@ import { firebase } from '../../../config'
 import tailwind from '../../constants/tailwind'
 import { ROUTES } from '../..'
 
+
 const SignIn = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const isValidUser = true;
+    const isValidPassword = true;
 
     signInUser = async (email, password) => {
         try {
@@ -17,6 +21,7 @@ const SignIn = ({ navigation }) => {
             ]);
         }
     }
+
 
     return (
         <ScrollView>
@@ -32,11 +37,15 @@ const SignIn = ({ navigation }) => {
                                 value={email}
                                 placeholder={'Employee ID'}
                                 onChangeText={(text) => setEmail(text)}
+                                onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
                                 autoCapitalize={'none'}
                                 keyboardType={'email-address'}
                                 required
                             />
                         </View>
+
+
+
                         <View className={`${tailwind.viewWrapper}`}>
                             <TextInput
                                 className={`${tailwind.inputs}`}
@@ -48,6 +57,8 @@ const SignIn = ({ navigation }) => {
                                 required
                             />
                         </View>
+
+
                         <View className={`${tailwind.viewWrapper}`}>
                             <Text onPress={() => { navigation.navigate(ROUTES.FORGOT_PASS) }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
                         </View>
