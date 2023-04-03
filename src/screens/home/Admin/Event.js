@@ -18,7 +18,7 @@ import { format } from 'date-fns'
 import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent } from '../../../../functions'
 // import DateTimePicker from '@react-native-community/datetimepicker';
 import { arrayUnion } from "firebase/firestore";
-import RNDateTimePicker from '@react-native-community/datetimepicker';
+//import RNDateTimePicker from '@react-native-community/datetimepicker';
 import PieChart from './Chart'
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -309,7 +309,7 @@ const Event = ({ props }) => {
 
                             </View>
 
-                            <View>
+                          {/*  <View>
                                 <RNDateTimePicker
                                     value={time}
                                     mode={'datetime'}
@@ -318,7 +318,7 @@ const Event = ({ props }) => {
                                     onChange={() => setTime(time)}
                                 />
 
-                            </View>
+                            </View> */}
                         </View>
 
                         <View className="justify-center items-center">
