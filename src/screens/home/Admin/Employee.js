@@ -8,6 +8,7 @@ import { COLORS } from '../../..'
 import { firebase } from '../../../../config'
 import tailwind from '../../../constants/tailwind'
 import { SelectList } from 'react-native-dropdown-select-list'
+import { getStatusIcon, getStatusName, getAllStatus, updateStatus } from '../../../../functions'
 const Employee = ({ route }) => {
     const [subunitId, setSubunitId] = useState(route.params['subunit_id'])
     const [permission, setPermission] = useState(route.params['permission'])
@@ -17,6 +18,12 @@ const Employee = ({ route }) => {
     const [subunitSelected, setSubunitSelected] = useState('');
     const [isModalUnitsVisible, setIsModalUnitsVisible] = useState(false);
     const [isModalPermissionVisible, setIsModalPermissionVisible] = useState(false);
+    const [isModalStatusVisible, setIsModalStatusVisible] = useState(false);
+    const [statusName, setStatusName] = useState('')
+    const [statusIcon, setStatusIcon] = useState('')
+    const [statusId, setStatusId] = useState(route.params['status_id'])
+    const [allStatus, setAllStatus] = useState()
+    const st = []
     const units = []
     const permissions = [
         { key: 'Super Admin', value: 'Super Admin' },
@@ -25,7 +32,11 @@ const Employee = ({ route }) => {
     ]
     useEffect(() => {
         getSubunit(subunitId)
+        getAllStatus().then(res => setAllStatus(res))
     }, [subunitId])
+
+    getStatusIcon(statusId).then(res => setStatusIcon(res))
+    getStatusName(statusId).then(res => setStatusName(res))
 
     const getSubunit = (id) => {
         firebase.firestore()
@@ -40,7 +51,6 @@ const Employee = ({ route }) => {
             });
     }
     const getUnit = (id) => {
-        console.log('here')
         firebase.firestore()
             .collection('units')
             .doc(id)
@@ -68,7 +78,7 @@ const Employee = ({ route }) => {
             .collection('units')
             .doc(id)
             .onSnapshot(documentSnapshot => {
-                units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' > ' + subunit_name}` })
+                units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' || ' + subunit_name}` })
             });
         return () => subscriber();
     }
@@ -99,7 +109,6 @@ const Employee = ({ route }) => {
                 console.log('User updated!');
             });
         setIsModalPermissionVisible(false)
-        // setPermission(newPermission)
     }
 
     const ProfileHeader = () => {
@@ -153,18 +162,24 @@ const Employee = ({ route }) => {
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
                     <ProfileHeader />
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                        <ItemContent title={'Email'} data={route.params['email']} iconName={'mail-outline'} />
+                    </ListItem>
                     <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                             <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                        <ItemContent title={'Email'} data={route.params['email']} iconName={'mail-outline'} />
-                    </ListItem>
+                    <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                            <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                            <ItemContent title={'Unit/Subunit'} data={`${unit} / ${subunit}`} iconName={'people-outline'} />
+                            <ItemContent title={'Unit/Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
@@ -204,7 +219,7 @@ const Employee = ({ route }) => {
                                     <SelectList
                                         data={units}
                                         setSelected={selected => setSubunitSelected(selected)}
-                                        placeholder='Select Unit/Subunit'
+                                        placeholder={`${unit} || ${subunit}`}
                                         placeholderTextColor='#F5F5F5'
                                         inputStyles={{
                                             margin: 0,
@@ -320,6 +335,86 @@ const Employee = ({ route }) => {
                                     <TouchableOpacity
                                         className={`${tailwind.buttonWhite}`}
                                         onPress={() => setIsModalPermissionVisible(!isModalPermissionVisible)}>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                    {/* Modal Status */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isModalStatusVisible}
+                        onRequestClose={() => {
+                            Alert.alert('Modal has been closed.');
+                            setIsModalStatusVisible(!isModalStatusVisible);
+                        }}>
+                        <View
+                            style={{
+                                flex: 1,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                backgroundColor: 'rgba(0,0,0,0.5)'
+                            }}>
+                            <View
+                                style={{
+                                    width: '80%',
+                                    margin: 20,
+                                    backgroundColor: 'white',
+                                    borderRadius: 20,
+                                    padding: 10,
+                                    alignItems: 'center',
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                }}>
+                                <Text className={`${tailwind.titleText} py-5`}>Change Status</Text>
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <SelectList
+                                        data={allStatus}
+                                        setSelected={selected => setStatusId(selected)}
+                                        placeholder={statusName}
+                                        placeholderTextColor='#F5F5F5'
+                                        inputStyles={{
+                                            margin: 0,
+                                        }}
+                                        boxStyles={{
+                                            borderRadius: 15,
+                                            borderColor: '#fff',
+                                            color: '#fff',
+                                            backgroundColor: '#F5F5F5'
+                                        }}
+                                        dropdownStyles={{
+                                            borderWidth: 1,
+                                            borderRadius: 4,
+                                            borderColor: '#DDDDDD',
+                                            backgroundColor: '#DDDDDD',
+                                            color: '#fff',
+                                            marginLeft: 5,
+                                            marginRight: 5,
+                                            marginBottom: 5,
+                                            marginTop: 0,
+                                            position: 'relative'
+                                        }}
+                                    />
+                                </View>
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <TouchableOpacity
+                                        className={`${tailwind.buttonBlue}`}
+                                        onPress={() => updateStatus(route.params['employee_id'], statusId).then(setIsModalStatusVisible(!isModalStatusVisible))}>
+                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View className={`${tailwind.viewWrapper} `}>
+                                    <TouchableOpacity
+                                        className={`${tailwind.buttonWhite}`}
+                                        onPress={() => setIsModalStatusVisible(!isModalStatusVisible)}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                     </TouchableOpacity>
                                 </View>

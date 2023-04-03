@@ -50,9 +50,7 @@ const Profile = ({ navigation }) => {
         return () => subscriber();
     }
 
-    checkIpAddress().then(res => {
-        setIpAddress(res)
-    })
+    checkIpAddress().then(res => setIpAddress(res))
 
     const handleSignOut = () => {
         firebase.auth()
@@ -177,11 +175,11 @@ const Profile = ({ navigation }) => {
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
                     <ProfileHeader />
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
+                        <ItemContent title={'Email'} data={email} iconName={'mail-outline'} />
                     </ListItem>
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                        <ItemContent title={'Email'} data={email} iconName={'mail-outline'} />
+                        <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
                     <TouchableOpacity onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
