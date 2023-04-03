@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
-import Geolocation from '../../../components/Geolocation'
 import { checkIpAddress } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 
@@ -54,9 +53,7 @@ const Profile = ({ navigation }) => {
         return () => subscriber();
     }
 
-    checkIpAddress().then(res => {
-        setIpAddress(res)
-    })
+    checkIpAddress().then(res => setIpAddress(res))
 
     const handleSignOut = () => {
         firebase.auth()
@@ -68,7 +65,6 @@ const Profile = ({ navigation }) => {
     }
 
     getCurrentEmployee = () => {
-
         firebase.firestore()
             .collection('employees')
             .where('email', '==', firebase.auth().currentUser?.email)
@@ -131,7 +127,51 @@ const Profile = ({ navigation }) => {
             });
         getSubunit(subunitSelected)
         setIsModalUnitsVisible(false)
+    }
 
+    const icon = (name) => {
+        return {
+            properties: {
+                name: name,
+                type: 'material',
+                size: 26,
+            },
+            style: {
+                backgroundColor: COLORS.primary,
+                marginRight: 5
+            }
+        }
+    }
+
+    const ProfileHeader = () => {
+        return (
+            <>
+                <View className={`${tailwind.container2}`}>
+                </View>
+                <View>
+                    <Image className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
+                        source={{
+                            uri: `${avatar}`,
+                        }}
+                    />
+                </View>
+                <View className="pb-4 justify-center items-center">
+                    <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
+                </View>
+            </>
+        )
+    }
+
+    const ItemContent = ({ title, data, iconName }) => {
+        return (
+            <>
+                <Avatar rounded icon={icon(iconName)['properties']} containerStyle={icon()['style']} />
+                <ListItem.Content>
+                    <ListItem.Title>{title}</ListItem.Title>
+                </ListItem.Content>
+                <Text>{data}</Text>
+            </>
+        )
     }
 
     return (
@@ -140,80 +180,22 @@ const Profile = ({ navigation }) => {
         <ScrollView>
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
-                    <View className={`${tailwind.container2}`}>
-                    </View>
-                    <View>
-
-                        <Image
-                            className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                            source={{
-                                uri: `${avatar}`,
-                            }}
-
-                        />
-                    </View>
-                    <View className="pb-4 justify-center items-center">
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
-                    </View>
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
-                            icon={{
-                                name: 'trending-up',
-                                type: 'material',
-                                size: 26,
-                            }}
-                        />
-                        <ListItem.Content>
-                            <ListItem.Title>Permission</ListItem.Title>
-                        </ListItem.Content>
-                        <Text>{permission}</Text>
+                    <ProfileHeader />
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
+                        <ItemContent title={'Email'} data={email} iconName={'mail-outline'} />
                     </ListItem>
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                        <Avatar
-                            rounded
-                            icon={{
-                                name: 'mail-outline',
-                                type: 'material',
-                                size: 26,
-                            }}
-                            containerStyle={{ backgroundColor: COLORS.primary }}
-                        />
-                        <ListItem.Content>
-                            <ListItem.Title>Email </ListItem.Title>
-                        </ListItem.Content>
-                        <Text>{email}</Text>
+                        <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
                     <TouchableOpacity onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
-                            <Avatar
-                                rounded
-                                icon={{
-                                    name: 'lock-open',
-                                    type: 'material',
-                                    size: 26,
-                                }}
-                                containerStyle={{ backgroundColor: COLORS.primary }}
-                            />
-                            <ListItem.Content>
-                                <ListItem.Title>Password</ListItem.Title>
-                            </ListItem.Content>
-                            <Text>******</Text>
+                            <ItemContent title={'Password'} data={'**********'} iconName={'lock-open'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                            <Avatar rounded containerStyle={{ backgroundColor: COLORS.primary }}
-                                icon={{
-                                    name: 'people-outline',
-                                    type: 'material',
-                                    size: 26,
-                                }}
-                            />
-                            <ListItem.Content>
-                                <ListItem.Title>Unit/Subunit</ListItem.Title>
-                            </ListItem.Content>
-                            <Text>{unit}/{subunit}</Text>
+                            <ItemContent title={'Unit || Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
@@ -316,7 +298,6 @@ const Profile = ({ navigation }) => {
                         transparent={true}
                         visible={isModalUnitsVisible}
                         onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
                             setIsModalUnitsVisible(!isModalUnitsVisible);
                         }}>
                         <View style={{
@@ -346,7 +327,7 @@ const Profile = ({ navigation }) => {
                                     <SelectList
                                         data={units}
                                         setSelected={selected => setSubunitSelected(selected)}
-                                        placeholder='Select Unit/Subunit'
+                                        placeholder={`${unit} || ${subunit}`}
                                         placeholderTextColor='#F5F5F5'
                                         inputStyles={{
                                             margin: 0,

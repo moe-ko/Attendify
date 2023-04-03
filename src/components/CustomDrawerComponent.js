@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { View } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
-import { getEmployeeId } from '../functions'
+import { getEmployeeId } from '../../functions'
 import { Avatar, ListItem } from '@rneui/themed';
-import { firebase } from '../config'
+import { firebase } from '../../config'
 
 const CustomDrawerComponent = props => {
     const [avatar, setAvatar] = useState('')
