@@ -162,38 +162,7 @@ const SignUp = ({ navigation }) => {
                     </View>
                     {/*    {validEmpName && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">
                 Employee Name should be in alphabets </Text>} */}
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <SelectList
-                            data={units}
-                            setSelected={setSubunitSelected}
-                            placeholder='Select Unit/Subunit'
-                            placeholderTextColor='#fff'
-                            inputStyles={{
-                                //  padding: 0,
-                                margin: 0,
-
-                            }}
-                            boxStyles={{
-                                borderRadius: 15,
-
-                                borderColor: '#fff',
-                                color: '#fff',
-                                backgroundColor: '#fff'
-                            }}
-                            dropdownStyles={{
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                borderColor: '#DDDDDD',
-                                backgroundColor: '#DDDDDD',
-                                color: '#fff',
-                                marginLeft: 5,
-                                marginRight: 5,
-                                marginBottom: 5,
-                                marginTop: 0,
-                                position: 'relative'
-                            }}
-                        />
-                    </View>
+                    
                     <View className={`${tailwind.viewWrapper}`}>
                         <SelectList
                             data={units}
