@@ -10,6 +10,7 @@ import {
     KeyboardAvoidingView,
     ScrollView,
     StyleSheet
+    
 
 } from 'react-native'
 import { firebase } from '../../../../config'
@@ -22,7 +23,6 @@ import { arrayUnion } from "firebase/firestore";
 import PieChart from './Chart'
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
-
 import DateTimePickerModal from '@react-native-community/datetimepicker';
 
 
@@ -185,7 +185,7 @@ const Event = ({ props }) => {
                             <View >
                                 <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl w-11/12 h-72 mx-5`}>
                                     <View className="my-5 justify-center items-center">
-                                        <Text className="">{locationName}</Text>
+                                        
                                         <Text className="text-white text-xl shadow-md">Session Code:</Text>
                                         <Text className="text-white text-2xl">{currentEvent['code']}</Text>
                                         <Text className="text-white">Expire {currentEvent['end']}</Text>
@@ -226,7 +226,9 @@ const Event = ({ props }) => {
                                             </View>
                                         </TouchableOpacity>
                                     </View>
-                                    <Text className=" mx-28">Thank you for attending</Text>
+                                    <View className="justify-center items-center">
+                                        <Text>Thank you for attending</Text>
+                                    </View>
                                 </View>
                                 {/* } */}
                             </View >
@@ -237,9 +239,10 @@ const Event = ({ props }) => {
                         <View>
                             <Text className="text-2xl text-[#7E7E7E] mx-5 my-5">Create a new session</Text>
                         </View>
-                        <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl w-11/12 h-52 mx-5`}>
+                        <View className={`${tailwind.container} bg-[#62ABEF] rounded-2xl w-11/12 h-52 mx-5 mb-5`}>
                             <View className={`${tailwind.viewWrapper} w-80 my-5 mx-5`}>
                                 <SelectList
+                                  
                                     data={locations}
                                     setSelected={setSelectedLocation}
                                     placeholder='Select Location'
@@ -252,6 +255,7 @@ const Event = ({ props }) => {
                                     boxStyles={{
                                         // borderWidth: 1,
                                         borderRadius: 15,
+                                        //height:'50%',
                                         borderColor: '#fff',
                                         color: '#fff',
                                         // margin: 5,
@@ -269,11 +273,12 @@ const Event = ({ props }) => {
                                         marginTop: 0,
                                         position: 'relative'
                                     }}
-                                />
+                                /> 
+                                       
                             </View>
                             <View className={`${tailwind.viewWrapper}`}>
                                 <TextInput
-                                    className={`${tailwind.inputs} p-[10] w-80 my-[-10] mx-5`}
+                                    className={`${tailwind.inputs} p-[10] w-80  mx-5`}
                                     // placeholder="Bench Enablement Program"
                                     //autoCapitalize='none'
                                     //autoCorrect={false}                                   
@@ -292,23 +297,23 @@ const Event = ({ props }) => {
                                 />
 
                                 <TouchableOpacity onPress={showPicker}>
-                                    <Text className="mx-[-250] text-[#726F6F]" style={{
+                                    {/* <Text className="mx-[-250] text-[#726F6F]" style={{
                                         //borderWidth: 1,
                                         // borderColor: 'gray',
                                         padding: 5,
                                         borderRadius: 5,
                                         marginTop: 5,
                                     }}>
-                                        {date.toLocaleDateString()}</Text>
+                                        {date.toLocaleDateString()}</Text> */}
                                 </TouchableOpacity>
-                                <DateTimePickerModal
+                                {/* <DateTimePickerModal
                                     value={date}
                                     isVisible={showDatePicker}
                                     mode="date"
                                     onConfirm={handleDateChange}
                                     onCancel={() => setShowDatePicker(false)}
                                     date={date}
-                                />
+                                /> */}
 
                             </View>
 
