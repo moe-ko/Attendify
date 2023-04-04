@@ -200,7 +200,7 @@ const Profile = ({ navigation }) => {
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
-                    <TouchableOpacity onPress={() => { setEmailSent(!emailSent), setIsModalPasswordVisible(!isModalPasswordVisible) }}>
+                    <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
                             <ItemContent title={'Password'} data={'**********'} iconName={'lock-open'} />
                             <ListItem.Chevron />
@@ -258,7 +258,7 @@ const Profile = ({ navigation }) => {
                                         <View className={`${tailwind.viewWrapper}`}>
                                             <TouchableOpacity
                                                 className={`${tailwind.buttonBlue}`}
-                                                onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                                                onPress={() => { setEmailSent(!emailSent), setIsModalPasswordVisible(!isModalPasswordVisible) }}>
                                                 <Text className={`${tailwind.buttonWhiteText}`}>Ok</Text>
                                             </TouchableOpacity>
                                         </View>
