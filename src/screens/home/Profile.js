@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import { checkIpAddress } from '../../../functions'
 import tailwind from '../../constants/tailwind'
-
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../..'
@@ -246,14 +245,14 @@ const Profile = ({ navigation }) => {
                                 <Text className={`${tailwind.titleText} pt-5`}>Change password</Text>
                                 {emailSent ? (
                                     <>
-                                        <Avatar icon={{
-                                            name: 'done',
-                                            type: 'material',
-                                            size: 40,
-                                            color: COLORS.primary
-                                        }} containerStyle={{
-                                            // margin: 5
-                                        }} />
+                                        <Avatar
+                                            icon={{
+                                                name: 'done',
+                                                type: 'material',
+                                                size: 40,
+                                                color: COLORS.primary
+                                            }}
+                                        />
                                         <Text className={`${tailwind.slogan} pb-5`}>Email sent</Text>
                                         <View className={`${tailwind.viewWrapper}`}>
                                             <TouchableOpacity
