@@ -7607,7 +7607,7 @@ module-deps@^6.2.3:
     through2 "^2.0.0"
     xtend "^4.0.0"
 
-moment@^2.29.4:
+moment@^2.22.0, moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
@@ -8885,12 +8885,24 @@ react-native-codegen@^0.71.5:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
-react-native-date-picker@^4.2.9:
+react-native-custom-datepicker-ios@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.npmjs.org/react-native-custom-datepicker-ios/-/react-native-custom-datepicker-ios-0.0.5.tgz"
+  integrity sha512-ySJM+yhJSX9N5fP7vjinM0qz5upinD5wtgjQMxEhazPBPOTeCkmi4mozNbmDLvA+Ev61+YirGX6uGFDbaGnLlA==
+
+react-native-date-picker@^4.2.10:
   version "4.2.10"
   resolved "https://registry.npmjs.org/react-native-date-picker/-/react-native-date-picker-4.2.10.tgz"
   integrity sha512-Qtu5mvuESjhSKCsecl5+V3kcGxjB3yUUJbbAq6u8JVZj9/fRf8+IV/yfDSREqMoiLM1ljMumxFT2Qdqkw/++Lw==
   dependencies:
     prop-types "^15.8.1"
+
+react-native-datepicker@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.npmjs.org/react-native-datepicker/-/react-native-datepicker-1.7.2.tgz"
+  integrity sha512-ses0N1y44fYBmlejYwR2i+dGnQQ8v5/gacX2CrbFJiWxbcQaRuxexsZPB9YQuQkAy+uKz5Gti3Lrp3dh9BfkzA==
+  dependencies:
+    moment "^2.22.0"
 
 react-native-dropdown-select-list@^2.0.4:
   version "2.0.4"
