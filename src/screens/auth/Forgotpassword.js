@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
     Text,
     View,
@@ -9,10 +9,24 @@ import {
 } from 'react-native';
 import { ROUTES } from '../..';
 import tailwind from '../../constants/tailwind';
+import { firebase } from '../../../config'
+import { Avatar } from '@rneui/base'
+import { COLORS } from '../..';
 
 
 const ForgotPasswordMsg = ({ navigation }) => {
-
+    const [email, setEmail] = useState('');
+    const [emailSent, setEmailSent] = useState(false);
+    const [error, setError] = useState(false);
+    const forgetPassword = () => {
+        firebase.auth().sendPasswordResetEmail(email)
+            .then(() => {
+                setEmailSent(true)
+            })
+            .catch(e => {
+                setError(true)
+            })
+    }
     return (
         <KeyboardAvoidingView behavior="position">
 
@@ -22,36 +36,44 @@ const ForgotPasswordMsg = ({ navigation }) => {
                         <Text className={`${tailwind.titleText}`}>Forgot Password?</Text>
                     </View>
                     <View>
-                        <View>
-                            <Text className={`${tailwind.slogan} mb-7`} >
-                                Please enter the email address associated
-                                with your account
-                            </Text>
-                        </View>
-
-
-
-                        <View>
+                        {emailSent ? (
+                            <Avatar
+                                icon={{
+                                    name: 'done',
+                                    type: 'material',
+                                    size: 40,
+                                    color: COLORS.primary
+                                }}
+                            />
+                        ) : null}
+                        <Text className={`${tailwind.slogan} mb-7`} >
+                            {emailSent ? `An email has been sent to ${email}, please check your inbox` : `Please enter the email address associated with your account`}
+                        </Text>
+                        {!emailSent ? (
                             <TextInput
                                 className={`${tailwind.inputs} w-fit h-14`}
                                 placeholder={'Email ID'}
+                                onChangeText={(text) => { setError(false), setEmail(text) }}
                                 placeholderTextColor={'#aaa'}
+                                value={email}
                             />
-
-                        </View>
-
+                        ) : null}
+                        {error ? (
+                            <Text className={`${tailwind.slogan} tracking-wide text-red-600 mt-[7]`} > No email found, please try again</Text>
+                        ) : null}
                         <View className="mt-10">
                             <Pressable
                                 className={`${tailwind.buttonBlue} h-14 w-fit`}
-                                onPress={() => navigation.navigate(ROUTES.ENTER_OTP)}
+                                onPress={() => emailSent ? navigation.navigate(ROUTES.SIGNIN) : forgetPassword()}
+                                disabled={(!email.trim())}
                             >
-                                <Text className={`${tailwind.buttonWhiteText}`}>Submit</Text>
+                                <Text className={`${tailwind.buttonWhiteText}`}>{emailSent ? `Ok` : `Request password`}</Text>
                             </Pressable>
                         </View>
                     </View>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 

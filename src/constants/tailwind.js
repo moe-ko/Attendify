@@ -3,7 +3,7 @@ export default {
     container: 'bg-[#ECF0F3] w-full h-full rounded-t-[50] items-center px-4',
     title: 'w-full flex-row justify-center py-20',
     titleText: 'font-bold text-3xl',
-    slogan: 'font-light text-xl',
+    slogan: 'text-[#7E7E7E] font-light text-xl',
     viewWrapper: 'w-full mb-[20]',
     inputs: 'p-[15] bg-white rounded-2xl',
     blueTextLink: 'text-[#62ABEF] font-bold',
@@ -17,6 +17,6 @@ export default {
     //profile
     containerWrapper2: 'bg-[#ECF0F3] w-full h-full',
     container2: 'bg-[#62ABEF] h-32 rounded-b-3xl mb-5',
-    
+
 
 }

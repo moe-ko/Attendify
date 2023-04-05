@@ -27,7 +27,9 @@
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "date-fns": "^2.29.3",
-    "deepmerge": "^4.3.1",
+
+    "detective": "^5.2.1",
+
     "expo": "^48.0.9",
     "expo-constants": "^14.2.1",
     "expo-location": "^15.1.1",

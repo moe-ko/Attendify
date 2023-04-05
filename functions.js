@@ -241,3 +241,62 @@ export const getDates = async () => {
     //     });
     // return data
 }
+
+export const getStatusIcon = async (status) => {
+    let icon = ''
+    switch (status) {
+        case 'attendance':
+        case '1':
+            icon = 'done'
+            break;
+        case 'absent':
+        case '0':
+            icon = 'close'
+            break;
+        case 'sick_leave':
+        case '2':
+            icon = 'flight'
+            break;
+        case 'annual_leave':
+        case '3':
+            icon = 'favorite'
+            break;
+    }
+    return icon
+}
+export const getStatusName = async (statusId) => {
+    let name = ''
+    await firebase.firestore()
+        .collection('status')
+        .doc(statusId)
+        .get()
+        .then(documentSnapshot => {
+            name = documentSnapshot.data()['name']
+        });
+    return name
+}
+
+export const getAllStatus = async () => {
+    let status = []
+    await firebase.firestore()
+        .collection('status')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                status.push({ key: documentSnapshot.id, value: documentSnapshot.data()['name'] })
+            });
+        });
+    return status
+}
+
+export const updateStatus = async (id, statusId) => {
+    firebase.firestore()
+        .collection('employees')
+        .doc(id)
+        .update({
+            status_id: statusId,
+        })
+        .then(() => {
+            console.log('Status updated!');
+        });
+}
