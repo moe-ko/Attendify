@@ -7,7 +7,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { ROUTES } from '../..'
-
+import { Platform } from 'react-native'
 
 const SignUp = ({ navigation }) => {
 
@@ -164,36 +164,69 @@ const SignUp = ({ navigation }) => {
                 Employee Name should be in alphabets </Text>} */}
                     
                     <View className={`${tailwind.viewWrapper}`}>
-                        <SelectList
-                            data={units}
-                            setSelected={setSubunitSelected}
-                            placeholder='Select Unit/Subunit'
-                            placeholderTextColor='#000'
-                            inputStyles={{
-                                //  padding: 0,
-                                margin: 0,
+                        {Platform.OS == 'ios' ? (
+                            <SelectList
+                                data={units}
+                                setSelected={setSubunitSelected}
+                                placeholder='Select Unit/Subunit'
+                               placeholderTextColor='#726F6F'
+                                inputStyles={{
+                                     padding: 2,
+                                    margin: 0,
+                                    textAlign:'left'
+                                }}
+                                boxStyles={{
+                                    borderRadius: 15,
 
-                            }}
-                            boxStyles={{
-                                borderRadius: 15,
+                                    borderColor: '#fff',
+                                    color: '#fff',
+                                    backgroundColor: '#fff'
+                                }}
+                                dropdownStyles={{
+                                    borderWidth: 1,
+                                    borderRadius: 4,
+                                    borderColor: '#DDDDDD',
+                                    backgroundColor: '#DDDDDD',
+                                    color: '#fff',
+                                    marginLeft: 5,
+                                    marginRight: 5,
+                                    marginBottom: 5,
+                                    marginTop: 0,
+                                    position: 'relative'
+                                }}
+                            />) : (
+                            <SelectList
+                                data={units}
+                                setSelected={setSubunitSelected}
+                                placeholder='Select Unit/Subunit'
+                                 placeholderTextColor='#726F6F'
+                                inputStyles={{
+                                     padding: 5,
+                                    margin: 0,
+                                    marginRight: 10,
+                                    textAlign:'left'
 
-                                borderColor: '#fff',
-                                color: '#fff',
-                                backgroundColor: '#fff'
-                            }}
-                            dropdownStyles={{
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                borderColor: '#DDDDDD',
-                                backgroundColor: '#DDDDDD',
-                                color: '#fff',
-                                marginLeft: 5,
-                                marginRight: 5,
-                                marginBottom: 5,
-                                marginTop: 0,
-                                position: 'relative'
-                            }}
-                        />
+                                }}
+                                boxStyles={{
+                                    borderRadius: 15,
+                                    
+                                    borderColor: '#fff',
+                                    color: '#fff',
+                                    backgroundColor: '#fff'
+                                }}
+                                dropdownStyles={{
+                                    borderWidth: 1,
+                                    borderRadius: 4,
+                                    borderColor: '#DDDDDD',
+                                    backgroundColor: '#DDDDDD',
+                                    color: '#fff',
+                                    marginLeft: 5,
+                                    marginRight: 5,
+                                    marginBottom: 5,
+                                    marginTop: 0,
+                                    position: 'relative'
+                                }}
+                            />)}
                     </View>
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
@@ -208,8 +241,8 @@ const SignUp = ({ navigation }) => {
 
                     </View>
                     {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Wrong Format email</Text>)}
-                    {/*}  : (
-                        <Text className="text-[#ff0000]"></Text>)
+                      
+                        {/* <Text className="text-[#ff0000]"></Text>)
                      <View className={`${tailwind.viewWrapper}`}>
                          <SelectList
                             data={units}
