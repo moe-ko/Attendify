@@ -10,7 +10,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { constants } from 'buffer'
 import * as ImagePicker from 'expo-image-picker'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { getStorage,  getDownloadURL ,uploadBytes, ref} from 'firebase/storage'
+import { getStorage,  getDownloadURL ,uploadBytes, ref , deleteObject} from 'firebase/storage'
 
 
 const Profile = ({ navigation }) => {
@@ -164,24 +164,26 @@ const Profile = ({ navigation }) => {
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
         })
-       
-        if (!result.canceled) {
-           const uploadURL= await uploadImageAsync(result.assets[0].uri);
-           setAvatar(uploadURL);
-        //    firebase.firestore()
-        //     .collection('employees')
-        //     .where('email', '==', firebase.auth().currentUser?.email)
-        //     .get()
-        //     .then(querySnapshot => { setAvatar(documentSnapshot.data()[uploadURL])
-        //     });
-        //    setAvatar(result.assets[0].uri);
-           
-          }
-        }
-    
 
-      const uploadImageAsync = async(uri) =>{
-    
+        if (!result.canceled) {
+           const uploadURL= await uploadImageAsync(result.assets[0].uri); 
+           updateImage(uploadURL)
+        }
+    }
+
+    const updateImage =(url)=>{
+        firebase.firestore()
+            .collection('employees')
+            .doc(empId)
+            .update({
+                avatar: url,
+            })
+            .then(() => {
+            setAvatar(url);
+            }); 
+    }
+            
+    const uploadImageAsync = async(uri) =>{
             const blob = await new Promise((resolve, reject) => {
               const xhr = new XMLHttpRequest();
               xhr.onload = function () {
@@ -195,36 +197,35 @@ const Profile = ({ navigation }) => {
               xhr.open("GET", uri, true);
               xhr.send(null);
             });
-          
-            try {
-                const storageRef =ref(storage, `Images/image-${Date.now()}`);
-              const result = await uploadBytes(storageRef, blob);
 
-                blob.close();
-                return await getDownloadURL(storageRef);
-                
-            }catch (error) {
-                alert('Error : ${error}');
+            const imgRef = ref(storage, `${empId}/profile-picture`);
+          
+            try {             
+                deleteObject(imgRef)
+            }catch (error) { 
                 console.log(error);
+            }finally{ 
+              await uploadBytes(imgRef, blob);
+                blob.close();
+                return await getDownloadURL(imgRef);
             }
           };
       
-
-
     const ProfileHeader = () => {
         return (
             <>
                 <View className={`${tailwind.container2}`}>
                 </View>
                 <View>
-                    <Image className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                        source={{
-                            uri: avatar
-                        }}
-                    />
-                    <TouchableOpacity onPress={pickImage}>
-                        <Entypo name="pencil" size={20}/>
-                    </TouchableOpacity>
+                    
+                    <Avatar  className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
+                        size={130}
+                        rounded
+                        source={{ uri: avatar }}
+                        containerStyle={{ backgroundColor: 'blue' }}
+                        > 
+                             <Avatar.Accessory size={23} onPress={pickImage} />
+                        </Avatar> 
                 </View>
                 <View className="pb-4 justify-center items-center">
                     <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
