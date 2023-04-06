@@ -10,7 +10,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { constants } from 'buffer'
 import * as ImagePicker from 'expo-image-picker'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { getStorage,  getDownloadURL ,uploadBytes, ref , deleteObject} from 'firebase/storage'
+import { getStorage, getDownloadURL, uploadBytes, ref, deleteObject } from 'firebase/storage'
 
 
 const Profile = ({ navigation }) => {
@@ -166,12 +166,12 @@ const Profile = ({ navigation }) => {
         })
 
         if (!result.canceled) {
-           const uploadURL= await uploadImageAsync(result.assets[0].uri); 
-           updateImage(uploadURL)
+            const uploadURL = await uploadImageAsync(result.assets[0].uri);
+            updateImage(uploadURL)
         }
     }
 
-    const updateImage =(url)=>{
+    const updateImage = (url) => {
         firebase.firestore()
             .collection('employees')
             .doc(empId)
@@ -179,53 +179,52 @@ const Profile = ({ navigation }) => {
                 avatar: url,
             })
             .then(() => {
-            setAvatar(url);
-            }); 
+                setAvatar(url);
+            });
     }
-            
-    const uploadImageAsync = async(uri) =>{
-            const blob = await new Promise((resolve, reject) => {
-              const xhr = new XMLHttpRequest();
-              xhr.onload = function () {
+
+    const uploadImageAsync = async (uri) => {
+        const blob = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
                 resolve(xhr.response);
-              };
-              xhr.onerror = function (e) {
+            };
+            xhr.onerror = function (e) {
                 console.log(e);
                 reject(new TypeError("Network request failed"));
-              };
-              xhr.responseType = "blob";
-              xhr.open("GET", uri, true);
-              xhr.send(null);
-            });
+            };
+            xhr.responseType = "blob";
+            xhr.open("GET", uri, true);
+            xhr.send(null);
+        });
 
-            const imgRef = ref(storage, `${empId}/profile-picture`);
-          
-            try {             
-                deleteObject(imgRef)
-            }catch (error) { 
-                console.log(error);
-            }finally{ 
-              await uploadBytes(imgRef, blob);
-                blob.close();
-                return await getDownloadURL(imgRef);
-            }
-          };
-      
+        const imgRef = ref(storage, `${empId}/profile-picture`);
+
+        try {
+            deleteObject(imgRef)
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await uploadBytes(imgRef, blob);
+            blob.close();
+            return await getDownloadURL(imgRef);
+        }
+    };
+
     const ProfileHeader = () => {
         return (
             <>
                 <View className={`${tailwind.container2}`}>
                 </View>
                 <View>
-                    
-                    <Avatar  className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
+                    <Avatar className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
                         size={130}
                         rounded
                         source={{ uri: avatar }}
                         containerStyle={{ backgroundColor: 'blue' }}
-                        > 
-                             <Avatar.Accessory size={23} onPress={pickImage} />
-                        </Avatar> 
+                    >
+                        <Avatar.Accessory size={23} onPress={pickImage} />
+                    </Avatar>
                 </View>
                 <View className="pb-4 justify-center items-center">
                     <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>

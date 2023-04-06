@@ -94,20 +94,18 @@ export const getEmployeeId = async () => {
     return id
 }
 
-export const isAdmin = async (id) => {
-    let isAdmin = false
+export const getPermission = async (currentEmail) => {
+    let permission = false
     await firebase.firestore()
         .collection('employees')
-        .doc('111111')
+        .where('email', '==', currentEmail)
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(documentSnapshot => {
-                if (documentSnapshot.data()['permission_id'] == 1) {
-                    isAdmin = true
-                }
+                permission = documentSnapshot.data()['permission']
             });
         });
-    return isAdmin
+    return permission
 }
 
 export const getLocations = async () => {
