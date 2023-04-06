@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
-import { firebase } from '../../../config'
+import { firebase, storage } from '../../../config'
 import { checkIpAddress } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
@@ -8,6 +8,9 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../..'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { constants } from 'buffer'
+import * as ImagePicker from 'expo-image-picker'
+import Entypo from 'react-native-vector-icons/Entypo'
+import { getStorage,  getDownloadURL ,uploadBytes, ref , deleteObject} from 'firebase/storage'
 
 
 const Profile = ({ navigation }) => {
@@ -22,6 +25,7 @@ const Profile = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
     const [permission, setPermission] = useState('')
     const [avatar, setAvatar] = useState('')
+    const [image, setImage] = useState('')
     const [isModalPasswordVisible, setIsModalPasswordVisible,] = useState(false);
     const [isModalUnitsVisible, setIsModalUnitsVisible,] = useState(false);
     const [subunitSelected, setSubunitSelected] = useState('');
@@ -155,17 +159,73 @@ const Profile = ({ navigation }) => {
         }
     }
 
+    const pickImage = async () => {
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.Images,
+            allowsEditing: true,
+        })
+
+        if (!result.canceled) {
+           const uploadURL= await uploadImageAsync(result.assets[0].uri); 
+           updateImage(uploadURL)
+        }
+    }
+
+    const updateImage =(url)=>{
+        firebase.firestore()
+            .collection('employees')
+            .doc(empId)
+            .update({
+                avatar: url,
+            })
+            .then(() => {
+            setAvatar(url);
+            }); 
+    }
+            
+    const uploadImageAsync = async(uri) =>{
+            const blob = await new Promise((resolve, reject) => {
+              const xhr = new XMLHttpRequest();
+              xhr.onload = function () {
+                resolve(xhr.response);
+              };
+              xhr.onerror = function (e) {
+                console.log(e);
+                reject(new TypeError("Network request failed"));
+              };
+              xhr.responseType = "blob";
+              xhr.open("GET", uri, true);
+              xhr.send(null);
+            });
+
+            const imgRef = ref(storage, `${empId}/profile-picture`);
+          
+            try {             
+                deleteObject(imgRef)
+            }catch (error) { 
+                console.log(error);
+            }finally{ 
+              await uploadBytes(imgRef, blob);
+                blob.close();
+                return await getDownloadURL(imgRef);
+            }
+          };
+      
     const ProfileHeader = () => {
         return (
             <>
                 <View className={`${tailwind.container2}`}>
                 </View>
                 <View>
-                    <Image className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                        source={{
-                            uri: `${avatar}`,
-                        }}
-                    />
+                    
+                    <Avatar  className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
+                        size={130}
+                        rounded
+                        source={{ uri: avatar }}
+                        containerStyle={{ backgroundColor: 'blue' }}
+                        > 
+                             <Avatar.Accessory size={23} onPress={pickImage} />
+                        </Avatar> 
                 </View>
                 <View className="pb-4 justify-center items-center">
                     <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
