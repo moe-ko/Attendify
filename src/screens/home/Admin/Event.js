@@ -36,7 +36,7 @@ const Event = ({ props }) => {
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
-    })
+    }, [permission])
 
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
