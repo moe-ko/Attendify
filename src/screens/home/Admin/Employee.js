@@ -8,10 +8,12 @@ import { COLORS } from '../../..'
 import { firebase } from '../../../../config'
 import tailwind from '../../../constants/tailwind'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { getStatusIcon, getStatusName, getAllStatus, updateStatus } from '../../../../functions'
+import { getStatusIcon, getStatusName, getAllStatus, updateStatus, getPermission } from '../../../../functions'
+
 const Employee = ({ route }) => {
     const [subunitId, setSubunitId] = useState(route.params['subunit_id'])
     const [permission, setPermission] = useState(route.params['permission'])
+    const [currentUserPermission, setCurrentUserPermission] = useState()
     const [unit, setUnit] = useState('')
     const [subunit, setSubunit] = useState('')
     const [isPermissionVisible, setIsPermissionVisible] = useState(false);
@@ -33,6 +35,7 @@ const Employee = ({ route }) => {
     useEffect(() => {
         getSubunit(subunitId)
         getAllStatus().then(res => setAllStatus(res))
+        getPermission(firebase.auth().currentUser?.email).then(res => setCurrentUserPermission(res))
     }, [subunitId])
 
     getStatusIcon(statusId).then(res => setStatusIcon(res))
@@ -165,24 +168,42 @@ const Employee = ({ route }) => {
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
                         <ItemContent title={'Email'} data={route.params['email']} iconName={'mail-outline'} />
                     </ListItem>
-                    <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                            <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
-                            <ListItem.Chevron />
-                        </ListItem>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                            <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
-                            <ListItem.Chevron />
-                        </ListItem>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                            <ItemContent title={'Unit/Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
-                            <ListItem.Chevron />
-                        </ListItem>
-                    </TouchableOpacity>
+                    {currentUserPermission == 'Admin' || currentUserPermission == 'Super Admin' ? (
+                        <>
+                            <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
+                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                                    <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                                    <ListItem.Chevron />
+                                </ListItem>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
+                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                                    <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
+                                    <ListItem.Chevron />
+                                </ListItem>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                                    <ItemContent title={'Unit/Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
+                                    <ListItem.Chevron />
+                                </ListItem>
+                            </TouchableOpacity>
+                        </>
+                    ) : (
+                        <>
+
+                            <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                                <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                            </ListItem>
+                            <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                                <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
+                            </ListItem>
+                            <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                                <ItemContent title={'Unit/Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
+                            </ListItem>
+                        </>
+                    )}
+
                     {/* Modal Units */}
                     <Modal
                         animationType="slide"
