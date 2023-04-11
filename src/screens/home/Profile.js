@@ -19,7 +19,6 @@ const Profile = ({ navigation }) => {
     const [name, setName] = useState('');
     const [newName, setNewName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [unit, setUnit] = useState('');
     const [subunitId, setSubunitId] = useState();
     const [subunit, setSubunit] = useState('');
@@ -27,15 +26,14 @@ const Profile = ({ navigation }) => {
     const [permission, setPermission] = useState('')
     const [avatar, setAvatar] = useState('')
     const [newAvatar, setNewAvatar] = useState('')
-    const [image, setImage] = useState('')
     const [isModalPasswordVisible, setIsModalPasswordVisible,] = useState(false);
     const [isModalUnitsVisible, setIsModalUnitsVisible,] = useState(false);
     const [isModalProfileVisible, setIsModalProfileVisible,] = useState(false);
     const [subunitSelected, setSubunitSelected] = useState('');
     const [emailSent, setEmailSent] = useState(false);
+    const [loadingAvatar, setLoadingAvatar] = useState(true);
     const units = []
     useEffect(() => {
-        // getSubunits()
         getCurrentEmployee()
     }, [subunitId])
 
@@ -81,11 +79,11 @@ const Profile = ({ navigation }) => {
                 querySnapshot.forEach(documentSnapshot => {
                     setSubunitId(documentSnapshot.data()['subunit_id'])
                     setEmpId(documentSnapshot.id)
-                    setPassword(documentSnapshot.data()['password'])
                     setEmail(documentSnapshot.data()['email'])
                     setName(documentSnapshot.data()['full_name'])
                     setPermission(documentSnapshot.data()['permission'])
                     setAvatar(documentSnapshot.data()['avatar'])
+                    setLoadingAvatar(false)
                     getStatusEmployee(documentSnapshot.data()['status_id'])
                 });
             });
@@ -224,15 +222,28 @@ const Profile = ({ navigation }) => {
                 </View>
                 <View className=" h-32 w-32 rounded-full mx-auto my-[-80] mb-3 justify-center items-center">
                     <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
-                        <Avatar
-                            className=""
-                            size={130}
-                            rounded
-                            source={{ uri: avatar }}
-                            containerStyle={{ backgroundColor: 'white' }}
-                        >
-                            <Avatar.Accessory onPress={() => setIsModalProfileVisible(!isModalProfileVisible)} size={30} className=" mx-auto mb-3 justify-center items-center bg-[#62ABEF]" />
-                        </Avatar>
+                        {loadingAvatar ? <>
+                            <Avatar
+                                className=""
+                                size={130}
+                                rounded
+                                source={{ uri: 'https://media.tenor.com/images/e549f9798674301c5af2c91581194091/tenor.gif' }}
+                                containerStyle={{ backgroundColor: 'white' }}
+                            >
+                                <Avatar.Accessory onPress={() => setIsModalProfileVisible(!isModalProfileVisible)} size={30} className=" mx-auto mb-3 justify-center items-center bg-[#62ABEF]" />
+                            </Avatar>
+                        </> : <>
+                            <Avatar
+                                className=""
+                                size={130}
+                                rounded
+                                source={{ uri: avatar }}
+                                containerStyle={{ backgroundColor: 'white' }}
+                            >
+                                <Avatar.Accessory onPress={() => setIsModalProfileVisible(!isModalProfileVisible)} size={30} className=" mx-auto mb-3 justify-center items-center bg-[#62ABEF]" />
+                            </Avatar>
+                        </>}
+
                     </TouchableOpacity>
                 </View>
                 <View className="pb-4 justify-center items-center">
@@ -258,8 +269,6 @@ const Profile = ({ navigation }) => {
     }
 
     return (
-
-
         <ScrollView>
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
@@ -356,6 +365,7 @@ const Profile = ({ navigation }) => {
                             </View>
                         </View>
                     </Modal>
+                    {/* MODAL UNITS */}
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -432,6 +442,7 @@ const Profile = ({ navigation }) => {
                             </View>
                         </View>
                     </Modal>
+                    {/* MODAL PROFILE */}
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -501,7 +512,6 @@ const Profile = ({ navigation }) => {
                         <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
                             <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
                         </TouchableOpacity>
-
                         <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
                             <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
                         </TouchableOpacity>

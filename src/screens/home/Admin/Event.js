@@ -100,7 +100,6 @@ const Event = ({ props }) => {
                             })
                         }
                         // eventTimer(res[0]['end'])
-
                     } else {
                         setCurrentEvent('')
                     }
@@ -115,9 +114,10 @@ const Event = ({ props }) => {
             .get()
             .then(documentSnapshot => {
                 if (documentSnapshot.data()['attendance'].includes(props.empId)) {
-                    setHasAttended(true)
                     setLoading(false)
+                    setHasAttended(true)
                 } else {
+                    setLoading(false)
                     setHasAttended(false)
                 }
             });
@@ -188,38 +188,38 @@ const Event = ({ props }) => {
                                                     <ActivityIndicator size={100} color="white" />
 
                                                 </>
-                                                : (
-                                                    <>
-                                                        {hasAttended ?
-                                                            <>
-                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded successfully</Text>
-                                                                <View className="flex-row align-items-center justify-center my-5">
-                                                                    <Icon
-                                                                        name="checkmark-done"
-                                                                        color='white'
-                                                                        size={100}
-                                                                    />
-                                                                </View>
-                                                            </>
-                                                            :
-                                                            <>
-                                                                <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
-                                                                <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
-                                                                <TextInput
-                                                                    className={`${tailwind.inputs} w-10/12 m-auto`}
-                                                                    value={code}
-                                                                    placeholder='Enter event code'
-                                                                    onChangeText={(text) => setCode(text)}
-                                                                    autoCorrect={false}
-                                                                    required
+                                                :
+                                                <>
+                                                    {hasAttended ?
+                                                        <>
+                                                            <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded successfully</Text>
+                                                            <View className="flex-row align-items-center justify-center my-5">
+                                                                <Icon
+                                                                    name="checkmark-done"
+                                                                    color='white'
+                                                                    size={100}
                                                                 />
-                                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`} onPress={() => { handleAttendify(code, currentEvent['id']) }} >
-                                                                    <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
-                                                                </TouchableOpacity>
-                                                            </>
-                                                        }
-                                                    </>
-                                                )}
+                                                            </View>
+                                                        </>
+                                                        :
+                                                        <>
+                                                            <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
+                                                            <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
+                                                            <TextInput
+                                                                className={`${tailwind.inputs} w-10/12 m-auto`}
+                                                                value={code}
+                                                                placeholder='Enter event code'
+                                                                onChangeText={(text) => setCode(text)}
+                                                                autoCorrect={false}
+                                                                required
+                                                            />
+                                                            <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`} onPress={() => { handleAttendify(code, currentEvent['id']) }} >
+                                                                <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
+                                                            </TouchableOpacity>
+                                                        </>
+                                                    }
+                                                </>
+                                            }
                                         </>
                                     )}
                                 </View>
