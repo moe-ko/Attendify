@@ -17,6 +17,7 @@ const Profile = ({ navigation }) => {
     const [status, setStatus] = useState('');
     const [empId, setEmpId] = useState('');
     const [name, setName] = useState('');
+    const [newName, setNewName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [unit, setUnit] = useState('');
@@ -25,9 +26,11 @@ const Profile = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
     const [permission, setPermission] = useState('')
     const [avatar, setAvatar] = useState('')
+    const [newAvatar, setNewAvatar] = useState('')
     const [image, setImage] = useState('')
     const [isModalPasswordVisible, setIsModalPasswordVisible,] = useState(false);
     const [isModalUnitsVisible, setIsModalUnitsVisible,] = useState(false);
+    const [isModalProfileVisible, setIsModalProfileVisible,] = useState(false);
     const [subunitSelected, setSubunitSelected] = useState('');
     const [emailSent, setEmailSent] = useState(false);
     const units = []
@@ -167,19 +170,21 @@ const Profile = ({ navigation }) => {
 
         if (!result.canceled) {
             const uploadURL = await uploadImageAsync(result.assets[0].uri);
-            updateImage(uploadURL)
+            setNewAvatar(uploadURL)
         }
     }
 
-    const updateImage = (url) => {
+    const updateProfile = () => {
         firebase.firestore()
             .collection('employees')
             .doc(empId)
             .update({
-                avatar: url,
+                full_name: newName,
+                avatar: newAvatar,
             })
             .then(() => {
-                setAvatar(url);
+                getCurrentEmployee()
+                setIsModalProfileVisible(!isModalProfileVisible)
             });
     }
 
@@ -215,19 +220,26 @@ const Profile = ({ navigation }) => {
         return (
             <>
                 <View className={`${tailwind.container2}`}>
+                    {/* Blue header */}
                 </View>
-                <View>
-                    <Avatar className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                        size={130}
-                        rounded
-                        source={{ uri: avatar }}
-                        containerStyle={{ backgroundColor: 'blue' }}
-                    >
-                        <Avatar.Accessory size={23} onPress={pickImage} />
-                    </Avatar>
+                <View className=" h-32 w-32 rounded-full mx-auto my-[-80] mb-3 justify-center items-center">
+                    <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
+                        <Avatar
+                            className=""
+                            size={130}
+                            rounded
+                            source={{ uri: avatar }}
+                            containerStyle={{ backgroundColor: 'white' }}
+                        >
+                            <Avatar.Accessory onPress={() => setIsModalProfileVisible(!isModalProfileVisible)} size={30} className=" mx-auto mb-3 justify-center items-center bg-[#62ABEF]" />
+                        </Avatar>
+                    </TouchableOpacity>
                 </View>
                 <View className="pb-4 justify-center items-center">
-                    <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
+                    <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
+                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text>
+                    </TouchableOpacity>
+                    <Text className={`${tailwind.slogan}`}>{empId}</Text>
                 </View>
             </>
         )
@@ -420,7 +432,71 @@ const Profile = ({ navigation }) => {
                             </View>
                         </View>
                     </Modal>
-
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isModalProfileVisible}
+                        onRequestClose={() => { setIsModalProfileVisible(!isModalProfileVisible) }}
+                    >
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}>
+                            <View style={{
+                                width: '80%',
+                                margin: 20,
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                padding: 10,
+                                alignItems: 'center',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
+                            }}>
+                                <Text className={`${tailwind.titleText} py-5`}>Edit profile</Text>
+                                <Avatar
+                                    onPress={pickImage}
+                                    className=""
+                                    size={200}
+                                    source={{ uri: newAvatar == '' ? avatar : newAvatar }}
+                                    containerStyle={{
+                                        backgroundColor: 'white'
+                                    }}
+                                >
+                                    <Avatar.Accessory onPress={pickImage} size={30} className=" mx-auto  mr-3 mb-3 justify-center items-center bg-[#62ABEF]" />
+                                </Avatar>
+                                <TextInput
+                                    className={`${tailwind.inputs} w-full my-3 bg-[#DDDDDD]`}
+                                    placeholder={`Edit name: ${name}`}
+                                    autoCorrect={false}
+                                    onChangeText={(text) => setNewName(text)}
+                                />
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <TouchableOpacity
+                                        className={`${tailwind.buttonBlue}`}
+                                        onPress={() => updateProfile()}
+                                        disabled={(!newAvatar.trim() || !newName.trim())}
+                                    >
+                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View className={`${tailwind.viewWrapper} `}>
+                                    <TouchableOpacity
+                                        className={`${tailwind.buttonWhite}`}
+                                        onPress={() => { setNewAvatar(''), setIsModalProfileVisible(!isModalProfileVisible) }}>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                     <View className={`${tailwind.viewWrapper} px-4`}>
                         <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
                             <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
@@ -431,7 +507,6 @@ const Profile = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </KeyboardAvoidingView>
         </ScrollView>
 

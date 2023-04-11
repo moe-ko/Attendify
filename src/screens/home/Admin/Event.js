@@ -166,7 +166,7 @@ const Event = ({ props }) => {
                                     <Icon name="location-outline" size={20} color="#62ABEF" className="pr-5" />
                                     <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>{locationName}</Text>
                                 </View>
-                                <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Happening now</Text>
+                                <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Latest event</Text>
                                 <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
                                     {permission == 'Admin' || permission == 'Super Admin' ? (
                                         <>
