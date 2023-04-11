@@ -20,6 +20,7 @@ const Employees = ({ navigation }) => {
     const fetchEmployees = () => {
         firebase.firestore()
             .collection('employees')
+            .where('email', '!=', firebase.auth().currentUser?.email)
             .onSnapshot(docs => {
                 let emp = []
                 docs.forEach(doc => {
