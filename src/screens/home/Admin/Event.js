@@ -194,7 +194,7 @@ const Event = ({ props }) => {
                                 <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>{locationName}</Text>
                             </View>
                             <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Latest event</Text>
-                            <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl py-6`}>
+                            <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
                                 {permission == 'Admin' || permission == 'Super Admin' ? (
                                     <>
                                         <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code: </Text>
@@ -306,7 +306,7 @@ const Event = ({ props }) => {
                                     placeholderTextColor='#726F6F'
                                 />
                             </KeyboardAvoidingView>
-                            <View className={`${tailwind.viewWrapper} flex-column justify-center items-center`}>
+                            <View className={`${tailwind.viewWrapper} flex-column justify-center items-center mb-5`}>
                                 <View className={`flex-row justify-between w-10/12`}>
                                     <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
                                         <View className="pl-[10] flex-row align-items-center my-2">
