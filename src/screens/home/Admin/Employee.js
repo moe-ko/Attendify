@@ -27,11 +27,16 @@ const Employee = ({ route }) => {
     const [allStatus, setAllStatus] = useState()
     const st = []
     const units = []
-    const permissions = [
-        { key: 'Super Admin', value: 'Super Admin' },
-        { key: 'Admin', value: 'Admin' },
-        { key: 'Associate', value: 'Associate' }
-    ]
+    const permissions =
+        currentUserPermission == 'Super Admin' ?
+            [
+                { key: 'Super Admin', value: 'Super Admin' },
+                { key: 'Admin', value: 'Admin' },
+                { key: 'Associate', value: 'Associate' }
+            ] : [
+                { key: 'Admin', value: 'Admin' },
+                { key: 'Associate', value: 'Associate' }
+            ]
     useEffect(() => {
         getSubunit(subunitId)
         getAllStatus().then(res => setAllStatus(res))
