@@ -69,7 +69,7 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
 
 export const generatePasscode = (length) => {
     let passcode = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters = '0123456789';
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
