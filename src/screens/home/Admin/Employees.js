@@ -61,10 +61,10 @@ const Employees = ({ navigation }) => {
                 icon = 'checkmark'
                 break;
             case '2':
-                icon = 'pulse-outline'
+                icon = 'rocket-outline'
                 break;
             case '3':
-                icon = 'rocket-outline'
+                icon = 'pulse-outline'
                 break;
         }
         return (

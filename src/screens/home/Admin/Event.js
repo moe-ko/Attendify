@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { View, Text, Alert, TextInput, Platform, TouchableOpacity, KeyboardAvoidingView, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
@@ -11,9 +11,28 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from '@react-native-community/datetimepicker';
 import { COLORS } from '../../..'
-
 import DatePicker from 'react-native-datepicker';
-
+import { TimePickerModal, DatePickerModal } from 'react-native-paper-dates'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { registerTranslation } from 'react-native-paper-dates'
+registerTranslation('pl', {
+    save: 'Save',
+    selectSingle: 'Select date',
+    selectMultiple: 'Select dates',
+    selectRange: 'Select period',
+    notAccordingToDateFormat: (inputFormat) =>
+        `Date format must be ${inputFormat}`,
+    mustBeHigherThan: (date) => `Must be later then ${date}`,
+    mustBeLowerThan: (date) => `Must be earlier then ${date}`,
+    mustBeBetween: (startDate, endDate) =>
+        `Must be between ${startDate} - ${endDate}`,
+    dateIsDisabled: 'Day is not allowed',
+    previous: 'Previous',
+    next: 'Next',
+    typeInDate: 'Type in date',
+    pickDateFromCalendar: 'Pick date from calendar',
+    close: 'Close',
+})
 const Event = ({ props }) => {
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
@@ -27,29 +46,16 @@ const Event = ({ props }) => {
     const [hrs, setHrs] = useState('')
     const [code, setCode] = useState()
     const [hasAttended, setHasAttended] = useState(false)
-    const [time, setTime] = useState(new Date())
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
-    const [mode, setMode] = useState('date');
+    const [time, setTime] = useState(undefined)
+    const [date, setDate] = useState(undefined);
+    const [timePickerVisible, setTimePickerVisible] = useState(false)
+    const [datePickerVisible, setDatePickerVisible] = useState(false)
     const [permission, setPermission] = useState('');
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
     }, [permission])
-
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS == 'ios');
-        setDate(currentDate);
-        let tempDate = new Date(currentDate);
-        let fDate = tempDate.getDate() + '/' + (tempDate.getMonth() + 1) + '/' + tempDate.getFullYear();
-        let fTime = 'Hours:' + tempDate.getDate() + '| Minutes:' + tempDate.getMinutes();
-    }
-    const showMode = (currentMode) => {
-        setShow(true);
-        setMode(currentMode);
-    }
 
     eventTimer = (end) => {
         const eventExpirationDate = new Date(end)
@@ -156,6 +162,24 @@ const Event = ({ props }) => {
                 { text: 'Ok' },
             ]);
         }
+    }
+
+    const onDismissDate = () => {
+        setDatePickerVisible(false)
+    }
+
+    const onConfirmDate = (params) => {
+        setDatePickerVisible(false)
+        setDate(params.date)
+    }
+
+    const onDismissTime = () => {
+        setTimePickerVisible(false)
+    }
+
+    const onConfirmTime = ({ hours, minutes }) => {
+        setTimePickerVisible(false)
+        setTime(`${hours}:${minutes}`)
     }
 
     return (
@@ -268,50 +292,43 @@ const Event = ({ props }) => {
                                     placeholder={'Event title'}
                                     onChangeText={(text) => setTitle(text)}
                                     autoCorrect={false}
+                                    placeholderTextColor='#726F6F'
                                 />
                                 <View className={`${tailwind.viewWrapper} flex-column justify-center items-center`}>
-                                    <Text className={`${tailwind.slogan}  text-white text-center mb-3`}>Select expiration date</Text>
-                                    <RNDateTimePicker
-                                        style={{ textColor: "blue" }}
-                                        value={time}
-                                        mode={'datetime'}
-                                        display={Platform.OS === `ios` ? `default` : `default`}
-                                        is24Hour={false}
-                                        onChange={() => setTime(time)}
-                                    />
-                                    {Platform.OS == 'android' && (
-                                        <View>
-                                            <View className="flex-row">
-                                                <View className="mx-1 ">
-                                                    <TouchableOpacity className={`${tailwind.buttonWhite} w-36`} onPress={() => showMode('date')}>
-                                                        <Text className={`${tailwind.buttonBlueText} text-sm`}>
-                                                            Selet Date
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                                <View className="ml-2">
-                                                    <TouchableOpacity className={`${tailwind.buttonWhite} w-36`} onPress={() => showMode('time')}>
-                                                        <Text className={`${tailwind.buttonBlueText} text-sm`}>Select Time</Text>
-                                                    </TouchableOpacity>
-                                                </View>
+                                    <View className={`flex-row justify-between w-10/12`}>
+                                        <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
+                                            <View className="pl-[10] flex-row align-items-center my-2">
+                                                <Icon name="calendar" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
+                                                <Text className={`text-[#726F6F] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
                                             </View>
-                                            {show && (
-                                                <DateTimePicker
-                                                    testID='dateTimePicker'
-                                                    value={date}
-                                                    mode={mode}
-                                                    is24Hour={true}
-                                                    display='default'
-                                                    onChange={onChange} />
-                                            )}
-                                        </View>
-                                    )}
+                                        </TouchableOpacity>
+                                        <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
+                                            <View className="pl-[10] flex-row align-items-center my-2">
+                                                <Icon name="time" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
+                                                <Text className={`text-[#726F6F]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <DatePickerModal
+                                        locale='en'
+                                        mode='single'
+                                        visible={datePickerVisible}
+                                        onDismiss={onDismissDate}
+                                        date={date}
+                                        onConfirm={onConfirmDate} />
+                                    <TimePickerModal
+                                        visible={timePickerVisible}
+                                        onDismiss={onDismissTime}
+                                        hours={format(new Date, 'H') - 1}
+                                        minutes={format(new Date, 'mm')}
+                                        onConfirm={onConfirmTime}
+                                    />
                                 </View>
                             </View>
                             <View className="justify-center items-center">
                                 <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
                                     onPress={() => {
-                                        hanldeCreateEvent(selectedLocation, title, time), getCurrentEvent()
+                                        hanldeCreateEvent(selectedLocation, title, date, time), getCurrentEvent()
                                     }}>
                                     <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
                                 </TouchableOpacity>
@@ -321,19 +338,7 @@ const Event = ({ props }) => {
                 </View>
             </KeyboardAvoidingView>
         </ScrollView>
-
-
-
-
-
-
-
     )
-
 }
-const styles = StyleSheet.create({
-
-});
-
 
 export default Event
