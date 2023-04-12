@@ -58,26 +58,37 @@ const Employees = ({ navigation }) => {
                 icon = 'close'
                 break;
             case '1':
-                icon = 'checkmark'
+                icon = 'done'
                 break;
             case '2':
-                icon = 'rocket-outline'
+                icon = 'flight'
                 break;
             case '3':
-                icon = 'pulse-outline'
+                icon = 'favorite'
                 break;
         }
         return (
             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE, data) }}>
                 <ListItem bottomDivider>
-                    <Avatar rounded size={50} source={{ uri: `${data['avatar']}` }} />
+                    <Avatar rounded size={50} source={{ uri: `${data['avatar']}` }} >
+                        <View style={{
+                            position: 'absolute', top: 30, left: 30, backgroundColor: COLORS.primary, color: 'white', borderRadius: 100,
+                            shadowColor: '#000',
+                            shadowOffset: { width: -2, height: 0 },
+                            shadowOpacity: 0.5,
+                            shadowRadius: 2,
+                            elevation: 10,
+                        }} >
+                            <Avatar size={25} rounded icon={{ name: icon, type: "material" }} color={'white'} />
+                        </View>
+                    </Avatar>
                     <ListItem.Content>
                         <ListItem.Title>{data['full_name']}</ListItem.Title>
                         <ListItem.Subtitle style={{ color: 'gray' }}>{id}</ListItem.Subtitle>
                     </ListItem.Content>
-                    <Icon name={icon} size={30} color={COLORS.primary} />
+                    {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
                 </ListItem>
-            </TouchableOpacity>
+            </TouchableOpacity >
         )
     }
 

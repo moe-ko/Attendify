@@ -137,11 +137,11 @@ const Employee = ({ route }) => {
     const ItemContent = ({ title, data, iconName }) => {
         return (
             <>
-                <Avatar rounded icon={icon(iconName)['properties']} containerStyle={icon()['style']} />
+                <Avatar size={30} rounded icon={icon(iconName)['properties']} color={'white'} containerStyle={icon()['style']} />
                 <ListItem.Content>
-                    <ListItem.Title>{title}</ListItem.Title>
+                    <ListItem.Title className={`${tailwind.slogan}`}>{title}</ListItem.Title>
                 </ListItem.Content>
-                <Text>{data}</Text>
+                <Text className={`${tailwind.slogan}`}>{data}</Text>
             </>
         )
     }
@@ -151,7 +151,7 @@ const Employee = ({ route }) => {
             properties: {
                 name: name,
                 type: 'material',
-                size: 26,
+                size: 20,
             },
             style: {
                 backgroundColor: COLORS.primary,
@@ -166,7 +166,7 @@ const Employee = ({ route }) => {
                 <View className={`${tailwind.containerWrapper2}`}>
                     <ProfileHeader />
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <ItemContent title={'Email'} data={route.params['email']} iconName={'mail-outline'} />
+                        <ItemContent title={'Email'} data={route.params['email']} iconName={'email'} />
                     </ListItem>
                     {currentUserPermission == 'Admin' || currentUserPermission == 'Super Admin' ? (
                         <>
@@ -184,7 +184,7 @@ const Employee = ({ route }) => {
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                                 <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                                    <ItemContent title={'Unit/Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
+                                    <ItemContent title={'Unit'} data={`${unit} (${subunit})`} iconName={'people'} />
                                     <ListItem.Chevron />
                                 </ListItem>
                             </TouchableOpacity>
@@ -442,18 +442,22 @@ const Employee = ({ route }) => {
                             </View>
                         </View>
                     </Modal>
-                    <View className={`${tailwind.viewWrapper} px-4`}>
-                        <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
-                            <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View className={`${tailwind.viewWrapper} px-4`}>
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>Bench Projects</Text>
-                        <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>Coming soon</Text>
-                    </View>
+                    {permission == 'Admin' || permission == 'Super Admin' ? null : (
+                        <>
+                            <View className={`${tailwind.viewWrapper} px-4`}>
+                                <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                                    <Text className={`${tailwind.buttonWhiteText}`}>SeeVee {permission}</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View className={`${tailwind.viewWrapper} px-4`}>
+                                <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>Bench Projects</Text>
+                                <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>Coming soon</Text>
+                            </View>
+                        </>
+                    )}
                 </View>
-            </KeyboardAvoidingView>
-        </ScrollView>
+            </KeyboardAvoidingView >
+        </ScrollView >
     )
 }
 

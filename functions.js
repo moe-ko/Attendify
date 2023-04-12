@@ -249,11 +249,11 @@ export const getStatusIcon = async (status) => {
         case '0':
             icon = 'close'
             break;
-        case 'sick_leave':
+        case 'annual_leave':
         case '2':
             icon = 'flight'
             break;
-        case 'annual_leave':
+        case 'sick_leave':
         case '3':
             icon = 'favorite'
             break;

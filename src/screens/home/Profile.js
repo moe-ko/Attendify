@@ -151,7 +151,7 @@ const Profile = ({ navigation }) => {
             properties: {
                 name: name,
                 type: 'material',
-                size: 26,
+                size: 20
             },
             style: {
                 backgroundColor: COLORS.primary,
@@ -230,7 +230,6 @@ const Profile = ({ navigation }) => {
                                 source={{ uri: 'https://media.tenor.com/images/e549f9798674301c5af2c91581194091/tenor.gif' }}
                                 containerStyle={{ backgroundColor: 'white' }}
                             >
-                                <Avatar.Accessory onPress={() => setIsModalProfileVisible(!isModalProfileVisible)} size={30} className=" mx-auto mb-3 justify-center items-center bg-[#62ABEF]" />
                             </Avatar>
                         </> : <>
                             <Avatar
@@ -240,7 +239,21 @@ const Profile = ({ navigation }) => {
                                 source={{ uri: avatar }}
                                 containerStyle={{ backgroundColor: 'white' }}
                             >
-                                <Avatar.Accessory onPress={() => setIsModalProfileVisible(!isModalProfileVisible)} size={30} className=" mx-auto mb-3 justify-center items-center bg-[#62ABEF]" />
+                                <View style={{
+                                    position: 'absolute',
+                                    top: 90,
+                                    left: 90,
+                                    backgroundColor: COLORS.primary,
+                                    color: 'white',
+                                    borderRadius: 100,
+                                    shadowColor: '#000',
+                                    shadowOffset: { width: -2, height: 0 },
+                                    shadowOpacity: 0.5,
+                                    shadowRadius: 2,
+                                    elevation: 10,
+                                }} >
+                                    <Avatar size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                </View>
                             </Avatar>
                         </>}
 
@@ -259,11 +272,11 @@ const Profile = ({ navigation }) => {
     const ItemContent = ({ title, data, iconName }) => {
         return (
             <>
-                <Avatar rounded icon={icon(iconName)['properties']} containerStyle={icon()['style']} />
+                <Avatar size={30} rounded icon={icon(iconName)['properties']} color={'white'} containerStyle={icon()['style']} />
                 <ListItem.Content>
-                    <ListItem.Title>{title}</ListItem.Title>
+                    <ListItem.Title className={`${tailwind.slogan}`}>{title}</ListItem.Title>
                 </ListItem.Content>
-                <Text>{data}</Text>
+                <Text className={`${tailwind.slogan}`}>{data}</Text>
             </>
         )
     }
@@ -274,20 +287,20 @@ const Profile = ({ navigation }) => {
                 <View className={`${tailwind.containerWrapper2}`}>
                     <ProfileHeader />
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
-                        <ItemContent title={'Email'} data={email} iconName={'mail-outline'} />
+                        <ItemContent title={'Email'} data={email} iconName={'email'} />
                     </ListItem>
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
                     <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
-                            <ItemContent title={'Password'} data={'**********'} iconName={'lock-open'} />
+                            <ItemContent title={'Password'} data={'**********'} iconName={'lock'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                            <ItemContent title={'Unit || Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
+                            <ItemContent title={'Unit'} data={`${unit} (${subunit})`} iconName={'group'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
@@ -481,11 +494,27 @@ const Profile = ({ navigation }) => {
                                         backgroundColor: 'white'
                                     }}
                                 >
-                                    <Avatar.Accessory onPress={pickImage} size={30} className=" mx-auto  mr-3 mb-3 justify-center items-center bg-[#62ABEF]" />
+                                    {/* <Avatar.Accessory  size={30} className=" mx-auto  mr-3 mb-3 justify-center items-center bg-[#62ABEF]" /> */}
+                                    <View style={{
+                                        position: 'absolute',
+                                        top: 150,
+                                        left: 150,
+                                        backgroundColor: COLORS.primary,
+                                        color: 'white',
+                                        borderRadius: 100,
+                                        shadowColor: '#000',
+                                        shadowOffset: { width: -2, height: 0 },
+                                        shadowOpacity: 0.5,
+                                        shadowRadius: 2,
+                                        elevation: 10,
+                                    }} >
+                                        <Avatar onPress={pickImage} size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                    </View>
                                 </Avatar>
                                 <TextInput
                                     className={`${tailwind.inputs} w-full my-3 bg-[#DDDDDD]`}
                                     placeholder={`Edit name: ${name}`}
+                                    placeholderTextColor='#726F6F'
                                     autoCorrect={false}
                                     onChangeText={(text) => setNewName(text)}
                                 />
@@ -509,9 +538,9 @@ const Profile = ({ navigation }) => {
                         </View>
                     </Modal>
                     <View className={`${tailwind.viewWrapper} px-4`}>
-                        <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                        {permission == 'Admin' || permission == 'Super Admin' ? null : (<TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
                             <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
-                        </TouchableOpacity>
+                        </TouchableOpacity>)}
                         <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
                             <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
                         </TouchableOpacity>

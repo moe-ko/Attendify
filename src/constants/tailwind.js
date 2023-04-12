@@ -15,7 +15,7 @@ export default {
     textLine: 'text-white font-semibold mx-auto mb-5',
 
     //profile
-    containerWrapper2: 'bg-[#ECF0F3] w-full h-full',
+    containerWrapper2: 'w-full h-full',
     container2: 'bg-[#62ABEF] h-32 rounded-b-3xl mb-5',
 
 
