@@ -170,12 +170,19 @@ const Employee = ({ route }) => {
                     </ListItem>
                     {currentUserPermission == 'Admin' || currentUserPermission == 'Super Admin' ? (
                         <>
-                            <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
+                            {currentUserPermission == 'Admin' && permission == 'Super Admin' ? (
                                 <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                                     <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
-                                    <ListItem.Chevron />
                                 </ListItem>
-                            </TouchableOpacity>
+                            ) : (
+                                <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
+                                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                                        <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                                        <ListItem.Chevron />
+                                    </ListItem>
+                                </TouchableOpacity>
+                            )}
+
                             <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
                                 <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                                     <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
@@ -446,7 +453,7 @@ const Employee = ({ route }) => {
                         <>
                             <View className={`${tailwind.viewWrapper} px-4`}>
                                 <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
-                                    <Text className={`${tailwind.buttonWhiteText}`}>SeeVee {permission}</Text>
+                                    <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
                                 </TouchableOpacity>
                             </View>
                             <View className={`${tailwind.viewWrapper} px-4`}>
