@@ -124,8 +124,7 @@ const SignUp = ({ navigation }) => {
     };
 
     return (
-        // <ScrollView>
-        <KeyboardAvoidingView behavior={'position'}>
+        <ScrollView>
             <View className=" h-screen items-center px-4 bg-[#ECF0F3] w-full">
                 <View className={`${tailwind.viewWrapper}`}>
                     <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
@@ -340,8 +339,7 @@ const SignUp = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
-        // </ScrollView>
+        </ScrollView>
     );
 };
 export default SignUp;

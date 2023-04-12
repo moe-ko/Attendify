@@ -16,6 +16,8 @@ import { TimePickerModal, DatePickerModal } from 'react-native-paper-dates'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { registerTranslation } from 'react-native-paper-dates'
+import { DefaultTheme } from '@react-navigation/native'
+import colors from '../../../constants/colors'
 registerTranslation('pl', {
     save: 'Save',
     selectSingle: 'Select date',
@@ -183,173 +185,181 @@ const Event = ({ props }) => {
         setTime(`${hours}:${minutes}`)
     }
 
+
     return (
-        <ScrollView>
-            <KeyboardAvoidingView behavior={'position'}>
-                <View className="h-screen items-center px-4 w-full">
-                    {(currentEventVisible && currentEvent) ? (
-                        <>
-                            <View className={`${tailwind.viewWrapper}`}>
-                                <View className="flex-row align-items-center my-2">
-                                    <Icon name="location-outline" size={20} color="#62ABEF" className="pr-5" />
-                                    <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>{locationName}</Text>
-                                </View>
-                                <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Latest event</Text>
-                                <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
-                                    {permission == 'Admin' || permission == 'Super Admin' ? (
-                                        <>
-                                            <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code: </Text>
-                                            <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
-                                            <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
-                                            <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mb-6`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
-                                                <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                            </TouchableOpacity>
-                                        </>
-                                    ) : (
-                                        <>
-                                            {loading ?
-                                                <>
-                                                    <Text className={`${tailwind.titleText} font-light text-white text-center my-6`}>Checking attendance</Text>
-                                                    <ActivityIndicator size={100} color="white" />
-
-                                                </>
-                                                :
-                                                <>
-                                                    {hasAttended ?
-                                                        <>
-                                                            <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded successfully</Text>
-                                                            <View className="flex-row align-items-center justify-center my-5">
-                                                                <Icon
-                                                                    name="checkmark-done"
-                                                                    color='white'
-                                                                    size={100}
-                                                                />
-                                                            </View>
-                                                        </>
-                                                        :
-                                                        <>
-                                                            <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
-                                                            <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
-                                                            <View className={`w-10/12 h-20 m-auto`}>
-                                                                <OTPInputView
-                                                                    pinCount={6}
-                                                                    autoFocusOnLoad={false}
-                                                                    codeInputFieldStyle={{
-                                                                        color: COLORS.primary,
-                                                                        fontWeight: 'bold',
-                                                                        fontSize: 30,
-                                                                        height: 45,
-                                                                        borderWidth: 0,
-                                                                        borderBottomWidth: 3,
-                                                                        backgroundColor: 'white'
-
-                                                                    }}
-                                                                    codeInputHighlightStyle={{ borderColor: "#717171", }}
-                                                                    onCodeFilled={code => setCode(code)}
-                                                                />
-                                                            </View>
-                                                            <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`} onPress={() => { handleAttendify(code, currentEvent['id']) }} >
-                                                                <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
-                                                            </TouchableOpacity>
-                                                        </>
-                                                    }
-                                                </>
-                                            }
-                                        </>
-                                    )}
-                                </View>
-                            </View>
-                        </>
-                    ) : null}
-                    {/* {(createEventVisible) ? ( */}
-                    {permission == 'Admin' || permission == 'Super Admin' ? (
-                        <View className={`${tailwind.viewWrapper}`}>
-                            <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Create a new session</Text>
-                            <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
-                                <View className={` w-10/12 m-auto mt-5`}>
-                                    <SelectList
-                                        data={locations}
-                                        setSelected={setSelectedLocation}
-                                        placeholder='Select Location'
-                                        placeholderTextColor='#726F6F'
-                                        inputStyles={{
-                                            color: "#666",
-                                            padding: 0,
-                                            margin: 0,
-                                        }}
-                                        boxStyles={{
-                                            borderRadius: 15,
-                                            borderColor: '#fff',
-                                            color: '#fff',
-                                            backgroundColor: '#fff'
-                                        }}
-                                        dropdownStyles={{
-                                            borderWidth: 1,
-                                            borderRadius: 4,
-                                            borderColor: '#DDDDDD',
-                                            backgroundColor: '#DDDDDD',
-                                            color: '#fff',
-                                            marginLeft: 5,
-                                            marginRight: 5,
-                                            marginBottom: 5,
-                                            marginTop: 0,
-                                            position: 'relative'
-                                        }}
-                                    />
-                                </View>
-                                <TextInput
-                                    className={`${tailwind.inputs} w-10/12 m-auto my-3`}
-                                    value={title}
-                                    placeholder={'Event title'}
-                                    onChangeText={(text) => setTitle(text)}
-                                    autoCorrect={false}
-                                    placeholderTextColor='#726F6F'
-                                />
-
-                                <View className={`${tailwind.viewWrapper} flex-column justify-center items-center mb-5`}>
-                                    <View className={`flex-row justify-between w-10/12`}>
-                                        <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
-                                            <View className="pl-[10] flex-row align-items-center my-2">
-                                                <Icon name="calendar" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
-                                                <Text className={`text-[#726F6F] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
-                                            <View className="pl-[10] flex-row align-items-center my-2">
-                                                <Icon name="time" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
-                                                <Text className={`text-[#726F6F]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
-                                            </View>
-                                        </TouchableOpacity>
+        <>
+            <ScrollView>
+                <KeyboardAvoidingView behavior={'position'} >
+                    <View className="h-screen items-center px-4 w-full">
+                        {(currentEventVisible && currentEvent) ? (
+                            <>
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <View className="flex-row align-items-center my-2">
+                                        <Icon name="location-outline" size={20} color="#62ABEF" className="pr-5" />
+                                        <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>{locationName}</Text>
                                     </View>
-                                    <DatePickerModal
-                                        locale='en'
-                                        mode='single'
-                                        visible={datePickerVisible}
-                                        onDismiss={onDismissDate}
-                                        date={date}
-                                        onConfirm={onConfirmDate} />
-                                    <TimePickerModal
-                                        visible={timePickerVisible}
-                                        onDismiss={onDismissTime}
-                                        hours={format(new Date, 'H') - 1}
-                                        minutes={format(new Date, 'mm')}
-                                        onConfirm={onConfirmTime}
+                                    <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Latest event</Text>
+                                    <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
+                                        {permission == 'Admin' || permission == 'Super Admin' ? (
+                                            <>
+                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code: </Text>
+                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
+                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mb-6`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
+                                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                                </TouchableOpacity>
+                                            </>
+                                        ) : (
+                                            <>
+                                                {loading ?
+                                                    <>
+                                                        <Text className={`${tailwind.titleText} font-light text-white text-center my-6`}>Checking attendance</Text>
+                                                        <ActivityIndicator size={100} color="white" />
+
+                                                    </>
+                                                    :
+                                                    <>
+                                                        {hasAttended ?
+                                                            <>
+                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded successfully</Text>
+                                                                <View className="flex-row align-items-center justify-center my-5">
+                                                                    <Icon
+                                                                        name="checkmark-done"
+                                                                        color='white'
+                                                                        size={100}
+                                                                    />
+                                                                </View>
+                                                            </>
+                                                            :
+                                                            <>
+                                                                <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
+                                                                <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
+                                                                <View className={`w-10/12 h-20 m-auto`}>
+                                                                    <OTPInputView
+                                                                        pinCount={6}
+                                                                        autoFocusOnLoad={false}
+                                                                        codeInputFieldStyle={{
+                                                                            color: COLORS.primary,
+                                                                            fontWeight: 'bold',
+                                                                            fontSize: 30,
+                                                                            height: 45,
+                                                                            borderWidth: 0,
+                                                                            borderBottomWidth: 3,
+                                                                            backgroundColor: 'white'
+
+                                                                        }}
+                                                                        codeInputHighlightStyle={{ borderColor: "#717171", }}
+                                                                        onCodeFilled={code => setCode(code)}
+                                                                    />
+                                                                </View>
+                                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`} onPress={() => { handleAttendify(code, currentEvent['id']) }} >
+                                                                    <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
+                                                                </TouchableOpacity>
+                                                            </>
+                                                        }
+                                                    </>
+                                                }
+                                            </>
+                                        )}
+                                    </View>
+                                </View>
+                            </>
+                        ) : null}
+                        {/* {(createEventVisible) ? ( */}
+                        {permission == 'Admin' || permission == 'Super Admin' ? (
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Create a new session</Text>
+                                <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
+                                    <View className={` w-10/12 m-auto mt-5`}>
+                                        <SelectList
+                                            data={locations}
+                                            setSelected={setSelectedLocation}
+                                            placeholder='Select Location'
+                                            placeholderTextColor='#726F6F'
+                                            inputStyles={{
+                                                color: "#666",
+                                                padding: 0,
+                                                margin: 0,
+                                            }}
+                                            boxStyles={{
+                                                borderRadius: 15,
+                                                borderColor: '#fff',
+                                                color: '#fff',
+                                                backgroundColor: '#fff'
+                                            }}
+                                            dropdownStyles={{
+                                                borderWidth: 1,
+                                                borderRadius: 4,
+                                                borderColor: '#DDDDDD',
+                                                backgroundColor: '#DDDDDD',
+                                                color: '#fff',
+                                                marginLeft: 5,
+                                                marginRight: 5,
+                                                marginBottom: 5,
+                                                marginTop: 0,
+                                                position: 'relative'
+                                            }}
+                                        />
+                                    </View>
+                                    <TextInput
+                                        className={`${tailwind.inputs} w-10/12 m-auto my-3`}
+                                        value={title}
+                                        placeholder={'Event title'}
+                                        onChangeText={(text) => setTitle(text)}
+                                        autoCorrect={false}
+                                        placeholderTextColor='#726F6F'
                                     />
+
+                                    <View className={`${tailwind.viewWrapper} flex-column justify-center items-center mb-5`}>
+                                        <View className={`flex-row justify-between w-10/12`}>
+                                            <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
+                                                <View className="pl-[10] flex-row align-items-center my-2">
+                                                    <Icon name="calendar" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
+                                                    <Text className={`text-[#726F6F] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
+                                                <View className="pl-[10] flex-row align-items-center my-2">
+                                                    <Icon name="time" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
+                                                    <Text className={`text-[#726F6F]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <DatePickerModal
+                                            locale='en'
+                                            mode='single'
+                                            visible={datePickerVisible}
+                                            onDismiss={onDismissDate}
+                                            date={date}
+                                            onConfirm={onConfirmDate}
+                                            theme={
+                                                { colors: { primary: COLORS.primary } }
+                                            }
+                                        />
+                                        <TimePickerModal
+                                            visible={timePickerVisible}
+                                            onDismiss={onDismissTime}
+                                            hours={format(new Date, 'H') - 1}
+                                            minutes={format(new Date, 'mm')}
+                                            onConfirm={onConfirmTime}
+                                        />
+                                    </View>
+                                </View>
+                                <View className="justify-center items-center">
+                                    <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
+                                        onPress={() => {
+                                            hanldeCreateEvent(selectedLocation, title, date, time), getCurrentEvent()
+                                        }}>
+                                        <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-                            <View className="justify-center items-center">
-                                <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
-                                    onPress={() => {
-                                        hanldeCreateEvent(selectedLocation, title, date, time), getCurrentEvent()
-                                    }}>
-                                    <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                    ) : null}
-                </View>
-            </KeyboardAvoidingView>
-        </ScrollView>
+                        ) : null}
+                    </View>
+                </KeyboardAvoidingView>
+            </ScrollView>
+
+        </>
     )
 }
 
