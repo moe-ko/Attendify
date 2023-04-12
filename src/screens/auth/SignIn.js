@@ -24,67 +24,66 @@ const SignIn = ({ navigation }) => {
 
 
     return (
-        <ScrollView>
-            <KeyboardAvoidingView behavior={'position'}>
-                <View className={`${tailwind.containerWrapper}`}>
-                    <View className={`${tailwind.container} h-screen`}>
-                        <View className={`${tailwind.title}`}>
-                            <Text className={`${tailwind.titleText}`}>Sign In</Text>
-                        </View>
-                        <View className={`${tailwind.viewWrapper}`}>
-                            <TextInput
-                                className={`${tailwind.inputs}`}
-                                value={email}
-                                placeholder={'Employee ID'}
-                                onChangeText={(text) => setEmail(text)}
-                                onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
-                                autoCapitalize={'none'}
-                                keyboardType={'email-address'}
-                                required
-                            />
-                        </View>
+        <KeyboardAvoidingView>
+            <View className={`${tailwind.containerWrapper}`}>
+                <View className={`${tailwind.container} h-screen`}>
+                    <View className={`${tailwind.title}`}>
+                        <Text className={`${tailwind.titleText}`}>Sign In</Text>
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            value={email}
+                            placeholder={'Employee ID'}
+                            onChangeText={(text) => setEmail(text)}
+                            onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+                            autoCapitalize={'none'}
+                            keyboardType={'email-address'}
+                            required
+                        />
+                    </View>
 
 
 
-                        <View className={`${tailwind.viewWrapper}`}>
-                            <TextInput
-                                className={`${tailwind.inputs}`}
-                                value={password}
-                                placeholder={'Password'}
-                                secureTextEntry
-                                onChangeText={(text) => setPassword(text)}
-                                autoCorrect={false}
-                                required
-                            />
-                        </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TextInput
+                            className={`${tailwind.inputs}`}
+                            value={password}
+                            placeholder={'Password'}
+                            secureTextEntry
+                            onChangeText={(text) => setPassword(text)}
+                            autoCorrect={false}
+                            required
+                        />
+                    </View>
 
 
-                        <View className={`${tailwind.viewWrapper}`}>
-                            <Text onPress={() => { navigation.navigate(ROUTES.FORGOT_PASS) }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
-                        </View>
-                        <View className={`${tailwind.viewWrapper}`}>
-                            <TouchableOpacity
-                                className={`${tailwind.buttonBlue}`}
-                                // onPress={() => { signInUser('test@test.com', '123456') }}
-                                // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
-                                onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
-                            // onPress={() => { signInUser(email, password) }}
-                            // disabled={(!email.trim() || !password.trim())}
-                            >
-                                <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View className={`${tailwind.viewWrapper} bottom-0 flex-row justify-center`}>
-                            <Text className={`text-right`}>New User? </Text>
-                            <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.SIGNUP) }}>
-                                <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>
-                            </TouchableOpacity>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <Text onPress={() => { navigation.navigate(ROUTES.FORGOT_PASS) }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
+                    </View>
+                    <View className={`${tailwind.viewWrapper}`}>
+                        <TouchableOpacity
+                            className={`${tailwind.buttonBlue}`}
+                            // onPress={() => { signInUser('test@test.com', '123456') }}
+                            // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
+                            onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
+                        // onPress={() => { signInUser(email, password) }}
+                        // disabled={(!email.trim() || !password.trim())}
+                        >
+                            <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View className={`${tailwind.viewWrapper} bottom-0 flex-row justify-center`}>
+                        <Text className={`text-right`}>New User? </Text>
+                        <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.SIGNUP) }}>
+                            <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>
+                        </TouchableOpacity>
 
-                        </View>
                     </View>
                 </View>
-            </KeyboardAvoidingView>
-        </ScrollView>
+            </View>
+        </KeyboardAvoidingView>
+
     )
 }
 export default SignIn;
