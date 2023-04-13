@@ -125,9 +125,9 @@ const SignUp = ({ navigation }) => {
 
     return (
         <ScrollView>
-            <View className=" h-screen items-center px-4 bg-[#ECF0F3] w-full">
-                <View className={`${tailwind.viewWrapper}`}>
-                    <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
+            <View className=" h-screen items-center p-4 bg-[#ECF0F3] w-full">
+                <View className={`${tailwind.viewWrapper} pb-4`}>
+                    <Text className={`${tailwind.titleText}`}>Let's sign you up</Text>
                     <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
                 </View>
                 <View className={`${tailwind.viewWrapper}`}>

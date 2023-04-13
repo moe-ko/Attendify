@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, Linking } from 'react-native'
 import React from 'react'
 import tailwind from '../constants/tailwind'
 import { ROUTES } from '..'
@@ -31,9 +31,12 @@ const Welcome = ({ navigation }) => {
                                 <Text className={`${tailwind.buttonBlueText}`} >Sign Up</Text>
                             </TouchableOpacity>
                         </View>
-                        <Text className="text-center text-[#62ABEF]">
-                            Contact Us
-                        </Text>
+                        <TouchableOpacity className={``} onPress={() => Linking.openURL(`mailto:contact@attendify.com`)}>
+                            <Text className="text-center text-[#62ABEF]">
+                                Contact Us
+                            </Text>
+                        </TouchableOpacity>
+
                     </View>
                 </View>
             </ImageBackground>
