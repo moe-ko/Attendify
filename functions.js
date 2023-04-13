@@ -69,7 +69,7 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
 
 export const generatePasscode = (length) => {
     let passcode = '';
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    const characters = '0123456789';
     const charactersLength = characters.length;
     let counter = 0;
     while (counter < length) {
@@ -94,20 +94,18 @@ export const getEmployeeId = async () => {
     return id
 }
 
-export const isAdmin = async (id) => {
-    let isAdmin = false
+export const getPermission = async (currentEmail) => {
+    let permission = false
     await firebase.firestore()
         .collection('employees')
-        .doc('111111')
+        .where('email', '==', currentEmail)
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(documentSnapshot => {
-                if (documentSnapshot.data()['permission_id'] == 1) {
-                    isAdmin = true
-                }
+                permission = documentSnapshot.data()['permission']
             });
         });
-    return isAdmin
+    return permission
 }
 
 export const getLocations = async () => {
@@ -135,12 +133,13 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
+export const hanldeCreateEvent = async (selectedLocation, title, date, time) => {
+    date = format(date, 'yyyy-MM-dd') + ' ' + time
     await firebase.firestore()
         .collection('events')
         .add({
             start: format(new Date(), "yyyy-MM-dd H:mm"),
-            end: format(endDate, "yyyy-MM-dd H:mm"),
+            end: date,
             ip_address: '',
             location: selectedLocation,
             code: generatePasscode(6),
@@ -157,9 +156,6 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate) => {
                 { text: 'Ok' },
             ]);
         })
-    // setCreateEventVisible(!createEventVisible)
-    // getCurrentEvent()
-    // setCurrentEventVisible(!currentEventVisible)
 }
 export const alertCancelEvent = (id) => {
     Alert.alert('Cancel Event', 'Are you sure you want to cancel this event?', [
@@ -253,11 +249,11 @@ export const getStatusIcon = async (status) => {
         case '0':
             icon = 'close'
             break;
-        case 'sick_leave':
+        case 'annual_leave':
         case '2':
             icon = 'flight'
             break;
-        case 'annual_leave':
+        case 'sick_leave':
         case '3':
             icon = 'favorite'
             break;

@@ -27,9 +27,7 @@
     "browserify": "^17.0.0",
     "buffer": "^6.0.3",
     "date-fns": "^2.29.3",
-
     "detective": "^5.2.1",
-
     "expo": "^48.0.9",
     "expo-constants": "^14.2.1",
     "expo-image-picker": "~14.1.1",
@@ -53,6 +51,7 @@
     "react-native-datepicker": "^1.7.2",
     "react-native-dropdown-select-list": "^2.0.4",
     "react-native-gesture-handler": "^2.9.0",
+    "react-native-paper-dates": "^0.15.1",
     "react-native-reanimated": "~2.14.4",
     "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "~3.20.0",

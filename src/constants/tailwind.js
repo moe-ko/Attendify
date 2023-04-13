@@ -4,7 +4,7 @@ export default {
     title: 'w-full flex-row justify-center py-20',
     titleText: 'font-bold text-3xl',
     slogan: 'text-[#7E7E7E] font-light text-xl',
-    viewWrapper: 'w-full mb-[20]',
+    viewWrapper: 'w-full mb-[10]',
     inputs: 'p-[15] bg-white rounded-2xl',
     blueTextLink: 'text-[#62ABEF] font-bold',
     buttonBlue: 'p-[15] b-[7] bg-[#62ABEF] rounded-2xl justify-center',
@@ -15,7 +15,7 @@ export default {
     textLine: 'text-white font-semibold mx-auto mb-5',
 
     //profile
-    containerWrapper2: 'bg-[#ECF0F3] w-full h-full',
+    containerWrapper2: 'w-full h-full',
     container2: 'bg-[#62ABEF] h-32 rounded-b-3xl mb-5',
 
 

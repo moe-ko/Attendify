@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Home, Profile, } from "../screens";
 // import Event from "../screens/home/CurrentEvent";
@@ -9,11 +9,18 @@ import { COLORS, ROUTES } from "..";
 import EmployeesNavigator from "./EmployeesNavigator";
 import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { getPermission } from "../../functions";
+import { firebase } from '../../config'
 
 const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
+    const [permission, setPermission] = useState()
     const navigation = useNavigation()
+
+    useEffect(() => {
+        getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
+    }, [permission])
 
     const iconName = (route, focused) => {
         let iconName = '';
@@ -33,7 +40,7 @@ const BottomTabNavigator = () => {
         }
         return iconName
     }
-    
+
     const screenOptions = (route) => {
         return {
             headerShown: true,
@@ -55,7 +62,9 @@ const BottomTabNavigator = () => {
     return (
         <Tab.Navigator screenOptions={({ route }) => (screenOptions(route))} >
             <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ title: 'Dashboard' }} />
-            <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ title: 'Chart' }} />
+            {permission == 'Admin' || permission == 'Super Admin' ? (
+                <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ title: 'Chart' }} />
+            ) : null}
             <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: 'Profile' }} />
             <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ title: 'Employees' }} />
 

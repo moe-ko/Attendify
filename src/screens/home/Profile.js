@@ -10,29 +10,30 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import { constants } from 'buffer'
 import * as ImagePicker from 'expo-image-picker'
 import Entypo from 'react-native-vector-icons/Entypo'
-import { getStorage,  getDownloadURL ,uploadBytes, ref , deleteObject} from 'firebase/storage'
+import { getStorage, getDownloadURL, uploadBytes, ref, deleteObject } from 'firebase/storage'
 
 
 const Profile = ({ navigation }) => {
     const [status, setStatus] = useState('');
     const [empId, setEmpId] = useState('');
     const [name, setName] = useState('');
+    const [newName, setNewName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     const [unit, setUnit] = useState('');
     const [subunitId, setSubunitId] = useState();
     const [subunit, setSubunit] = useState('');
     const [ipAddress, setIpAddress] = useState('')
     const [permission, setPermission] = useState('')
     const [avatar, setAvatar] = useState('')
-    const [image, setImage] = useState('')
+    const [newAvatar, setNewAvatar] = useState('')
     const [isModalPasswordVisible, setIsModalPasswordVisible,] = useState(false);
     const [isModalUnitsVisible, setIsModalUnitsVisible,] = useState(false);
+    const [isModalProfileVisible, setIsModalProfileVisible,] = useState(false);
     const [subunitSelected, setSubunitSelected] = useState('');
     const [emailSent, setEmailSent] = useState(false);
+    const [loadingAvatar, setLoadingAvatar] = useState(true);
     const units = []
     useEffect(() => {
-        // getSubunits()
         getCurrentEmployee()
     }, [subunitId])
 
@@ -78,11 +79,11 @@ const Profile = ({ navigation }) => {
                 querySnapshot.forEach(documentSnapshot => {
                     setSubunitId(documentSnapshot.data()['subunit_id'])
                     setEmpId(documentSnapshot.id)
-                    setPassword(documentSnapshot.data()['password'])
                     setEmail(documentSnapshot.data()['email'])
                     setName(documentSnapshot.data()['full_name'])
                     setPermission(documentSnapshot.data()['permission'])
                     setAvatar(documentSnapshot.data()['avatar'])
+                    setLoadingAvatar(false)
                     getStatusEmployee(documentSnapshot.data()['status_id'])
                 });
             });
@@ -150,7 +151,7 @@ const Profile = ({ navigation }) => {
             properties: {
                 name: name,
                 type: 'material',
-                size: 26,
+                size: 20
             },
             style: {
                 backgroundColor: COLORS.primary,
@@ -166,69 +167,103 @@ const Profile = ({ navigation }) => {
         })
 
         if (!result.canceled) {
-           const uploadURL= await uploadImageAsync(result.assets[0].uri); 
-           updateImage(uploadURL)
+            const uploadURL = await uploadImageAsync(result.assets[0].uri);
+            setNewAvatar(uploadURL)
         }
     }
 
-    const updateImage =(url)=>{
+    const updateProfile = () => {
         firebase.firestore()
             .collection('employees')
             .doc(empId)
             .update({
-                avatar: url,
+                full_name: newName,
+                avatar: newAvatar,
             })
             .then(() => {
-            setAvatar(url);
-            }); 
+                getCurrentEmployee()
+                setIsModalProfileVisible(!isModalProfileVisible)
+            });
     }
-            
-    const uploadImageAsync = async(uri) =>{
-            const blob = await new Promise((resolve, reject) => {
-              const xhr = new XMLHttpRequest();
-              xhr.onload = function () {
+
+    const uploadImageAsync = async (uri) => {
+        const blob = await new Promise((resolve, reject) => {
+            const xhr = new XMLHttpRequest();
+            xhr.onload = function () {
                 resolve(xhr.response);
-              };
-              xhr.onerror = function (e) {
+            };
+            xhr.onerror = function (e) {
                 console.log(e);
                 reject(new TypeError("Network request failed"));
-              };
-              xhr.responseType = "blob";
-              xhr.open("GET", uri, true);
-              xhr.send(null);
-            });
+            };
+            xhr.responseType = "blob";
+            xhr.open("GET", uri, true);
+            xhr.send(null);
+        });
 
-            const imgRef = ref(storage, `${empId}/profile-picture`);
-          
-            try {             
-                deleteObject(imgRef)
-            }catch (error) { 
-                console.log(error);
-            }finally{ 
-              await uploadBytes(imgRef, blob);
-                blob.close();
-                return await getDownloadURL(imgRef);
-            }
-          };
-      
+        const imgRef = ref(storage, `${empId}/profile-picture`);
+
+        try {
+            deleteObject(imgRef)
+        } catch (error) {
+            console.log(error);
+        } finally {
+            await uploadBytes(imgRef, blob);
+            blob.close();
+            return await getDownloadURL(imgRef);
+        }
+    };
+
     const ProfileHeader = () => {
         return (
             <>
                 <View className={`${tailwind.container2}`}>
+                    {/* Blue header */}
                 </View>
-                <View>
-                    
-                    <Avatar  className="h-32 w-32 rounded-full mx-auto my-[-80] mb-3"
-                        size={130}
-                        rounded
-                        source={{ uri: avatar }}
-                        containerStyle={{ backgroundColor: 'blue' }}
-                        > 
-                             <Avatar.Accessory size={23} onPress={pickImage} />
-                        </Avatar> 
+                <View className=" h-32 w-32 rounded-full mx-auto my-[-80] mb-3 justify-center items-center">
+                    <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
+                        {loadingAvatar ? <>
+                            <Avatar
+                                className=""
+                                size={130}
+                                rounded
+                                source={{ uri: 'https://media.tenor.com/images/e549f9798674301c5af2c91581194091/tenor.gif' }}
+                                containerStyle={{ backgroundColor: 'white' }}
+                            >
+                            </Avatar>
+                        </> : <>
+                            <Avatar
+                                className=""
+                                size={130}
+                                rounded
+                                source={{ uri: avatar }}
+                                containerStyle={{ backgroundColor: 'white' }}
+                            >
+                                <View style={{
+                                    position: 'absolute',
+                                    top: 90,
+                                    left: 90,
+                                    backgroundColor: COLORS.primary,
+                                    color: 'white',
+                                    borderRadius: 100,
+                                    shadowColor: '#000',
+                                    shadowOffset: { width: -2, height: 0 },
+                                    shadowOpacity: 0.5,
+                                    shadowRadius: 2,
+                                    elevation: 10,
+                                }} >
+                                    <Avatar size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                </View>
+                            </Avatar>
+                        </>}
+
+                    </TouchableOpacity>
                 </View>
                 <View className="pb-4 justify-center items-center">
-                    <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text><Text className={`${tailwind.slogan}`}>{empId}</Text>
+                    <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
+                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text>
+                    </TouchableOpacity>
+                    <Text className={`${tailwind.slogan}`}>{empId}</Text>
                 </View>
             </>
         )
@@ -237,37 +272,35 @@ const Profile = ({ navigation }) => {
     const ItemContent = ({ title, data, iconName }) => {
         return (
             <>
-                <Avatar rounded icon={icon(iconName)['properties']} containerStyle={icon()['style']} />
+                <Avatar size={30} rounded icon={icon(iconName)['properties']} color={'white'} containerStyle={icon()['style']} />
                 <ListItem.Content>
-                    <ListItem.Title>{title}</ListItem.Title>
+                    <ListItem.Title className={`${tailwind.slogan}`}>{title}</ListItem.Title>
                 </ListItem.Content>
-                <Text>{data}</Text>
+                <Text className={`${tailwind.slogan}`}>{data}</Text>
             </>
         )
     }
 
     return (
-
-
         <ScrollView>
             <KeyboardAvoidingView>
                 <View className={`${tailwind.containerWrapper2}`}>
                     <ProfileHeader />
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
-                        <ItemContent title={'Email'} data={email} iconName={'mail-outline'} />
+                        <ItemContent title={'Email'} data={email} iconName={'email'} />
                     </ListItem>
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
                     <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
-                            <ItemContent title={'Password'} data={'**********'} iconName={'lock-open'} />
+                            <ItemContent title={'Password'} data={'**********'} iconName={'lock'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                            <ItemContent title={'Unit || Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
+                            <ItemContent title={'Unit'} data={`${unit} (${subunit})`} iconName={'group'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
@@ -345,6 +378,7 @@ const Profile = ({ navigation }) => {
                             </View>
                         </View>
                     </Modal>
+                    {/* MODAL UNITS */}
                     <Modal
                         animationType="slide"
                         transparent={true}
@@ -421,18 +455,97 @@ const Profile = ({ navigation }) => {
                             </View>
                         </View>
                     </Modal>
-
+                    {/* MODAL PROFILE */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isModalProfileVisible}
+                        onRequestClose={() => { setIsModalProfileVisible(!isModalProfileVisible) }}
+                    >
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}>
+                            <View style={{
+                                width: '80%',
+                                margin: 20,
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                padding: 10,
+                                alignItems: 'center',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
+                            }}>
+                                <Text className={`${tailwind.titleText} py-5`}>Edit profile</Text>
+                                <Avatar
+                                    onPress={pickImage}
+                                    className=""
+                                    size={200}
+                                    source={{ uri: newAvatar == '' ? avatar : newAvatar }}
+                                    containerStyle={{
+                                        backgroundColor: 'white'
+                                    }}
+                                >
+                                    {/* <Avatar.Accessory  size={30} className=" mx-auto  mr-3 mb-3 justify-center items-center bg-[#62ABEF]" /> */}
+                                    <View style={{
+                                        position: 'absolute',
+                                        top: 150,
+                                        left: 150,
+                                        backgroundColor: COLORS.primary,
+                                        color: 'white',
+                                        borderRadius: 100,
+                                        shadowColor: '#000',
+                                        shadowOffset: { width: -2, height: 0 },
+                                        shadowOpacity: 0.5,
+                                        shadowRadius: 2,
+                                        elevation: 10,
+                                    }} >
+                                        <Avatar onPress={pickImage} size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                    </View>
+                                </Avatar>
+                                <TextInput
+                                    className={`${tailwind.inputs} w-full my-3 bg-[#DDDDDD]`}
+                                    placeholder={`Edit name: ${name}`}
+                                    placeholderTextColor='#726F6F'
+                                    autoCorrect={false}
+                                    onChangeText={(text) => setNewName(text)}
+                                />
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <TouchableOpacity
+                                        className={`${tailwind.buttonBlue}`}
+                                        onPress={() => updateProfile()}
+                                        disabled={(!newAvatar.trim() || !newName.trim())}
+                                    >
+                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View className={`${tailwind.viewWrapper} `}>
+                                    <TouchableOpacity
+                                        className={`${tailwind.buttonWhite}`}
+                                        onPress={() => { setNewAvatar(''), setIsModalProfileVisible(!isModalProfileVisible) }}>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
                     <View className={`${tailwind.viewWrapper} px-4`}>
-                        <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                        {permission == 'Admin' || permission == 'Super Admin' ? null : (<TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
                             <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
-                        </TouchableOpacity>
-
+                        </TouchableOpacity>)}
                         <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
                             <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
-
             </KeyboardAvoidingView>
         </ScrollView>
 

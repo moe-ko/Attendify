@@ -125,124 +125,123 @@ const SignUp = ({ navigation }) => {
 
     return (
         <ScrollView>
-            <KeyboardAvoidingView>
-                <View className=" h-screen items-center px-4 bg-[#ECF0F3] w-full">
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
-                        <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
-                    </View>
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <TextInput
-                            className={`${tailwind.inputs}`}
-                            onChangeText={(text) => handleEmpId(text)}
-                            placeholder="Employee ID"
-                            autoCapitalize='none'
-                            autoCorrect={false}
-                        // onBlur={(e) => this.handleEmpId(e.target.value)}
-                        />
-                    </View>
+            <View className=" h-screen items-center px-4 bg-[#ECF0F3] w-full">
+                <View className={`${tailwind.viewWrapper}`}>
+                    <Text className={`${tailwind.titleText} py-5`}>Let's sign you up</Text>
+                    <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
+                </View>
+                <View className={`${tailwind.viewWrapper}`}>
+                    <TextInput
+                        className={`${tailwind.inputs}`}
+                        onChangeText={(text) => handleEmpId(text)}
+                        placeholder="Employee ID"
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                    // onBlur={(e) => this.handleEmpId(e.target.value)}
+                    />
+                </View>
 
 
-                    {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
-                        : null}
+                {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
+                    : null}
 
 
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <TextInput
-                            //keyboardType='name-phone-pad'
+                <View className={`${tailwind.viewWrapper}`}>
+                    <TextInput
+                        //keyboardType='name-phone-pad'
 
-                            className={`${tailwind.inputs}`}
-                            onChangeText={(text) => setName(text)}
-                            //onChangeText={text => handleOnchange(text, 'name')}
-                            //onFocus={() => handleError(null, 'name')}
-                            placeholder="Full Name"
-                            autoCapitalize="words"
-                            autoCorrect={false}
-                        />
-                    </View>
-                    {/*    {validEmpName && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">
+                        className={`${tailwind.inputs}`}
+                        onChangeText={(text) => setName(text)}
+                        //onChangeText={text => handleOnchange(text, 'name')}
+                        //onFocus={() => handleError(null, 'name')}
+                        placeholder="Full Name"
+                        autoCapitalize="words"
+                        autoCorrect={false}
+                    />
+                </View>
+                {/*    {validEmpName && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">
                 Employee Name should be in alphabets </Text>} */}
-                    
-                    <View className={`${tailwind.viewWrapper}`}>
-                        {Platform.OS == 'ios' ? (
-                            <SelectList
-                                data={units}
-                                setSelected={setSubunitSelected}
-                                placeholder='Select Unit/Subunit'
-                               placeholderTextColor='#726F6F'
-                                inputStyles={{
-                                     padding: 2,
-                                    margin: 0,
-                                    textAlign:'left'
-                                }}
-                                boxStyles={{
-                                    borderRadius: 15,
 
-                                    borderColor: '#fff',
-                                    color: '#fff',
-                                    backgroundColor: '#fff'
-                                }}
-                                dropdownStyles={{
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    borderColor: '#DDDDDD',
-                                    backgroundColor: '#DDDDDD',
-                                    color: '#fff',
-                                    marginLeft: 5,
-                                    marginRight: 5,
-                                    marginBottom: 5,
-                                    marginTop: 0,
-                                    position: 'relative'
-                                }}
-                            />) : (
-                            <SelectList
-                                data={units}
-                                setSelected={setSubunitSelected}
-                                placeholder='Select Unit/Subunit'
-                                 placeholderTextColor='#726F6F'
-                                inputStyles={{
-                                     padding: 5,
-                                    margin: 0,
-                                    marginRight: 10,
-                                    textAlign:'left'
+                <View className={`${tailwind.viewWrapper}`}>
+                    {Platform.OS == 'ios' ? (
+                        <SelectList
+                            data={units}
+                            setSelected={setSubunitSelected}
+                            placeholder='Select Unit/Subunit'
+                            placeholderTextColor='#726F6F'
+                            inputStyles={{
+                                padding: 2,
+                                margin: 0,
+                                textAlign: 'left'
+                            }}
+                            boxStyles={{
+                                borderRadius: 15,
 
-                                }}
-                                boxStyles={{
-                                    borderRadius: 15,
-                                    
-                                    borderColor: '#fff',
-                                    color: '#fff',
-                                    backgroundColor: '#fff'
-                                }}
-                                dropdownStyles={{
-                                    borderWidth: 1,
-                                    borderRadius: 4,
-                                    borderColor: '#DDDDDD',
-                                    backgroundColor: '#DDDDDD',
-                                    color: '#fff',
-                                    marginLeft: 5,
-                                    marginRight: 5,
-                                    marginBottom: 5,
-                                    marginTop: 0,
-                                    position: 'relative'
-                                }}
-                            />)}
-                    </View>
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <TextInput
-                            className={`${tailwind.inputs}`}
-                            value={email}
-                            onChangeText={text => handleCheckEmail(text)}
-                            //  onChangeText={(text) => setEmail( email)}
-                            placeholder="Email"
-                            autoCapitalize='none'
-                            autoCorrect={false}
-                        />
+                                borderColor: '#fff',
+                                color: '#fff',
+                                backgroundColor: '#fff'
+                            }}
+                            dropdownStyles={{
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                borderColor: '#DDDDDD',
+                                backgroundColor: '#DDDDDD',
+                                color: '#fff',
+                                marginLeft: 5,
+                                marginRight: 5,
+                                marginBottom: 5,
+                                marginTop: 0,
+                                position: 'relative'
+                            }}
+                        />) : (
+                        <SelectList
+                            data={units}
+                            setSelected={setSubunitSelected}
+                            placeholder='Select Unit/Subunit'
+                            placeholderTextColor='#726F6F'
+                            inputStyles={{
+                                padding: 5,
+                                margin: 0,
+                                marginRight: 10,
+                                textAlign: 'left'
 
-                    </View>
-                    {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Wrong Format email</Text>)}
-                      
-                        {/* <Text className="text-[#ff0000]"></Text>)
+                            }}
+                            boxStyles={{
+                                borderRadius: 15,
+
+                                borderColor: '#fff',
+                                color: '#fff',
+                                backgroundColor: '#fff'
+                            }}
+                            dropdownStyles={{
+                                borderWidth: 1,
+                                borderRadius: 4,
+                                borderColor: '#DDDDDD',
+                                backgroundColor: '#DDDDDD',
+                                color: '#fff',
+                                marginLeft: 5,
+                                marginRight: 5,
+                                marginBottom: 5,
+                                marginTop: 0,
+                                position: 'relative'
+                            }}
+                        />)}
+                </View>
+                <View className={`${tailwind.viewWrapper}`}>
+                    <TextInput
+                        className={`${tailwind.inputs}`}
+                        value={email}
+                        onChangeText={text => handleCheckEmail(text)}
+                        //  onChangeText={(text) => setEmail( email)}
+                        placeholder="Email"
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                    />
+
+                </View>
+                {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Wrong Format email</Text>)}
+
+                {/* <Text className="text-[#ff0000]"></Text>)
                      <View className={`${tailwind.viewWrapper}`}>
                          <SelectList
                             data={units}
@@ -273,7 +272,7 @@ const SignUp = ({ navigation }) => {
                             }}
                         /> 
                       </View> */}
-                    {/* <Picker
+                {/* <Picker
                            selectedValue={setSubunitSelected}
                             onValueChange={(itemValue) => setSubunitSelected(itemValue)}
                             placeholder='Select Unit/Subunit'
@@ -284,63 +283,62 @@ const SignUp = ({ navigation }) => {
                         <Picker.Item label="Ruby" value="ruby" />
                     </Picker> */}
 
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <TextInput
-                            className={`${tailwind.inputs}`}
-                            onChangeText={value => checkPasswordValidity(value)}
-                            //onChangeText={(text) => setPassword(text)}
-                            placeholder="Password"
-                            autoCapitalize='none'
-                            secureTextEntry={true}
-                            autoCorrect={false}
-                        />
-                    </View>
-
-                    {validpasswordSpace && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password shouldn`t contain space</Text>}
-                    {validpassword && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password must be 8-16 characters long</Text>}
-
-                    {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast an uppercase </Text>}
-                    {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a lowercase</Text>}
-                    {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a number</Text>}
-
-
-                    <View className={`${tailwind.viewWrapper}`}>
-                        <TextInput
-                            className={`${tailwind.inputs}`}
-                            onChangeText={setConfirmPassword}
-                            placeholder="Confirm Password"
-                            autoCapitalize='none'
-                            secureTextEntry={true}
-                            autoCorrect={false}
-                        />
-                    </View>
-                    {validconfirmPassword ? (<Text className="text-[#ff0000]"></Text>)
-                        : (<Text className=" text-red-500">Password should match</Text>)}
-
-
-                    <View className={`${tailwind.viewWrapper}`}>
-
-                        <TouchableOpacity
-                            className={`${tailwind.buttonBlue}`}
-                            onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
-                            disabled={(!email.trim() || !password.trim())}
-                        >
-                            <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
-                        </TouchableOpacity>
-
-                    </View>
-
-
-                    <View className={`flex-row justify-center items-center`}>
-                        <Text className={`text-center`}>Already an account?
-                        </Text>
-                        <TouchableOpacity
-                            onPress={() => { navigation.navigate(ROUTES.SIGNIN) }}>
-                            <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
-                        </TouchableOpacity>
-                    </View>
+                <View className={`${tailwind.viewWrapper}`}>
+                    <TextInput
+                        className={`${tailwind.inputs}`}
+                        onChangeText={value => checkPasswordValidity(value)}
+                        //onChangeText={(text) => setPassword(text)}
+                        placeholder="Password"
+                        autoCapitalize='none'
+                        secureTextEntry={true}
+                        autoCorrect={false}
+                    />
                 </View>
-            </KeyboardAvoidingView>
+
+                {validpasswordSpace && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password shouldn`t contain space</Text>}
+                {validpassword && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password must be 8-16 characters long</Text>}
+
+                {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast an uppercase </Text>}
+                {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a lowercase</Text>}
+                {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a number</Text>}
+
+
+                <View className={`${tailwind.viewWrapper}`}>
+                    <TextInput
+                        className={`${tailwind.inputs}`}
+                        onChangeText={setConfirmPassword}
+                        placeholder="Confirm Password"
+                        autoCapitalize='none'
+                        secureTextEntry={true}
+                        autoCorrect={false}
+                    />
+                </View>
+                {validconfirmPassword ? (<Text className="text-[#ff0000]"></Text>)
+                    : (<Text className=" text-red-500">Password should match</Text>)}
+
+
+                <View className={`${tailwind.viewWrapper}`}>
+
+                    <TouchableOpacity
+                        className={`${tailwind.buttonBlue}`}
+                        onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
+                        disabled={(!email.trim() || !password.trim())}
+                    >
+                        <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
+                    </TouchableOpacity>
+
+                </View>
+
+
+                <View className={`flex-row justify-center items-center`}>
+                    <Text className={`text-center`}>Already an account?
+                    </Text>
+                    <TouchableOpacity
+                        onPress={() => { navigation.navigate(ROUTES.SIGNIN) }}>
+                        <Text className={`${tailwind.blueTextLink}`}> Sign in here</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </ScrollView>
     );
 };
