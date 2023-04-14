@@ -42,18 +42,18 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
             permission: 'Associate'
         })
 }
-// export const getSubunits = async () => {
-//     // let d = []
-//     firebase.firestore()
-//         .collection('subunits')
-//         .get()
-//         .then(querySnapshot => {
-//             querySnapshot.forEach(documentSnapshot => {
-//                 console.log(documentSnapshot.data())
-//                 getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
-//             });
-//         });
-// }
+export const fetchUnit = async (subunit_name, id) => {
+    let unit = ''
+    await firebase.firestore()
+        .collection('units')
+        .doc(id)
+        .get()
+        .then(querySnapshot => {
+            unit = `${querySnapshot.data()['name']}  (${subunit_name})`
+        });
+    return unit
+}
+
 // const getUnits = (subunit_id, subunit_name, id) => {
 //     const units = []
 //     const subscriber = firebase.firestore()

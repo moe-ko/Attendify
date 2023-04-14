@@ -1,10 +1,9 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native'
 import { Component } from 'react'
 import React, { useState, useEffect } from 'react'
-import { firebase, arrayUnion } from '../../../config'
-import { format } from 'date-fns'
+import { firebase } from '../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { handleSignUp } from '../../../functions'
+import { handleSignUp, fetchUnit } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { ROUTES } from '../..'
 import { Platform } from 'react-native'
@@ -30,36 +29,23 @@ const SignUp = ({ navigation }) => {
     const units = []
 
     useEffect(() => {
-        getSubunits()
+        getUnits()
     })
 
     useEffect(() => {
         password === confirmPassword ? setValidConfirmPassword(true) : setValidConfirmPassword(false);
     }, [, confirmPassword]);
 
-    const getSubunits = () => {
+    const getUnits = () => {
         firebase.firestore()
             .collection('subunits')
             .get()
             .then(querySnapshot => {
                 let res = []
                 querySnapshot.forEach(documentSnapshot => {
-                    getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id']).then((res) => units.push({ key: documentSnapshot.id, value: res }))
-                    res.push()
+                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id']).then((res) => units.push({ key: documentSnapshot.id, value: res }))
                 });
             });
-    }
-
-    const getUnits = async (subunit_id, subunit_name, id) => {
-        let unit = ''
-        await firebase.firestore()
-            .collection('units')
-            .doc(id)
-            .get()
-            .then(querySnapshot => {
-                unit = `${querySnapshot.data()['name']}  (${subunit_name})`
-            });
-        return unit
     }
 
     const handleCheckEmail = (text) => {
