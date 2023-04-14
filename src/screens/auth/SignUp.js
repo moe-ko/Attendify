@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native'
 import { Component } from 'react'
 import React, { useState, useEffect } from 'react'
-import { firebase } from '../../../config'
+import { firebase, arrayUnion } from '../../../config'
 import { format } from 'date-fns'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp } from '../../../functions'
@@ -29,98 +29,59 @@ const SignUp = ({ navigation }) => {
     const [subunitSelected, setSubunitSelected] = useState('');
     const units = []
 
-
     useEffect(() => {
         getSubunits()
     })
 
-
     useEffect(() => {
-        if (password === confirmPassword) {
-            setValidConfirmPassword(true);
-        }
-        else {
-            setValidConfirmPassword(false);
-        }
+        password === confirmPassword ? setValidConfirmPassword(true) : setValidConfirmPassword(false);
     }, [, confirmPassword]);
 
-
-
-    getSubunits = () => {
+    const getSubunits = () => {
         firebase.firestore()
             .collection('subunits')
             .get()
             .then(querySnapshot => {
+                let res = []
                 querySnapshot.forEach(documentSnapshot => {
-                    getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                    getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id']).then((res) => units.push({ key: documentSnapshot.id, value: res }))
+                    res.push()
                 });
             });
     }
-    getUnits = (subunit_id, subunit_name, id) => {
-        const subscriber = firebase.firestore()
+
+    const getUnits = async (subunit_id, subunit_name, id) => {
+        let unit = ''
+        await firebase.firestore()
             .collection('units')
             .doc(id)
-            .onSnapshot(documentSnapshot => {
-                units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' > ' + subunit_name}` })
+            .get()
+            .then(querySnapshot => {
+                unit = `${querySnapshot.data()['name']}  (${subunit_name})`
             });
-        return () => subscriber();
+        return unit
     }
-    const handleCheckEmail = (text) => {
 
-        // let re = /\S+@\S+\.\S+/;
-        // let regex = /^[\+]?[(]?[0-9]{3}[)]?[-\s\.]?[0-9]{3}[-\s\.]?[0-9]{4,6}$/im;
+    const handleCheckEmail = (text) => {
         let regex = /^[a-z]+\.[a-z]+(@infosys.com)$/;
         setEmail(text);
-        if (regex.test(text)) {
-
-            setCheckValidEmail(false);
-        } else {
-            setCheckValidEmail(true);
-        }
+        regex.test(text) ? setCheckValidEmail(false) : setCheckValidEmail(true);
     };
-    const handleEmpId = (text) => {
 
+    const handleEmpId = (text) => {
         let regex = /^[0-9]{7}$/;
         setEmpId(text);
-        if (regex.test(text)) {
-            setValidEmpId(false);
-        } else {
-            setValidEmpId(true);
-        }
+        regex.test(text) ? setValidEmpId(false) : setValidEmpId(true);
     };
-
-
 
     const checkPasswordValidity = value => {
         const isNonWhiteSpace = /^\S+$/;
         const isValidLength = /^.{8,16}$/;
         const isValidChar = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d).+$/;
         setPassword(value);
-
-
-        if ((!isValidLength.test(value))) {
-
-            setValidPassword(true);
-
-        }
-        else {
-            setValidPassword(false);
-
-        }
-        if (!isNonWhiteSpace.test(value)) {
-            setValidPasswordSpace(true);
-        }
-        else {
-            setValidPasswordSpace(false);
-        }
-        if (!isValidChar.test(value)) {
-            setValidPasswordChar(true);
-        }
-        else {
-            setValidPasswordChar(false);
-        }
-
-
+        !isValidLength.test(value) ? setValidPassword(true) : setValidPassword(false);
+        !isNonWhiteSpace.test(value) ? setValidPasswordSpace(true) : setValidPasswordSpace(false);
+        !isValidChar.test(value) ? setValidPasswordChar(true) : setValidPasswordChar(false);
     };
 
     return (
@@ -137,14 +98,11 @@ const SignUp = ({ navigation }) => {
                         placeholder="Employee ID"
                         autoCapitalize='none'
                         autoCorrect={false}
-                    // onBlur={(e) => this.handleEmpId(e.target.value)}
                     />
                 </View>
 
-
                 {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
                     : null}
-
 
                 <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
