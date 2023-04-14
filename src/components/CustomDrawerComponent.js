@@ -5,10 +5,13 @@ import { getEmployeeId } from '../../functions'
 import { Avatar, ListItem } from '@rneui/themed';
 import { firebase } from '../../config'
 import tailwind from '../constants/tailwind';
+import { useNavigation } from "@react-navigation/native";
+
 const CustomDrawerComponent = props => {
     const [avatar, setAvatar] = useState('')
     const [name, setName] = useState('')
     const [id, setId] = useState('')
+    const navigation = useNavigation()
 
     useEffect(() => {
         getEmployeeId().then(res => {
@@ -27,6 +30,15 @@ const CustomDrawerComponent = props => {
             });
         return () => subscriber();
     }
+    const handleSignOut = () => {
+        firebase.auth()
+            .signOut()
+            .then(() => {
+                navigation.replace('Welcome')
+            })
+            .catch(error => console.log(error.message))
+    }
+
 
     return (
         <DrawerContentScrollView {...props} className={`d-flex content-between`}>
