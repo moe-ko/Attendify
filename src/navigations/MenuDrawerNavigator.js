@@ -9,7 +9,8 @@ import Chart from '../screens/home/Admin/Chart';
 import Employees from '../screens/home/Admin/Employees';
 import { getPermission } from "../../functions";
 import { firebase } from '../../config'
-
+import About from '../screens/home/About';
+import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
 const Drawer = createDrawerNavigator();
 
 const MenuDrawerNavigator = () => {
@@ -23,28 +24,27 @@ const MenuDrawerNavigator = () => {
         return {
             title: title,
             drawerIcon: ({ focused, color }) => (
-                <Icon name={icon} size={18} color={color} />
+                <Avatar size={40} rounded icon={{ name: icon, type: "material" }} containerStyle={{ backgroundColor: '#D0E2F2', color: 'red' }} />
             )
         }
     }
     const screenOptions = () => {
         return {
             headerShown: false,
-            drawerActiveBackgroundColor: COLORS.primary,
-            drawerActiveTintColor: 'white',
+            drawerActiveBackgroundColor: 'white',
+            drawerActiveTintColor: COLORS.primary,
             drawerLabelStyle: { marginLeft: -20 }
         }
     }
     return (
-
-
         <Drawer.Navigator drawerContent={props => <CustomDrawerComponent {...props} />} screenOptions={screenOptions()} >
-            <Drawer.Screen name={ROUTES.HOME_DRAWER} component={BottomTabNavigator} options={drawerIcon('Dashboard', 'ios-home-sharp')} />
-            {permission == 'Admin' || permission == 'Super Admin' ? (
+            <Drawer.Screen name={ROUTES.HOME_DRAWER} component={BottomTabNavigator} options={drawerIcon('Dashboard', 'home')} />
+            <Drawer.Screen name={ROUTES.ABOUT} component={About} options={drawerIcon('About', 'info')} />
+            {/* {permission == 'Admin' || permission == 'Super Admin' ? (
                 <Drawer.Screen name={ROUTES.CHART_DRAWER} component={Chart} options={drawerIcon('Charts', 'stats-chart')} />
             ) : null}
             <Drawer.Screen name={ROUTES.PROFILE_DRAWER} component={Profile} options={drawerIcon('Profile', 'person-circle-sharp')} />
-            <Drawer.Screen name={ROUTES.EMPLOYEES_DRAWER} component={Employees} options={drawerIcon('Employees', 'people')} />
+            <Drawer.Screen name={ROUTES.EMPLOYEES_DRAWER} component={Employees} options={drawerIcon('Employees', 'people')} /> */}
         </Drawer.Navigator>
     )
 }

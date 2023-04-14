@@ -27,5 +27,6 @@ export default {
     EMPLOYEE_TAB: 'Employee Tab',
     EMPLOYEE_DRAWER: 'Employee Drawer',
 
+    ABOUT: 'About',
 
 }

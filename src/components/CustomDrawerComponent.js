@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { View, TouchableOpacity, Text } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
 import { getEmployeeId } from '../../functions'
 import { Avatar, ListItem } from '@rneui/themed';
 import { firebase } from '../../config'
-
+import tailwind from '../constants/tailwind';
 const CustomDrawerComponent = props => {
     const [avatar, setAvatar] = useState('')
     const [name, setName] = useState('')
@@ -29,16 +29,23 @@ const CustomDrawerComponent = props => {
     }
 
     return (
-        <DrawerContentScrollView {...props}>
-            <ListItem>
-                <Avatar rounded size={70} source={{ uri: `${avatar}` }} />
-                <ListItem.Content>
-                    <ListItem.Title>{name}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-            </ListItem>
+        <DrawerContentScrollView {...props} className={`d-flex content-between`}>
             <View>
-                <DrawerItemList {...props} />
+                <ListItem>
+                    <Avatar rounded size={70} source={{ uri: `${avatar}` }} />
+                    <ListItem.Content>
+                        <ListItem.Title className={`${tailwind.titleText} text-[#7E7E7E] text-2xl`}>{name}</ListItem.Title>
+                        <ListItem.Subtitle className={`${tailwind.slogan}`}>{id}</ListItem.Subtitle>
+                    </ListItem.Content>
+                </ListItem>
+                <View>
+                    <DrawerItemList {...props} />
+                </View>
+            </View>
+            <View className={`px-4`}>
+                <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
+                    <Text className={`${tailwind.buttonWhiteText}`}>Log Out</Text>
+                </TouchableOpacity>
             </View>
         </DrawerContentScrollView>
     )

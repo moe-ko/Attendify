@@ -65,7 +65,7 @@ const BottomTabNavigator = () => {
             {permission == 'Admin' || permission == 'Super Admin' ? (
                 <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ title: 'Chart' }} />
             ) : null}
-            <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: 'Profile' }} />
+            <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: `${permission} Profile` }} />
             <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ title: 'Employees' }} />
 
         </Tab.Navigator>
