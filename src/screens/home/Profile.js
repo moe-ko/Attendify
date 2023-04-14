@@ -45,7 +45,7 @@ const Profile = ({ navigation }) => {
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
                     fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
-                        .then((res) => units.push({ key: documentSnapshot.id, value: res }))
+                        .then((res) => units.push({ key: documentSnapshot.id, value: res, disabled: res == unit ? true : false }))
                 });
             });
     }
