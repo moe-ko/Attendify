@@ -43,7 +43,8 @@ const SignUp = ({ navigation }) => {
             .then(querySnapshot => {
                 let res = []
                 querySnapshot.forEach(documentSnapshot => {
-                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id']).then((res) => units.push({ key: documentSnapshot.id, value: res }))
+                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                        .then((res) => units.push({ key: documentSnapshot.id, value: res }))
                 });
             });
     }
