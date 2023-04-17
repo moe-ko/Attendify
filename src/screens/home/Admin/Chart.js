@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView } from 'react-native'
+import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
-import { COLORS } from '../../..'
+import { COLORS, ROUTES } from '../../..'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { setDate } from 'date-fns'
 import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { arrayUnion } from 'firebase/firestore'
+import tailwind from '../../../constants/tailwind'
 
-const Chart = () => {
+const Chart = ({ navigation }) => {
     const [eventDate, setEventDate] = useState('')
     const [attend, setAttend] = useState(0)
     const [absent, setAbsent] = useState(0)
@@ -23,6 +24,7 @@ const Chart = () => {
     const [employeeSelected, setEmployeeSelected] = useState('')
     const [currentStatus, setCurrentStatus] = useState('')
     const [isVisible, setIsVisible] = useState(false);
+    const [eventExist, setEventExist] = useState(true)
     let employees = clear
 
     useEffect(() => {
@@ -30,7 +32,6 @@ const Chart = () => {
             getCurrentEventDate()
         } else {
             getTotalAttendance()
-            console.log('Date has changed')
         }
     }, [eventDate])
 
@@ -45,6 +46,9 @@ const Chart = () => {
                         setEventDate(res[0]['key'])
                         setDates(res)
                         getTotalAttendance()
+                        setEventExist(true)
+                    } else {
+                        setEventExist(false)
                     }
                 }
             })
@@ -265,73 +269,123 @@ const Chart = () => {
     }
 
     return (
-        <View>
-            <SelectList
-                data={dates}
-                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
-                placeholder={eventDate}
-                inputStyles={{
-                    color: "#666",
-                    padding: 0,
-                    margin: 0,
-                }}
-                boxStyles={{
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderColor: '#000',
-                    color: '#fff',
-                    margin: 5,
-                }}
-                dropdownStyles={{
-                    borderWidth: 1,
-                    borderRadius: 4,
-                    borderColor: '#DDDDDD',
-                    backgroundColor: '#DDDDDD',
-                    color: '#fff',
-                    marginLeft: 5,
-                    marginRight: 5,
-                    marginBottom: 5,
-                    marginTop: 0,
-                    position: 'relative'
-                }}
-            />
-            {viewDetails ? (
-                <>
-                    <ScrollView marginBottom={50}>
-                        <VictoryPie
-                            data={graphicData}
-                            width={Dimensions.get('window').width}
-                            style={{ width: '100%', labels: { fill: "white", fontSize: 20, fontWeight: "light" } }}
-                            labelRadius={({ innerRadius }) => innerRadius + 60}
-                            innerRadius={20}
-                            colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
-                        />
-                        <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
-                            <BoxInfo bg={COLORS.primary} label='Attend' status='attendance' />
-                            <BoxInfo bg={COLORS.lightblue700} label='Absent' status='absent' />
-                            <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
-                            <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
+        <>
+            {eventExist ? (
+                <View>
+                    <View className={`${tailwind.viewWrapper} bg-[#fff] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
+                        shadowColor: '#000',
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                    }}>
+                        <View className={` w-screen px-3`}>
+                            <SelectList
+                                data={dates}
+                                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
+                                placeholder={eventDate}
+                                placeholderTextColor='#726F6F'
+                                inputStyles={{
+                                    color: "#666",
+                                    padding: 7,
+                                    margin: 0,
+                                }}
+                                boxStyles={{
+                                    borderRadius: 20,
+                                    color: 'black',
+                                    backgroundColor: '#F5F5F5',
+                                    borderColor: 'white',
+                                }}
+                                dropdownStyles={{
+                                    borderWidth: 0,
+                                    borderRadius: 4,
+                                    borderColor: '#DDDDDD',
+                                    backgroundColor: '#DDDDDD',
+                                    color: '#fff',
+                                    marginLeft: 5,
+                                    marginRight: 5,
+                                    marginBottom: 5,
+                                    marginTop: 0,
+                                    position: 'relative'
+                                }}
+                            />
                         </View>
-                        <FlatList
-                            data={employees}
-                            renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} status={item.status} />}
-                            keyExtractor={item => item.id}
-                        />
-                    </ScrollView>
-                </>
-            ) : <Text>No registered data yet for the event {eventDate}</Text>}
-            <BottomSheet isVisible={isVisible}>
-                {bottomSheetList.map((l, i) => (
-                    <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
-                        <Icon name={l.icon} size={30} color={COLORS.primary} />
-                        <ListItem.Content>
-                            <ListItem.Title >{l.title}</ListItem.Title>
-                        </ListItem.Content>
-                    </ListItem>
-                ))}
-            </BottomSheet>
-        </View >
+                    </View>
+                    {viewDetails ? (
+                        <>
+                            <ScrollView marginBottom={50}>
+                                <VictoryPie
+                                    data={graphicData}
+                                    width={Dimensions.get('window').width}
+                                    style={{ width: '100%', labels: { fill: "white", fontSize: 20, fontWeight: "light" } }}
+                                    labelRadius={({ innerRadius }) => innerRadius + 60}
+                                    innerRadius={20}
+                                    colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
+                                />
+                                <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
+                                    <BoxInfo bg={COLORS.primary} label='Attend' status='attendance' />
+                                    <BoxInfo bg={COLORS.lightblue700} label='Absent' status='absent' />
+                                    <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
+                                    <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
+                                </View>
+                                <FlatList
+                                    data={employees}
+                                    renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} status={item.status} />}
+                                    keyExtractor={item => item.id}
+                                />
+                            </ScrollView>
+                        </>
+                    ) :
+                        <View style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: '100%',
+                        }}>
+                            <Image source={require('../../../../assets/empty.webp')} style={{ height: 200, width: '100%' }} />
+                            <View className={`${tailwind.viewWrapper} px-4`}>
+                                <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No records found</Text>
+                                <View className={`flex-row justify-center items-center`}>
+                                    <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >No records found for {eventDate} </Text>
+                                </View>
+                            </View>
+                        </View>
+                    }
+                    <BottomSheet isVisible={isVisible}>
+                        {bottomSheetList.map((l, i) => (
+                            <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
+                                <Icon name={l.icon} size={30} color={COLORS.primary} />
+                                <ListItem.Content>
+                                    <ListItem.Title >{l.title}</ListItem.Title>
+                                </ListItem.Content>
+                            </ListItem>
+                        ))}
+                    </BottomSheet>
+                </View >
+            ) :
+                <View style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    height: '100%',
+                    backgroundColor: '#f7fbfe'
+                }}>
+                    <Image source={require('../../../../assets/event-holder.webp')} style={{ height: 200, width: '100%' }} />
+                    <View className={`${tailwind.viewWrapper} px-4`}>
+                        <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No event yet created</Text>
+                        <View className={`flex-row justify-center items-center`}>
+                            <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >Create a new event in the </Text>
+                            <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.HOME) }}>
+                                <Text className={`${tailwind.slogan} ${tailwind.blueTextLink}`}> Dashboard</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </View>
 
+            }
+        </>
     )
 }
 
