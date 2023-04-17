@@ -54,19 +54,6 @@ export const fetchUnit = async (subunit_name, id) => {
     return unit
 }
 
-// const getUnits = (subunit_id, subunit_name, id) => {
-//     const units = []
-//     const subscriber = firebase.firestore()
-//         .collection('units')
-//         .doc(id)
-//         .onSnapshot(documentSnapshot => {
-//             units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' > ' + subunit_name}` })
-//         });
-//     console.log(units)
-//     return () => subscriber();
-// }
-
-
 export const generatePasscode = (length) => {
     let passcode = '';
     const characters = '0123456789';

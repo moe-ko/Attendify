@@ -11,6 +11,9 @@ import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getPermission } from "../../functions";
 import { firebase } from '../../config'
+import ProfileHeader from "./headers/ProfileHeader";
+import ReportHeader from "./headers/ReportHeader";
+import DashboardHeader from "./headers/DashboardHeader";
 
 const Tab = createBottomTabNavigator();
 
@@ -43,7 +46,7 @@ const BottomTabNavigator = () => {
 
     const screenOptions = (route) => {
         return {
-            headerShown: true,
+            headerShown: false,
             tabBarShowLabel: false,
             tabBarInactiveTintColor: COLORS.inactiveIcon,
             tabBarActiveTintColor: '#62ABEF',
@@ -61,11 +64,11 @@ const BottomTabNavigator = () => {
 
     return (
         <Tab.Navigator screenOptions={({ route }) => (screenOptions(route))} >
-            <Tab.Screen name={ROUTES.HOME_TAB} component={Home} options={{ title: 'Dashboard' }} />
+            <Tab.Screen name={ROUTES.HOME_TAB} component={DashboardHeader} options={{ title: 'Dashboard' }} />
             {permission == 'Admin' || permission == 'Super Admin' ? (
-                <Tab.Screen name={ROUTES.CHART} component={Chart} options={{ title: 'Chart' }} />
+                <Tab.Screen name={ROUTES.CHART} component={ReportHeader} options={{ title: 'Chart' }} />
             ) : null}
-            <Tab.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: `${permission} Profile` }} />
+            <Tab.Screen name={ROUTES.PROFILE} component={ProfileHeader} options={{ title: `${permission} Profile` }} />
             <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ title: 'Employees' }} />
 
         </Tab.Navigator>

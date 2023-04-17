@@ -8,7 +8,7 @@ import tailwind from '../../../constants/tailwind'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { getStatusIcon, getStatusName, getAllStatus, updateStatus, getPermission, fetchUnit } from '../../../../functions'
 
-const Employee = ({ route }) => {
+const Employee = ({ navigation, route }) => {
     const [permission, setPermission] = useState(route.params['permission'])
     const [currentUserPermission, setCurrentUserPermission] = useState()
     const [unit, setUnit] = useState('')

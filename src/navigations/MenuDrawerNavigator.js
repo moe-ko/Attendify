@@ -9,7 +9,7 @@ import Chart from '../screens/home/Admin/Chart';
 import Employees from '../screens/home/Admin/Employees';
 import { getPermission } from "../../functions";
 import { firebase } from '../../config'
-import About from '../screens/home/About';
+import AboutHeader from './headers/AboutHeader';
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
 const Drawer = createDrawerNavigator();
 
@@ -39,7 +39,7 @@ const MenuDrawerNavigator = () => {
     return (
         <Drawer.Navigator drawerContent={props => <CustomDrawerComponent {...props} />} screenOptions={screenOptions()} >
             <Drawer.Screen name={ROUTES.HOME_DRAWER} component={BottomTabNavigator} options={drawerIcon('Dashboard', 'home')} />
-            <Drawer.Screen name={ROUTES.ABOUT} component={About} options={drawerIcon('About', 'info')} />
+            <Drawer.Screen name={ROUTES.ABOUT_DRAWER} component={AboutHeader} options={drawerIcon('About', 'info')} />
             {/* {permission == 'Admin' || permission == 'Super Admin' ? (
                 <Drawer.Screen name={ROUTES.CHART_DRAWER} component={Chart} options={drawerIcon('Charts', 'stats-chart')} />
             ) : null}

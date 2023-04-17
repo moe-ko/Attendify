@@ -41,25 +41,27 @@ const CustomDrawerComponent = props => {
 
 
     return (
-        <DrawerContentScrollView {...props} className={`d-flex content-between`}>
-            <View>
-                <ListItem>
-                    <Avatar rounded size={70} source={{ uri: `${avatar}` }} />
-                    <ListItem.Content>
-                        <ListItem.Title className={`${tailwind.titleText} text-[#7E7E7E] text-2xl`}>{name}</ListItem.Title>
-                        <ListItem.Subtitle className={`${tailwind.slogan}`}>{id}</ListItem.Subtitle>
-                    </ListItem.Content>
-                </ListItem>
+        <DrawerContentScrollView {...props} className={``}>
+            <View className={`flex flex-col w-full h-screen`}>
                 <View>
-                    <DrawerItemList {...props} />
+                    <ListItem>
+                        <Avatar rounded size={70} source={{ uri: `${avatar}` }} />
+                        <ListItem.Content>
+                            <ListItem.Title className={`${tailwind.titleText} text-[#7E7E7E] text-2xl`}>{name}</ListItem.Title>
+                            <ListItem.Subtitle className={`${tailwind.slogan}`}>{id}</ListItem.Subtitle>
+                        </ListItem.Content>
+                    </ListItem>
+                    <View>
+                        <DrawerItemList {...props} />
+                    </View>
+                </View>
+                <View className={`pb-20 px-5 mt-auto w-full`}>
+                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
+                        <Text className={`${tailwind.buttonWhiteText}`}>Log Out</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
-            <View className={`px-4`}>
-                <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
-                    <Text className={`${tailwind.buttonWhiteText}`}>Log Out</Text>
-                </TouchableOpacity>
-            </View>
-        </DrawerContentScrollView>
+        </DrawerContentScrollView >
     )
 }
 
