@@ -117,7 +117,6 @@ const Employees = ({ navigation }) => {
                             placeholderTextColor='gray'
                         />
                     </View>
-
                 </View>
                 <ScrollView marginBottom={50}>
                     <FlatList

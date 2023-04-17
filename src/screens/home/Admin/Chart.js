@@ -32,7 +32,6 @@ const Chart = ({ navigation }) => {
             getCurrentEventDate()
         } else {
             getTotalAttendance()
-            console.log('Date has changed')
         }
     }, [eventDate])
 
@@ -47,6 +46,7 @@ const Chart = ({ navigation }) => {
                         setEventDate(res[0]['key'])
                         setDates(res)
                         getTotalAttendance()
+                        setEventExist(true)
                     } else {
                         setEventExist(false)
                     }
@@ -272,35 +272,48 @@ const Chart = ({ navigation }) => {
         <>
             {eventExist ? (
                 <View>
-                    <SelectList
-                        data={dates}
-                        setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
-                        placeholder={eventDate}
-                        inputStyles={{
-                            color: "#666",
-                            padding: 0,
-                            margin: 0,
-                        }}
-                        boxStyles={{
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            borderColor: '#000',
-                            color: '#fff',
-                            margin: 5,
-                        }}
-                        dropdownStyles={{
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            borderColor: '#DDDDDD',
-                            backgroundColor: '#DDDDDD',
-                            color: '#fff',
-                            marginLeft: 5,
-                            marginRight: 5,
-                            marginBottom: 5,
-                            marginTop: 0,
-                            position: 'relative'
-                        }}
-                    />
+                    <View className={`${tailwind.viewWrapper} bg-[#fff] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
+                        shadowColor: '#000',
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                    }}>
+                        <View className={` w-screen px-3`}>
+                            <SelectList
+                                data={dates}
+                                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
+                                placeholder={eventDate}
+                                placeholderTextColor='#726F6F'
+                                inputStyles={{
+                                    color: "#666",
+                                    padding: 7,
+                                    margin: 0,
+                                }}
+                                boxStyles={{
+                                    borderRadius: 20,
+                                    color: 'black',
+                                    backgroundColor: '#F5F5F5',
+                                    borderColor: 'white',
+                                }}
+                                dropdownStyles={{
+                                    borderWidth: 0,
+                                    borderRadius: 4,
+                                    borderColor: '#DDDDDD',
+                                    backgroundColor: '#DDDDDD',
+                                    color: '#fff',
+                                    marginLeft: 5,
+                                    marginRight: 5,
+                                    marginBottom: 5,
+                                    marginTop: 0,
+                                    position: 'relative'
+                                }}
+                            />
+                        </View>
+                    </View>
                     {viewDetails ? (
                         <>
                             <ScrollView marginBottom={50}>
@@ -325,7 +338,21 @@ const Chart = ({ navigation }) => {
                                 />
                             </ScrollView>
                         </>
-                    ) : <Text>No registered data yet for the event {eventDate}</Text>}
+                    ) :
+                        <View style={{
+                            display: "flex",
+                            alignItems: "center",
+                            height: '100%',
+                        }}>
+                            <Image source={require('../../../../assets/empty.webp')} style={{ height: 200, width: '100%' }} />
+                            <View className={`${tailwind.viewWrapper} px-4`}>
+                                <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No records found</Text>
+                                <View className={`flex-row justify-center items-center`}>
+                                    <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >No records found for {eventDate} </Text>
+                                </View>
+                            </View>
+                        </View>
+                    }
                     <BottomSheet isVisible={isVisible}>
                         {bottomSheetList.map((l, i) => (
                             <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
@@ -345,7 +372,7 @@ const Chart = ({ navigation }) => {
                     height: '100%',
                     backgroundColor: '#f7fbfe'
                 }}>
-                    <Image source={require('../../../../assets/event-holder.webp')} style={{ height: 300, width: '100%' }} />
+                    <Image source={require('../../../../assets/event-holder.webp')} style={{ height: 200, width: '100%' }} />
                     <View className={`${tailwind.viewWrapper} px-4`}>
                         <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No event yet created</Text>
                         <View className={`flex-row justify-center items-center`}>
@@ -359,7 +386,6 @@ const Chart = ({ navigation }) => {
 
             }
         </>
-
     )
 }
 
