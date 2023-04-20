@@ -120,7 +120,7 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = async (selectedLocation, title, date, time) => {
+export const hanldeCreateEvent = async (selectedLocation, title, date, time, absent, sick_leave, annual_leave) => {
     date = format(date, 'yyyy-MM-dd') + ' ' + time
     await firebase.firestore()
         .collection('events')
@@ -134,9 +134,9 @@ export const hanldeCreateEvent = async (selectedLocation, title, date, time) => 
             status_id: '1',
             title: title,
             attendance: [],
-            absent: [],
-            sick_leave: [],
-            annual_leave: [],
+            absent: absent,
+            sick_leave: sick_leave,
+            annual_leave: annual_leave,
         })
         .then(() => {
             Alert.alert('Event Created', 'New event has been created', [
@@ -282,4 +282,18 @@ export const updateStatus = async (id, statusId) => {
         .then(() => {
             console.log('Status updated!');
         });
+}
+
+export const getEmployeesByStatus = async (status_id) => {
+    let emp = []
+    await firebase.firestore()
+        .collection('employees')
+        .where('status_id', '==', status_id)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                emp.push(documentSnapshot.id)
+            });
+        });
+    return emp
 }
