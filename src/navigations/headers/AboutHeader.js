@@ -2,14 +2,42 @@ import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import About from '../../screens/home/About'
 import BottomTabNavigator from '../BottomNavigator'
-import { ROUTES } from '../..'
+import { COLORS, ROUTES } from '../..'
+import Icon from 'react-native-vector-icons/Ionicons'
+import { TouchableOpacity } from 'react-native'
 
 const Stack = createStackNavigator()
 
-const AboutHeader = () => {
+const AboutHeader = ({ navigation }) => {
+  console.log(navigation)
   return (
-    <Stack.Navigator screenOptions={{ headerShown: true }}>
-      <Stack.Screen name={ROUTES.ABOUT} component={About} />
+    <Stack.Navigator
+      screenOptions={{
+        headerShown: true,
+        headerStyle: {
+          elevation: 0,   // for Android
+          shadowOffset: {
+            width: 0, height: 0 // for iOS
+          }
+        }
+      }}
+    >
+      <Stack.Screen name={ROUTES.ABOUT} component={About}
+        options={{
+          headerBackTitleVisible: true,
+          headerLeft: () => {
+            return (
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <Icon name={'chevron-back-circle-outline'} size={30} color={COLORS.primary} style={{ marginLeft: 10 }} />
+              </TouchableOpacity>
+            )
+          },
+          headerStyle: {
+            backgroundColor: 'white'
+          },
+          headerTintColor: "black",
+          headerTitle: "About Attendify"
+        }} />
     </Stack.Navigator>
   )
 }

@@ -118,8 +118,8 @@ const Employees = ({ navigation }) => {
                         />
                     </View>
                 </View>
-                <ScrollView marginBottom={50}>
-                    <FlatList
+                <ScrollView>
+                    <FlatList marginBottom={100}
                         data={filteredData}
                         keyExtractor={item => item['data']['employee_id']}
                         renderItem={(item) => <Item id={item.item['data']['employee_id']} data={item.item['data']} />}
