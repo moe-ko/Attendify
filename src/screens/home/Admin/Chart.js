@@ -316,7 +316,7 @@ const Chart = ({ navigation }) => {
                     </View>
                     {viewDetails ? (
                         <>
-                            <ScrollView marginBottom={50}>
+                            <ScrollView>
                                 <VictoryPie
                                     data={graphicData}
                                     width={Dimensions.get('window').width}
@@ -331,7 +331,7 @@ const Chart = ({ navigation }) => {
                                     <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
                                     <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
                                 </View>
-                                <FlatList
+                                <FlatList marginBottom={100}
                                     data={employees}
                                     renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} status={item.status} />}
                                     keyExtractor={item => item.id}
@@ -374,7 +374,7 @@ const Chart = ({ navigation }) => {
                 }}>
                     <Image source={require('../../../../assets/event-holder.webp')} style={{ height: 200, width: '100%' }} />
                     <View className={`${tailwind.viewWrapper} px-4`}>
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No event yet created</Text>
+                        <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No events yet created</Text>
                         <View className={`flex-row justify-center items-center`}>
                             <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >Create a new event in the </Text>
                             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.HOME) }}>
