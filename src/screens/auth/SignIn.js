@@ -22,7 +22,6 @@ const SignIn = ({ navigation }) => {
         }
     }
 
-
     return (
         <KeyboardAvoidingView>
             <View className={`${tailwind.containerWrapper}`}>
@@ -42,9 +41,6 @@ const SignIn = ({ navigation }) => {
                             required
                         />
                     </View>
-
-
-
                     <View className={`${tailwind.viewWrapper}`}>
                         <TextInput
                             className={`${tailwind.inputs}`}
@@ -56,21 +52,15 @@ const SignIn = ({ navigation }) => {
                             required
                         />
                     </View>
-
-
                     <View className={`${tailwind.viewWrapper}`}>
                         <Text onPress={() => { navigation.navigate(ROUTES.FORGOT_PASS) }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
                     </View>
                     <View className={`${tailwind.viewWrapper}`}>
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
-                            onPress={() => { signInUser('test@test.com', '123456') }}
-                        // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
-                        // onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
-                        //  onPress={() => { signInUser(email, password) }}
                             // onPress={() => { signInUser('test@test.com', '123456') }}
-                            onPress={() => { signInUser('admin@admin.com', 'admin2') }}
-                        // onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
+                            // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
+                            onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
                         // onPress={() => { signInUser(email, password) }}
                         // disabled={(!email.trim() || !password.trim())}
                         >
@@ -82,7 +72,6 @@ const SignIn = ({ navigation }) => {
                         <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.SIGNUP) }}>
                             <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>
                         </TouchableOpacity>
-
                     </View>
                 </View>
             </View>

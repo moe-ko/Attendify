@@ -212,12 +212,9 @@ const Event = ({ props }) => {
                                         <Text className={`${tailwind.slogan} text-[${COLORS.grey}]`}>{locationName}</Text>
                                     </View>
                                     <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Latest event</Text>
-                                    <View className={`${tailwind.viewWrapper} bg-[[${COLORS.primary}]] rounded-2xl`}>
+                                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl`}>
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
-                                                <Text className={`${tailwind.titleText} font-light text-[${COLORS.white}] text-center my-3`}>Session Code: </Text>
-                                                <Text className={`${tailwind.titleText} tracking-widest text-[${COLORS.white}] text-center my-3`}>{currentEvent['code']}</Text>
-                                                <Text className={`${tailwind.slogan} text-[${COLORS.white}] text-center  my-3`}>Expire {currentEvent['end']}</Text>
                                                 <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code:</Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
                                                 <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
@@ -264,9 +261,7 @@ const Event = ({ props }) => {
                                                                             backgroundColor: 'white'
 
                                                                         }}
-                                                                        codeInputHighlightStyle={{ borderColor: COLORS.secondary, }}
-                                                                        onCodeFilled={code => setCode(code)}
-                                                                        codeInputHighlightStyle={{ borderColor: "#717171", }}
+                                                                        codeInputHighlightStyle={{ borderColor: COLORS.secondary }}
                                                                         onCodeFilled={code => { setCode(code), setDisabled(!disabled) }}
                                                                     />
                                                                 </View>
