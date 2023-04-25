@@ -93,20 +93,33 @@ const Employees = ({ navigation }) => {
     }
 
     return (
-        <SafeAreaView>
-            <View>
-                <View className={`${tailwind.viewWrapper}`}>
-                    <TextInput
-                        value={search}
-                        onChangeText={(text) => searchFilter(text)}
-                        placeholder="Search by ID or Name"
-                        autoCapitalize='none'
-                        autoCorrect={false}
-                        className={`${tailwind.inputs}`}
-                    />
+        <SafeAreaView >
+            <View className={`bg-[#fff]`}>
+                <View className={`${tailwind.viewWrapper} bg-[#fff] rounded-b-3xl items-center  py-4 justify-center`} style={{
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 2,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,
+                }}>
+                    <View className={`${tailwind.inputs} bg-[#F5F5F5] w-11/12 flex-row justify-between`}>
+                        <Icon name="ios-search" size={20} color="#000" className={`w-1/12`} />
+                        <TextInput
+                            value={search}
+                            onChangeText={(text) => searchFilter(text)}
+                            placeholder="Search by ID or Name"
+                            autoCapitalize='none'
+                            autoCorrect={false}
+                            className={`w-11/12`}
+                            placeholderTextColor='gray'
+                        />
+                    </View>
                 </View>
-                <ScrollView marginBottom={50}>
-                    <FlatList
+                <ScrollView>
+                    <FlatList marginBottom={100}
                         data={filteredData}
                         keyExtractor={item => item['data']['employee_id']}
                         renderItem={(item) => <Item id={item.item['data']['employee_id']} data={item.item['data']} />}

@@ -1,23 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { View, Text, Alert, TextInput, Platform, TouchableOpacity, KeyboardAvoidingView, ScrollView, StyleSheet, ActivityIndicator } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
-import DateTimePicker from '@react-native-community/datetimepicker';
-import DateTimePickerModal from '@react-native-community/datetimepicker';
 import { COLORS } from '../../..'
-import DatePicker from 'react-native-datepicker';
-import { TimePickerModal, DatePickerModal } from 'react-native-paper-dates'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import { TimePickerModal, DatePickerModal, registerTranslation } from 'react-native-paper-dates'
 import OTPInputView from '@twotalltotems/react-native-otp-input';
-import { registerTranslation } from 'react-native-paper-dates'
-import { DefaultTheme } from '@react-navigation/native'
-import colors from '../../../constants/colors'
+
 registerTranslation('pl', {
     save: 'Save',
     selectSingle: 'Select date',
@@ -40,7 +33,6 @@ const Event = ({ props }) => {
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
-    const [createEventVisible, setCreateEventVisible] = useState(true);
     const [currentEventVisible, setCurrentEventVisible] = useState(true);
     const [currentEvent, setCurrentEvent] = useState([]);
     const [locationName, setLocationName] = useState();
@@ -55,9 +47,15 @@ const Event = ({ props }) => {
     const [datePickerVisible, setDatePickerVisible] = useState(false)
     const [permission, setPermission] = useState('');
     const [loading, setLoading] = useState(true)
+    const [sickEmps, setSickEmps] = useState([])
+    const [leaveEmps, setLeaveEmps] = useState([])
+    const [inactiveEmps, setInactiveEmps] = useState([])
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
+        getEmployeesByStatus('0').then(res => setInactiveEmps(res))
+        getEmployeesByStatus('2').then(res => setLeaveEmps(res))
+        getEmployeesByStatus('3').then(res => setSickEmps(res))
     }, [permission])
 
     eventTimer = (end) => {
@@ -348,7 +346,7 @@ const Event = ({ props }) => {
                                 <View className="justify-center items-center">
                                     <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, date, time), getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps), getCurrentEvent()
                                         }}>
                                         <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
                                     </TouchableOpacity>

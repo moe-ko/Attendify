@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase, storage } from '../../../config'
-import { checkIpAddress } from '../../../functions'
+import { checkIpAddress, fetchUnit } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -38,26 +38,19 @@ const Profile = ({ navigation }) => {
     }, [subunitId])
 
 
-    getSubunits = () => {
+    const getUnits = () => {
         firebase.firestore()
             .collection('subunits')
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
-                    getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                        .then((res) => units.push({ key: documentSnapshot.id, value: res, disabled: res == unit ? true : false }))
                 });
             });
     }
-    getSubunits()
-    getUnits = (subunit_id, subunit_name, id) => {
-        const subscriber = firebase.firestore()
-            .collection('units')
-            .doc(id)
-            .onSnapshot(documentSnapshot => {
-                units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' > ' + subunit_name}` })
-            });
-        return () => subscriber();
-    }
+
+    getUnits()
 
     checkIpAddress().then(res => setIpAddress(res))
 
@@ -95,48 +88,37 @@ const Profile = ({ navigation }) => {
             .doc(status_id)
             .onSnapshot(documentSnapshot => {
                 setStatus(documentSnapshot.data()['name'])
-                getSubunit(subunitId)
+                getUnit(subunitId)
             });
         return () => status();
     }
 
-    const getSubunit = (subunit_id) => {
+    const getUnit = (subunit_id) => {
         const subunit = firebase.firestore()
             .collection('subunits')
             .doc(subunit_id)
             .onSnapshot(documentSnapshot => {
-                setSubunit(documentSnapshot.data()['name'])
-                getUnit(documentSnapshot.data()['unit_id'])
+                fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                    .then((res) => setUnit(res))
             });
         return () => subunit();
     }
 
-    getUnit = (unit_id) => {
-        const subunit = firebase.firestore()
-            .collection('units')
-            .doc(unit_id)
-            .onSnapshot(documentSnapshot => {
-                setUnit(documentSnapshot.data()['name'])
-            });
-        return () => subunit();
-    }
-
-    updateUnit = () => {
+    updateUnit = (newUnit) => {
         firebase.firestore()
             .collection('employees')
             .doc(empId)
             .update({
-                subunit_id: subunitSelected,
+                subunit_id: newUnit,
             })
             .then(() => {
                 console.log('Unit updated!');
             });
-        getSubunit(subunitSelected)
+        getUnit(newUnit)
         setIsModalUnitsVisible(false)
     }
 
     const changePassword = () => {
-        console.log(firebase.auth().currentUser.email)
         firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
             .then(() => {
                 console.log('Password email sent')
@@ -177,8 +159,8 @@ const Profile = ({ navigation }) => {
             .collection('employees')
             .doc(empId)
             .update({
-                full_name: newName,
-                avatar: newAvatar,
+                full_name: newName != name ? newName : name,
+                avatar: newAvatar != avatar ? newAvatar : avatar,
             })
             .then(() => {
                 getCurrentEmployee()
@@ -300,7 +282,7 @@ const Profile = ({ navigation }) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                            <ItemContent title={'Unit'} data={`${unit} (${subunit})`} iconName={'group'} />
+                            <ItemContent title={'Unit'} data={`${unit}`} iconName={'group'} />
                             <ListItem.Chevron />
                         </ListItem>
                     </TouchableOpacity>
@@ -413,7 +395,7 @@ const Profile = ({ navigation }) => {
                                     <SelectList
                                         data={units}
                                         setSelected={selected => setSubunitSelected(selected)}
-                                        placeholder={`${unit} || ${subunit}`}
+                                        placeholder={`${unit}`}
                                         placeholderTextColor='#F5F5F5'
                                         inputStyles={{
                                             margin: 0,
@@ -439,16 +421,12 @@ const Profile = ({ navigation }) => {
                                     />
                                 </View>
                                 <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonBlue}`}
-                                        onPress={() => updateUnit()}>
+                                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updateUnit(subunitSelected)}>
                                         <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonWhite}`}
-                                        onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -519,17 +497,12 @@ const Profile = ({ navigation }) => {
                                     onChangeText={(text) => setNewName(text)}
                                 />
                                 <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonBlue}`}
-                                        onPress={() => updateProfile()}
-                                        disabled={(!newAvatar.trim() || !newName.trim())}
-                                    >
+                                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updateProfile()}>
                                         <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonWhite}`}
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => { setNewAvatar(''), setIsModalProfileVisible(!isModalProfileVisible) }}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                     </TouchableOpacity>

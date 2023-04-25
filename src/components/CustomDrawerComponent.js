@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { View } from 'react-native'
+import { View, TouchableOpacity, Text } from 'react-native'
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
 import { getEmployeeId } from '../../functions'
 import { Avatar, ListItem } from '@rneui/themed';
 import { firebase } from '../../config'
+import tailwind from '../constants/tailwind';
+import { useNavigation } from "@react-navigation/native";
 
 const CustomDrawerComponent = props => {
     const [avatar, setAvatar] = useState('')
     const [name, setName] = useState('')
     const [id, setId] = useState('')
+    const navigation = useNavigation()
 
     useEffect(() => {
         getEmployeeId().then(res => {
@@ -27,20 +30,38 @@ const CustomDrawerComponent = props => {
             });
         return () => subscriber();
     }
+    const handleSignOut = () => {
+        firebase.auth()
+            .signOut()
+            .then(() => {
+                navigation.replace('Welcome')
+            })
+            .catch(error => console.log(error.message))
+    }
+
 
     return (
-        <DrawerContentScrollView {...props}>
-            <ListItem>
-                <Avatar rounded size={70} source={{ uri: `${avatar}` }} />
-                <ListItem.Content>
-                    <ListItem.Title>{name}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-            </ListItem>
-            <View>
-                <DrawerItemList {...props} />
+        <DrawerContentScrollView {...props} className={``}>
+            <View className={`flex flex-col w-full h-screen`}>
+                <View>
+                    <ListItem>
+                        <Avatar rounded size={70} source={{ uri: `${avatar}` }} />
+                        <ListItem.Content>
+                            <ListItem.Title className={`${tailwind.titleText} text-[#7E7E7E] text-2xl`}>{name}</ListItem.Title>
+                            <ListItem.Subtitle className={`${tailwind.slogan}`}>{id}</ListItem.Subtitle>
+                        </ListItem.Content>
+                    </ListItem>
+                    <View>
+                        <DrawerItemList {...props} />
+                    </View>
+                </View>
+                <View className={`pb-20 px-5 mt-auto w-full`}>
+                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
+                        <Text className={`${tailwind.buttonWhiteText}`}>Log Out</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
-        </DrawerContentScrollView>
+        </DrawerContentScrollView >
     )
 }
 

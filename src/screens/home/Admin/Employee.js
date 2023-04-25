@@ -1,22 +1,17 @@
-
-import { ListItem, Avatar, BottomSheet } from '@rneui/base'
+import { ListItem, Avatar } from '@rneui/base'
 import React, { useState, useEffect } from 'react'
-import { View, Text, Button, TouchableOpacity, KeyboardAvoidingView, Image, Modal, Linking } from 'react-native'
+import { View, Text, TouchableOpacity, KeyboardAvoidingView, Image, Modal, Linking } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler'
-import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../..'
 import { firebase } from '../../../../config'
 import tailwind from '../../../constants/tailwind'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { getStatusIcon, getStatusName, getAllStatus, updateStatus, getPermission } from '../../../../functions'
+import { getStatusIcon, getStatusName, getAllStatus, updateStatus, getPermission, fetchUnit } from '../../../../functions'
 
-const Employee = ({ route }) => {
-    const [subunitId, setSubunitId] = useState(route.params['subunit_id'])
+const Employee = ({ navigation, route }) => {
     const [permission, setPermission] = useState(route.params['permission'])
     const [currentUserPermission, setCurrentUserPermission] = useState()
     const [unit, setUnit] = useState('')
-    const [subunit, setSubunit] = useState('')
-    const [isPermissionVisible, setIsPermissionVisible] = useState(false);
     const [subunitSelected, setSubunitSelected] = useState('');
     const [isModalUnitsVisible, setIsModalUnitsVisible] = useState(false);
     const [isModalPermissionVisible, setIsModalPermissionVisible] = useState(false);
@@ -25,8 +20,8 @@ const Employee = ({ route }) => {
     const [statusIcon, setStatusIcon] = useState('')
     const [statusId, setStatusId] = useState(route.params['status_id'])
     const [allStatus, setAllStatus] = useState()
-    const st = []
     const units = []
+
     const permissions =
         currentUserPermission == 'Super Admin' ?
             [
@@ -37,59 +32,42 @@ const Employee = ({ route }) => {
                 { key: 'Admin', value: 'Admin' },
                 { key: 'Associate', value: 'Associate' }
             ]
+
     useEffect(() => {
-        getSubunit(subunitId)
+        getUnit(route.params['subunit_id'])
         getAllStatus().then(res => setAllStatus(res))
         getPermission(firebase.auth().currentUser?.email).then(res => setCurrentUserPermission(res))
-    }, [subunitId])
+    }, [route.params['subunit_id']])
 
     getStatusIcon(statusId).then(res => setStatusIcon(res))
     getStatusName(statusId).then(res => setStatusName(res))
 
-    const getSubunit = (id) => {
+    const getUnit = (id) => {
         firebase.firestore()
             .collection('subunits')
             .doc(id)
             .get()
             .then(documentSnapshot => {
                 if (documentSnapshot.exists) {
-                    setSubunit(documentSnapshot.data()['name']);
-                    getUnit(documentSnapshot.data()['unit_id'])
-                }
-            });
-    }
-    const getUnit = (id) => {
-        firebase.firestore()
-            .collection('units')
-            .doc(id)
-            .get()
-            .then(documentSnapshot => {
-                if (documentSnapshot.exists) {
-                    setUnit(documentSnapshot.data()['name']);
+                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                        .then((res) => setUnit(res))
                 }
             });
     }
 
-    getSubunits = () => {
+    const getUnits = () => {
         firebase.firestore()
             .collection('subunits')
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
-                    getUnits(documentSnapshot.id, documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
+                        .then((res) => units.push({ key: documentSnapshot.id, value: res, disabled: res == unit ? true : false }))
                 });
             });
     }
-    getSubunits()
-    getUnits = (subunit_id, subunit_name, id) => {
-        const subscriber = firebase.firestore()
-            .collection('units')
-            .doc(id)
-            .onSnapshot(documentSnapshot => {
-                units.push({ key: subunit_id, value: `${documentSnapshot.data()['name'] + ' || ' + subunit_name}` })
-            });
-        return () => subscriber();
-    }
+
+    getUnits()
 
     updateUnit = () => {
         firebase.firestore()
@@ -101,9 +79,8 @@ const Employee = ({ route }) => {
             .then(() => {
                 console.log('Unit updated!');
             });
-        getSubunit(subunitSelected)
+        getUnit(subunitSelected)
         setIsModalUnitsVisible(false)
-
     }
 
     updatePermission = () => {
@@ -187,7 +164,6 @@ const Employee = ({ route }) => {
                                     </ListItem>
                                 </TouchableOpacity>
                             )}
-
                             <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
                                 <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                                     <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
@@ -196,14 +172,13 @@ const Employee = ({ route }) => {
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
                                 <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                                    <ItemContent title={'Unit'} data={`${unit} (${subunit})`} iconName={'people'} />
+                                    <ItemContent title={'Unit'} data={`${unit}`} iconName={'people'} />
                                     <ListItem.Chevron />
                                 </ListItem>
                             </TouchableOpacity>
                         </>
                     ) : (
                         <>
-
                             <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                                 <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                             </ListItem>
@@ -211,11 +186,10 @@ const Employee = ({ route }) => {
                                 <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
                             </ListItem>
                             <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                                <ItemContent title={'Unit/Subunit'} data={`${unit} || ${subunit}`} iconName={'people-outline'} />
+                                <ItemContent title={'Unit/Subunit'} data={`${unit}`} iconName={'people-outline'} />
                             </ListItem>
                         </>
                     )}
-
                     {/* Modal Units */}
                     <Modal
                         animationType="slide"
@@ -252,7 +226,7 @@ const Employee = ({ route }) => {
                                     <SelectList
                                         data={units}
                                         setSelected={selected => setSubunitSelected(selected)}
-                                        placeholder={`${unit} || ${subunit}`}
+                                        placeholder={`${unit}`}
                                         placeholderTextColor='#F5F5F5'
                                         inputStyles={{
                                             margin: 0,
@@ -358,16 +332,12 @@ const Employee = ({ route }) => {
                                     />
                                 </View>
                                 <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonBlue}`}
-                                        onPress={() => updatePermission()}>
+                                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updatePermission()}>
                                         <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonWhite}`}
-                                        onPress={() => setIsModalPermissionVisible(!isModalPermissionVisible)}>
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalPermissionVisible(!isModalPermissionVisible)}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                     </TouchableOpacity>
                                 </View>
@@ -379,10 +349,7 @@ const Employee = ({ route }) => {
                         animationType="slide"
                         transparent={true}
                         visible={isModalStatusVisible}
-                        onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
-                            setIsModalStatusVisible(!isModalStatusVisible);
-                        }}>
+                        onRequestClose={() => { Alert.alert('Modal has been closed.'); setIsModalStatusVisible(!isModalStatusVisible); }}>
                         <View
                             style={{
                                 flex: 1,
@@ -438,16 +405,13 @@ const Employee = ({ route }) => {
                                     />
                                 </View>
                                 <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonBlue}`}
+                                    <TouchableOpacity className={`${tailwind.buttonBlue}`}
                                         onPress={() => updateStatus(route.params['employee_id'], statusId).then(setIsModalStatusVisible(!isModalStatusVisible))}>
                                         <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonWhite}`}
-                                        onPress={() => setIsModalStatusVisible(!isModalStatusVisible)}>
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalStatusVisible(!isModalStatusVisible)}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                     </TouchableOpacity>
                                 </View>
