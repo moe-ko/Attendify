@@ -11,6 +11,9 @@ import { constants } from 'buffer'
 import * as ImagePicker from 'expo-image-picker'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { getStorage, getDownloadURL, uploadBytes, ref, deleteObject } from 'firebase/storage'
+//import { Appearance, useColorScheme } from 'react-native-appearance';
+//import { StatusBar } from 'react-native';
+
 
 
 const Profile = ({ navigation }) => {
@@ -32,6 +35,8 @@ const Profile = ({ navigation }) => {
     const [subunitSelected, setSubunitSelected] = useState('');
     const [emailSent, setEmailSent] = useState(false);
     const [loadingAvatar, setLoadingAvatar] = useState(true);
+    //const [theme, setTheme] = useState(lightTheme);
+    const [darkMode, setDarkMode] = useState(false);
     const [statusIcon, setStatusIcon] = useState('')
     const [statusId, setStatusId] = useState('')
     const units = []

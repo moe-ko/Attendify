@@ -1,8 +1,9 @@
 import { View, Text, TouchableOpacity, StyleSheet, Image, ImageBackground, Linking } from 'react-native'
 import React from 'react'
 import tailwind from '../constants/tailwind'
-import { ROUTES } from '..'
+import { ROUTES, COLORS } from '..'
 import { ScrollView } from 'react-native-gesture-handler'
+
 
 const Welcome = ({ navigation }) => {
     return (
@@ -13,7 +14,7 @@ const Welcome = ({ navigation }) => {
                         <Image source={require('../../assets/Logo.png')} className="w-24 h-24" />
                     </View>
                     <View className={`${tailwind.container}`}>
-                        <Text className="text-center text-black-500 font-semibold mb-10 text-4xl pt-5">
+                        <Text className="text-center font-semibold mb-10 text-4xl pt-5">
                             Attendify
                         </Text>
                         <View className={`${tailwind.viewWrapper} w-11/12 `}>
@@ -32,7 +33,7 @@ const Welcome = ({ navigation }) => {
                             </TouchableOpacity>
                         </View>
                         <TouchableOpacity className={``} onPress={() => Linking.openURL(`mailto:contact@attendify.com`)}>
-                            <Text className="text-center text-[#62ABEF]">
+                            <Text className={`text-center text-[${COLORS.primary}]`}>
                                 Contact Us
                             </Text>
                         </TouchableOpacity>
