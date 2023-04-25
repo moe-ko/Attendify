@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -50,13 +50,16 @@ const Event = ({ props }) => {
     const [sickEmps, setSickEmps] = useState([])
     const [leaveEmps, setLeaveEmps] = useState([])
     const [inactiveEmps, setInactiveEmps] = useState([])
+    const [eventIpAddress, setEventIpAddress] = useState('')
+    const [disabled, setDisabled] = useState(true)
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
         getEmployeesByStatus('0').then(res => setInactiveEmps(res))
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
         getEmployeesByStatus('3').then(res => setSickEmps(res))
-    }, [permission])
+        getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
+    }, [permission, eventIpAddress])
 
     eventTimer = (end) => {
         const eventExpirationDate = new Date(end)
@@ -97,6 +100,7 @@ const Event = ({ props }) => {
                             code: docSnapshot.data()['code'],
                             title: docSnapshot.data()['title'],
                             end: docSnapshot.data()['end'],
+                            ip_address: docSnapshot.data()['ip_address'],
                         }
                     ))
                     if (res.length > 0) {
@@ -120,7 +124,7 @@ const Event = ({ props }) => {
             .doc(currentEvent['id'])
             .get()
             .then(documentSnapshot => {
-                if (documentSnapshot.data()['attendance'].includes(props.empId)) {
+                if (documentSnapshot.data()['attendance'].includes(props.empId) || documentSnapshot.data()['absent'].includes(props.empId) || documentSnapshot.data()['sick_leave'].includes(props.empId) || documentSnapshot.data()['annual_leave'].includes(props.empId)) {
                     setLoading(false)
                     setHasAttended(true)
                 } else {
@@ -183,11 +187,22 @@ const Event = ({ props }) => {
         setTime(`${hours}:${minutes}`)
     }
 
+    const checkEventIp = (code, eventId, eventIp, eventLoc, currentIp) => {
+        if (locationName != 'Online' && eventIpAddress != currentEvent['ip_address']) {
+            Alert.alert('Check your connection', 'Please connect to the same Manager wifi network and try again', [
+                {
+                    text: 'Ok',
+                },
+            ]);
+        } else {
+            handleAttendify(code, eventId)
+        }
+    }
 
     return (
         <>
             <ScrollView>
-                <KeyboardAvoidingView behavior={'position'} >
+                <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
                     <View className="h-screen items-center px-4 w-full">
                         {(currentEventVisible && currentEvent) ? (
                             <>
@@ -203,6 +218,9 @@ const Event = ({ props }) => {
                                                 <Text className={`${tailwind.titleText} font-light text-[${COLORS.white}] text-center my-3`}>Session Code: </Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-[${COLORS.white}] text-center my-3`}>{currentEvent['code']}</Text>
                                                 <Text className={`${tailwind.slogan} text-[${COLORS.white}] text-center  my-3`}>Expire {currentEvent['end']}</Text>
+                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code:</Text>
+                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
                                                 <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mb-6`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
                                                     <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                                 </TouchableOpacity>
@@ -248,9 +266,15 @@ const Event = ({ props }) => {
                                                                         }}
                                                                         codeInputHighlightStyle={{ borderColor: COLORS.secondary, }}
                                                                         onCodeFilled={code => setCode(code)}
+                                                                        codeInputHighlightStyle={{ borderColor: "#717171", }}
+                                                                        onCodeFilled={code => { setCode(code), setDisabled(!disabled) }}
                                                                     />
                                                                 </View>
-                                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`} onPress={() => { handleAttendify(code, currentEvent['id']) }} >
+                                                                <TouchableOpacity
+                                                                    className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`}
+                                                                    onPress={() => { checkEventIp(code, currentEvent['id']) }}
+                                                                    disabled={disabled}
+                                                                >
                                                                     <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
                                                                 </TouchableOpacity>
                                                             </>
@@ -356,7 +380,6 @@ const Event = ({ props }) => {
                     </View>
                 </KeyboardAvoidingView>
             </ScrollView>
-
         </>
     )
 }

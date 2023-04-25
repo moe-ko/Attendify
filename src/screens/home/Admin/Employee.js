@@ -143,69 +143,148 @@ const Employee = ({ navigation, route }) => {
     }
 
     return (
-        <ScrollView>
-            <KeyboardAvoidingView>
-                <View className={`${tailwind.containerWrapper2}`}>
-                    <ProfileHeader />
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
-                        <ItemContent title={'Email'} data={route.params['email']} iconName={'email'} />
-                    </ListItem>
-                    {currentUserPermission == 'Admin' || currentUserPermission == 'Super Admin' ? (
-                        <>
-                            {currentUserPermission == 'Admin' && permission == 'Super Admin' ? (
-                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                                    <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
-                                </ListItem>
-                            ) : (
-                                <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
-                                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                                        <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
-                                        <ListItem.Chevron />
-                                    </ListItem>
-                                </TouchableOpacity>
-                            )}
-                            <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
-                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                                    <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
-                                    <ListItem.Chevron />
-                                </ListItem>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                                    <ItemContent title={'Unit'} data={`${unit}`} iconName={'people'} />
-                                    <ListItem.Chevron />
-                                </ListItem>
-                            </TouchableOpacity>
-                        </>
-                    ) : (
-                        <>
+        <KeyboardAvoidingView>
+            <View className={`${tailwind.containerWrapper2}`}>
+                <ProfileHeader />
+                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }}>
+                    <ItemContent title={'Email'} data={route.params['email']} iconName={'email'} />
+                </ListItem>
+                {currentUserPermission == 'Admin' || currentUserPermission == 'Super Admin' ? (
+                    <>
+                        {currentUserPermission == 'Admin' && permission == 'Super Admin' ? (
                             <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                                 <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                             </ListItem>
+                        ) : (
+                            <TouchableOpacity onPress={() => { setIsModalPermissionVisible(true) }}>
+                                <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                                    <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                                    <ListItem.Chevron />
+                                </ListItem>
+                            </TouchableOpacity>
+                        )}
+                        <TouchableOpacity onPress={() => { setIsModalStatusVisible(true) }}>
                             <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                                 <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
+                                <ListItem.Chevron />
                             </ListItem>
-                            <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
-                                <ItemContent title={'Unit/Subunit'} data={`${unit}`} iconName={'people-outline'} />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                            <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                                <ItemContent title={'Unit'} data={`${unit}`} iconName={'people'} />
+                                <ListItem.Chevron />
                             </ListItem>
-                        </>
-                    )}
-                    {/* Modal Units */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={isModalUnitsVisible}
-                        onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
-                            setIsModalUnitsVisible(!isModalUnitsVisible);
-                        }}>
+                        </TouchableOpacity>
+                    </>
+                ) : (
+                    <>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                            <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                        </ListItem>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                            <ItemContent title={'Status'} data={statusName} iconName={statusIcon} />
+                        </ListItem>
+                        <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }}>
+                            <ItemContent title={'Unit/Subunit'} data={`${unit}`} iconName={'people-outline'} />
+                        </ListItem>
+                    </>
+                )}
+                {/* Modal Units */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalUnitsVisible}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setIsModalUnitsVisible(!isModalUnitsVisible);
+                    }}>
+                    <View style={{
+                        flex: 1,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: 'rgba(0,0,0,0.5)'
+                    }}>
                         <View style={{
+                            width: '80%',
+                            margin: 20,
+                            backgroundColor: 'white',
+                            borderRadius: 20,
+                            padding: 10,
+                            alignItems: 'center',
+                            shadowColor: '#000',
+                            shadowOffset: {
+                                width: 0,
+                                height: 2,
+                            },
+                            shadowOpacity: 0.25,
+                            shadowRadius: 4,
+                            elevation: 5,
+                        }}>
+                            <Text className={`${tailwind.titleText} py-5`}>Change Unit/Subunit</Text>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <SelectList
+                                    data={units}
+                                    setSelected={selected => setSubunitSelected(selected)}
+                                    placeholder={`${unit}`}
+                                    placeholderTextColor='#F5F5F5'
+                                    inputStyles={{
+                                        margin: 0,
+                                    }}
+                                    boxStyles={{
+                                        borderRadius: 15,
+                                        borderColor: '#fff',
+                                        color: '#fff',
+                                        backgroundColor: '#F5F5F5'
+                                    }}
+                                    dropdownStyles={{
+                                        borderWidth: 1,
+                                        borderRadius: 4,
+                                        borderColor: '#DDDDDD',
+                                        backgroundColor: '#DDDDDD',
+                                        color: '#fff',
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                        marginBottom: 5,
+                                        marginTop: 0,
+                                        position: 'relative'
+                                    }}
+                                />
+                            </View>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <TouchableOpacity
+                                    className={`${tailwind.buttonBlue}`}
+                                    onPress={() => updateUnit()}>
+                                    <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View className={`${tailwind.viewWrapper} `}>
+                                <TouchableOpacity
+                                    className={`${tailwind.buttonWhite}`}
+                                    onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+                {/* Modal Permission */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalPermissionVisible}
+                    onRequestClose={() => {
+                        Alert.alert('Modal has been closed.');
+                        setIsModalPermissionVisible(!isModalPermissionVisible);
+                    }}>
+                    <View
+                        style={{
                             flex: 1,
                             justifyContent: 'center',
                             alignItems: 'center',
                             backgroundColor: 'rgba(0,0,0,0.5)'
                         }}>
-                            <View style={{
+                        <View
+                            style={{
                                 width: '80%',
                                 margin: 20,
                                 backgroundColor: 'white',
@@ -221,219 +300,138 @@ const Employee = ({ navigation, route }) => {
                                 shadowRadius: 4,
                                 elevation: 5,
                             }}>
-                                <Text className={`${tailwind.titleText} py-5`}>Change Unit/Subunit</Text>
-                                <View className={`${tailwind.viewWrapper}`}>
-                                    <SelectList
-                                        data={units}
-                                        setSelected={selected => setSubunitSelected(selected)}
-                                        placeholder={`${unit}`}
-                                        placeholderTextColor='#F5F5F5'
-                                        inputStyles={{
-                                            margin: 0,
-                                        }}
-                                        boxStyles={{
-                                            borderRadius: 15,
-                                            borderColor: '#fff',
-                                            color: '#fff',
-                                            backgroundColor: '#F5F5F5'
-                                        }}
-                                        dropdownStyles={{
-                                            borderWidth: 1,
-                                            borderRadius: 4,
-                                            borderColor: '#DDDDDD',
-                                            backgroundColor: '#DDDDDD',
-                                            color: '#fff',
-                                            marginLeft: 5,
-                                            marginRight: 5,
-                                            marginBottom: 5,
-                                            marginTop: 0,
-                                            position: 'relative'
-                                        }}
-                                    />
-                                </View>
-                                <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonBlue}`}
-                                        onPress={() => updateUnit()}>
-                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity
-                                        className={`${tailwind.buttonWhite}`}
-                                        onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                    </TouchableOpacity>
-                                </View>
+                            <Text className={`${tailwind.titleText} py-5`}>Change Permission</Text>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <SelectList
+                                    data={permissions}
+                                    setSelected={selected => setPermission(selected)}
+                                    placeholder={permission}
+                                    placeholderTextColor='#F5F5F5'
+                                    inputStyles={{
+                                        margin: 0,
+                                    }}
+                                    boxStyles={{
+                                        borderRadius: 15,
+                                        borderColor: '#fff',
+                                        color: '#fff',
+                                        backgroundColor: '#F5F5F5'
+                                    }}
+                                    dropdownStyles={{
+                                        borderWidth: 1,
+                                        borderRadius: 4,
+                                        borderColor: '#DDDDDD',
+                                        backgroundColor: '#DDDDDD',
+                                        color: '#fff',
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                        marginBottom: 5,
+                                        marginTop: 0,
+                                        position: 'relative'
+                                    }}
+                                />
+                            </View>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updatePermission()}>
+                                    <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View className={`${tailwind.viewWrapper} `}>
+                                <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalPermissionVisible(!isModalPermissionVisible)}>
+                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                </TouchableOpacity>
                             </View>
                         </View>
-                    </Modal>
-                    {/* Modal Permission */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={isModalPermissionVisible}
-                        onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
-                            setIsModalPermissionVisible(!isModalPermissionVisible);
+                    </View>
+                </Modal>
+                {/* Modal Status */}
+                <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={isModalStatusVisible}
+                    onRequestClose={() => { Alert.alert('Modal has been closed.'); setIsModalStatusVisible(!isModalStatusVisible); }}>
+                    <View
+                        style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
                         }}>
                         <View
                             style={{
-                                flex: 1,
-                                justifyContent: 'center',
+                                width: '80%',
+                                margin: 20,
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                padding: 10,
                                 alignItems: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)'
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
                             }}>
-                            <View
-                                style={{
-                                    width: '80%',
-                                    margin: 20,
-                                    backgroundColor: 'white',
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
-                                <Text className={`${tailwind.titleText} py-5`}>Change Permission</Text>
-                                <View className={`${tailwind.viewWrapper}`}>
-                                    <SelectList
-                                        data={permissions}
-                                        setSelected={selected => setPermission(selected)}
-                                        placeholder={permission}
-                                        placeholderTextColor='#F5F5F5'
-                                        inputStyles={{
-                                            margin: 0,
-                                        }}
-                                        boxStyles={{
-                                            borderRadius: 15,
-                                            borderColor: '#fff',
-                                            color: '#fff',
-                                            backgroundColor: '#F5F5F5'
-                                        }}
-                                        dropdownStyles={{
-                                            borderWidth: 1,
-                                            borderRadius: 4,
-                                            borderColor: '#DDDDDD',
-                                            backgroundColor: '#DDDDDD',
-                                            color: '#fff',
-                                            marginLeft: 5,
-                                            marginRight: 5,
-                                            marginBottom: 5,
-                                            marginTop: 0,
-                                            position: 'relative'
-                                        }}
-                                    />
-                                </View>
-                                <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updatePermission()}>
-                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalPermissionVisible(!isModalPermissionVisible)}>
-                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                    </TouchableOpacity>
-                                </View>
+                            <Text className={`${tailwind.titleText} py-5`}>Change Status</Text>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <SelectList
+                                    data={allStatus}
+                                    setSelected={selected => setStatusId(selected)}
+                                    placeholder={statusName}
+                                    placeholderTextColor='#F5F5F5'
+                                    inputStyles={{
+                                        margin: 0,
+                                    }}
+                                    boxStyles={{
+                                        borderRadius: 15,
+                                        borderColor: '#fff',
+                                        color: '#fff',
+                                        backgroundColor: '#F5F5F5'
+                                    }}
+                                    dropdownStyles={{
+                                        borderWidth: 1,
+                                        borderRadius: 4,
+                                        borderColor: '#DDDDDD',
+                                        backgroundColor: '#DDDDDD',
+                                        color: '#fff',
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                        marginBottom: 5,
+                                        marginTop: 0,
+                                        position: 'relative'
+                                    }}
+                                />
                             </View>
-                        </View>
-                    </Modal>
-                    {/* Modal Status */}
-                    <Modal
-                        animationType="slide"
-                        transparent={true}
-                        visible={isModalStatusVisible}
-                        onRequestClose={() => { Alert.alert('Modal has been closed.'); setIsModalStatusVisible(!isModalStatusVisible); }}>
-                        <View
-                            style={{
-                                flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)'
-                            }}>
-                            <View
-                                style={{
-                                    width: '80%',
-                                    margin: 20,
-                                    backgroundColor: 'white',
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
-                                <Text className={`${tailwind.titleText} py-5`}>Change Status</Text>
-                                <View className={`${tailwind.viewWrapper}`}>
-                                    <SelectList
-                                        data={allStatus}
-                                        setSelected={selected => setStatusId(selected)}
-                                        placeholder={statusName}
-                                        placeholderTextColor='#F5F5F5'
-                                        inputStyles={{
-                                            margin: 0,
-                                        }}
-                                        boxStyles={{
-                                            borderRadius: 15,
-                                            borderColor: '#fff',
-                                            color: '#fff',
-                                            backgroundColor: '#F5F5F5'
-                                        }}
-                                        dropdownStyles={{
-                                            borderWidth: 1,
-                                            borderRadius: 4,
-                                            borderColor: '#DDDDDD',
-                                            backgroundColor: '#DDDDDD',
-                                            color: '#fff',
-                                            marginLeft: 5,
-                                            marginRight: 5,
-                                            marginBottom: 5,
-                                            marginTop: 0,
-                                            position: 'relative'
-                                        }}
-                                    />
-                                </View>
-                                <View className={`${tailwind.viewWrapper}`}>
-                                    <TouchableOpacity className={`${tailwind.buttonBlue}`}
-                                        onPress={() => updateStatus(route.params['employee_id'], statusId).then(setIsModalStatusVisible(!isModalStatusVisible))}>
-                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View className={`${tailwind.viewWrapper} `}>
-                                    <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalStatusVisible(!isModalStatusVisible)}>
-                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                        </View>
-                    </Modal>
-                    {permission == 'Admin' || permission == 'Super Admin' ? null : (
-                        <>
-                            <View className={`${tailwind.viewWrapper} px-4`}>
-                                <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
-                                    <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
+                            <View className={`${tailwind.viewWrapper}`}>
+                                <TouchableOpacity className={`${tailwind.buttonBlue}`}
+                                    onPress={() => updateStatus(route.params['employee_id'], statusId).then(setIsModalStatusVisible(!isModalStatusVisible))}>
+                                    <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
                                 </TouchableOpacity>
                             </View>
-                            <View className={`${tailwind.viewWrapper} px-4`}>
-                                <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>Bench Projects</Text>
-                                <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>Coming soon</Text>
+                            <View className={`${tailwind.viewWrapper} `}>
+                                <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalStatusVisible(!isModalStatusVisible)}>
+                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                </TouchableOpacity>
                             </View>
-                        </>
-                    )}
-                </View>
-            </KeyboardAvoidingView >
-        </ScrollView >
+                        </View>
+                    </View>
+                </Modal>
+                {permission == 'Admin' || permission == 'Super Admin' ? null : (
+                    <>
+                        <View className={`${tailwind.viewWrapper} px-4`}>
+                            <TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                                <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View className={`${tailwind.viewWrapper} px-4`}>
+                            <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>Bench Projects</Text>
+                            <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>Coming soon</Text>
+                        </View>
+                    </>
+                )}
+            </View>
+        </KeyboardAvoidingView >
     )
 }
 

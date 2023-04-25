@@ -133,7 +133,6 @@ const Chart = ({ navigation }) => {
         { x: `${alPercent}%`, y: alPercent },
     ]
 
-
     Item = ({ id, name, avatar, status }) => {
         return (
             <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
@@ -383,7 +382,6 @@ const Chart = ({ navigation }) => {
                         </View>
                     </View>
                 </View>
-
             }
         </>
     )
