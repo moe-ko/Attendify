@@ -239,7 +239,7 @@ const SignUp = ({ navigation }) => {
                     />
 
                 </View>
-                {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Wrong Format email</Text>)}
+                {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">please use the email associated with @infosys.com</Text>)}
 
                 {/* <Text className="text-[#ff0000]"></Text>)
                      <View className={`${tailwind.viewWrapper}`}>
