@@ -145,8 +145,8 @@ const Chart = ({ navigation }) => {
             )}>
                 <Avatar rounded size={50} source={{ uri: `${avatar}` }} />
                 <ListItem.Content>
-                    <ListItem.Title>{name}</ListItem.Title>
-                    <ListItem.Subtitle>{id}</ListItem.Subtitle>
+                    <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}>{name}</ListItem.Title>
+                    <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[#7E7E7E]`}>{id}</ListItem.Subtitle>
                 </ListItem.Content>
                 <Icon name={statusIcon(status)} size={30} color={COLORS.primary} />
                 <ListItem.Chevron />

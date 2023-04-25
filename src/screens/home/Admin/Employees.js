@@ -83,8 +83,8 @@ const Employees = ({ navigation }) => {
                         </View>
                     </Avatar>
                     <ListItem.Content>
-                        <ListItem.Title>{data['full_name']}</ListItem.Title>
-                        <ListItem.Subtitle style={{ color: 'gray' }}>{id}</ListItem.Subtitle>
+                        <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}>{data['full_name']}</ListItem.Title>
+                        <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[#7E7E7E]`}>{id}</ListItem.Subtitle>
                     </ListItem.Content>
                     {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
                 </ListItem>

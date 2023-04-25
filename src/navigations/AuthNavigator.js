@@ -18,8 +18,7 @@ const WelcomeStackNavigator = () => {
         headerStyle: { backgroundColor: '#ECF0F3', elevation: 25, }
     }
     return (
-        <Stack.Navigator initialRouteName="Profile">
-
+        <Stack.Navigator initialRouteName="Welcome">
             <Stack.Screen name='Welcome' component={Welcome} options={optionsHeaderWithHeight} />
             <Stack.Screen name='Sign In' component={SignIn} options={optionsHeaderWithHeight} />
             <Stack.Screen name='Sign Up' component={SignUp} options={optionsHeader} />
