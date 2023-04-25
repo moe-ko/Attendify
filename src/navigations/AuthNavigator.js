@@ -1,8 +1,8 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuDrawerNavigator from "./MenuDrawerNavigator";
-import { Welcome, SignIn, SignUp, EnterOTP, Checkin, Forgotpassword, ResetPassword } from "../screens";
-import { ROUTES } from "..";
+import { Welcome, SignIn, SignUp, EnterOTP, Checkin, Forgotpassword, ResetPassword, Profile } from "../screens";
+import { ROUTES, COLORS } from "..";
 
 const Stack = createStackNavigator();
 
@@ -10,7 +10,7 @@ const WelcomeStackNavigator = () => {
     const optionsHeaderWithHeight = {
         headerShown: false,
         headerBackTitleVisible: false,
-        headerStyle: { height: 150, backgroundColor: '#62ABEF', elevation: 25 }
+        headerStyle: { height: 150, backgroundColor: COLORS.primary, elevation: 25 }
     }
     const optionsHeader = {
         headerBackTitleVisible: false,
@@ -18,7 +18,7 @@ const WelcomeStackNavigator = () => {
         headerStyle: { backgroundColor: '#ECF0F3', elevation: 25, }
     }
     return (
-        <Stack.Navigator initialRouteName="Welcome">     
+        <Stack.Navigator initialRouteName="Profile">
 
             <Stack.Screen name='Welcome' component={Welcome} options={optionsHeaderWithHeight} />
             <Stack.Screen name='Sign In' component={SignIn} options={optionsHeaderWithHeight} />
@@ -27,6 +27,7 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen name='Checkin' component={Checkin} options={optionsHeaderWithHeight} />
             <Stack.Screen name='EnterOTP' component={EnterOTP} options={optionsHeader} />
             <Stack.Screen name='ResetPassword' component={ResetPassword} options={optionsHeader} />
+            <Stack.Screen name='Profile' component={Profile} options={optionsHeader} />
             {/* HOME STACK */}
             <Stack.Screen name={ROUTES.HOME} component={MenuDrawerNavigator} options={{ headerShown: false }} />
 

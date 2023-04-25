@@ -193,16 +193,16 @@ const Event = ({ props }) => {
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
                                     <View className="flex-row align-items-center my-2">
-                                        <Icon name="location-outline" size={20} color="#62ABEF" className="pr-5" />
-                                        <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>{locationName}</Text>
+                                        <Icon name="location-outline" size={20} color={COLORS.primary} className="pr-5" />
+                                        <Text className={`${tailwind.slogan} text-[${COLORS.grey}]`}>{locationName}</Text>
                                     </View>
-                                    <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Latest event</Text>
-                                    <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
+                                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Latest event</Text>
+                                    <View className={`${tailwind.viewWrapper} bg-[[${COLORS.primary}]] rounded-2xl`}>
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
-                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code: </Text>
-                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
-                                                <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
+                                                <Text className={`${tailwind.titleText} font-light text-[${COLORS.white}] text-center my-3`}>Session Code: </Text>
+                                                <Text className={`${tailwind.titleText} tracking-widest text-[${COLORS.white}] text-center my-3`}>{currentEvent['code']}</Text>
+                                                <Text className={`${tailwind.slogan} text-[${COLORS.white}] text-center  my-3`}>Expire {currentEvent['end']}</Text>
                                                 <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mb-6`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
                                                     <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
                                                 </TouchableOpacity>
@@ -212,7 +212,7 @@ const Event = ({ props }) => {
                                                 {loading ?
                                                     <>
                                                         <Text className={`${tailwind.titleText} font-light text-white text-center my-6`}>Checking attendance</Text>
-                                                        <ActivityIndicator size={100} color="white" />
+                                                        <ActivityIndicator size={100} color={COLORS.white} />
 
                                                     </>
                                                     :
@@ -246,7 +246,7 @@ const Event = ({ props }) => {
                                                                             backgroundColor: 'white'
 
                                                                         }}
-                                                                        codeInputHighlightStyle={{ borderColor: "#717171", }}
+                                                                        codeInputHighlightStyle={{ borderColor: COLORS.secondary, }}
                                                                         onCodeFilled={code => setCode(code)}
                                                                     />
                                                                 </View>
@@ -266,14 +266,14 @@ const Event = ({ props }) => {
                         {/* {(createEventVisible) ? ( */}
                         {permission == 'Admin' || permission == 'Super Admin' ? (
                             <View className={`${tailwind.viewWrapper}`}>
-                                <Text className={`${tailwind.titleText} text-[#7E7E7E] mb-2`}>Create a new session</Text>
-                                <View className={`${tailwind.viewWrapper} bg-[#62ABEF] rounded-2xl`}>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Create a new session</Text>
+                                <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl`}>
                                     <View className={` w-10/12 m-auto mt-5`}>
                                         <SelectList
                                             data={locations}
                                             setSelected={setSelectedLocation}
                                             placeholder='Select Location'
-                                            placeholderTextColor='#726F6F'
+                                            placeholderTextColor={COLORS.placeHolder}
                                             inputStyles={{
                                                 color: "#666",
                                                 padding: 0,
@@ -281,16 +281,16 @@ const Event = ({ props }) => {
                                             }}
                                             boxStyles={{
                                                 borderRadius: 15,
-                                                borderColor: '#fff',
-                                                color: '#fff',
-                                                backgroundColor: '#fff'
+                                                borderColor: COLORS.white,
+                                                color: COLORS.white,
+                                                backgroundColor: COLORS.white
                                             }}
                                             dropdownStyles={{
                                                 borderWidth: 1,
                                                 borderRadius: 4,
-                                                borderColor: '#DDDDDD',
-                                                backgroundColor: '#DDDDDD',
-                                                color: '#fff',
+                                                borderColor: COLORS.lightGrey,
+                                                backgroundColor: COLORS.lightGrey,
+                                                color: COLORS.white,
                                                 marginLeft: 5,
                                                 marginRight: 5,
                                                 marginBottom: 5,
@@ -305,21 +305,21 @@ const Event = ({ props }) => {
                                         placeholder={'Event title'}
                                         onChangeText={(text) => setTitle(text)}
                                         autoCorrect={false}
-                                        placeholderTextColor='#726F6F'
+                                        placeholderTextColor={COLORS.placeHolder}
                                     />
 
                                     <View className={`${tailwind.viewWrapper} flex-column justify-center items-center mb-5`}>
                                         <View className={`flex-row justify-between w-10/12`}>
                                             <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
                                                 <View className="pl-[10] flex-row align-items-center my-2">
-                                                    <Icon name="calendar" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
-                                                    <Text className={`text-[#726F6F] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
+                                                    <Icon name="calendar" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
+                                                    <Text className={`text-[${COLORS.placeHolder}] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
                                                 </View>
                                             </TouchableOpacity>
                                             <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
                                                 <View className="pl-[10] flex-row align-items-center my-2">
-                                                    <Icon name="time" size={20} color="#62ABEF" className={`text-[#726F6F] ml-3`} />
-                                                    <Text className={`text-[#726F6F]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
+                                                    <Icon name="time" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
+                                                    <Text className={`text-[${COLORS.placeHolder}]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
                                                 </View>
                                             </TouchableOpacity>
                                         </View>
@@ -330,9 +330,9 @@ const Event = ({ props }) => {
                                             onDismiss={onDismissDate}
                                             date={date}
                                             onConfirm={onConfirmDate}
-                                            theme={
-                                                { colors: { primary: COLORS.primary } }
-                                            }
+                                        // theme={
+                                        //     { colors: { primary: COLORS.primary } }
+                                        // }
                                         />
                                         <TimePickerModal
                                             visible={timePickerVisible}
