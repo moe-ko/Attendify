@@ -1,11 +1,11 @@
 import { View, Text, TouchableOpacity, Alert, Image, TextInput, Modal, KeyboardAvoidingView, Linking, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { firebase, storage } from '../../../config'
-import { checkIpAddress, fetchUnit } from '../../../functions'
+import { checkIpAddress, fetchUnit, getStatusIcon, getStatusName } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { ListItem, Avatar, BottomSheet, Button } from '@rneui/base'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../..'
+import { COLORS, ROUTES } from '../..'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { constants } from 'buffer'
 import * as ImagePicker from 'expo-image-picker'
@@ -32,6 +32,8 @@ const Profile = ({ navigation }) => {
     const [subunitSelected, setSubunitSelected] = useState('');
     const [emailSent, setEmailSent] = useState(false);
     const [loadingAvatar, setLoadingAvatar] = useState(true);
+    const [statusIcon, setStatusIcon] = useState('')
+    const [statusId, setStatusId] = useState('')
     const units = []
     useEffect(() => {
         getCurrentEmployee()
@@ -53,12 +55,13 @@ const Profile = ({ navigation }) => {
     getUnits()
 
     checkIpAddress().then(res => setIpAddress(res))
+    getStatusIcon(statusId).then(res => setStatusIcon(res))
 
     const handleSignOut = () => {
         firebase.auth()
             .signOut()
             .then(() => {
-                navigation.replace('Welcome')
+                navigation.replace(ROUTES.WELCOME)
             })
             .catch(error => console.log(error.message))
     }
@@ -77,6 +80,7 @@ const Profile = ({ navigation }) => {
                     setPermission(documentSnapshot.data()['permission'])
                     setAvatar(documentSnapshot.data()['avatar'])
                     setLoadingAvatar(false)
+                    setStatusId(documentSnapshot.data()['status_id'])
                     getStatusEmployee(documentSnapshot.data()['status_id'])
                 });
             });
@@ -274,6 +278,13 @@ const Profile = ({ navigation }) => {
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
                     </ListItem>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                        <ItemContent title={'Status'} data={status} iconName={statusIcon} />
+                    </ListItem>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                        <ItemContent title={'Dark Mode'} data={'Off'} iconName={'visibility'} />
+                        {/* <ListItem.Chevron /> */}
+                    </ListItem>
                     <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
                             <ItemContent title={'Password'} data={'**********'} iconName={'lock'} />
@@ -281,7 +292,7 @@ const Profile = ({ navigation }) => {
                         </ListItem>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
+                        <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
                             <ItemContent title={'Unit'} data={`${unit}`} iconName={'group'} />
                             <ListItem.Chevron />
                         </ListItem>

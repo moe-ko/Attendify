@@ -2,11 +2,13 @@ import { View, Text } from 'react-native'
 import React, { useState, useEffect } from 'react';
 // import { NavigationContainer } from '@react-navigation/native';
 import * as Location from 'expo-location';
+import Geocoder from 'react-native-geocoding';
 
 function Geolocation() {
     // Location
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
+    const [address, setAddress] = useState(null)
 
     useEffect(() => {
         (async () => {
@@ -19,8 +21,9 @@ function Geolocation() {
             let location = await Location.getCurrentPositionAsync({});
             setLocation(location);
         })();
-    }, []);
+        getData()
 
+    }, []);
 
     let text = 'Waiting...';
     let lat = 0;
@@ -33,11 +36,23 @@ function Geolocation() {
         long = JSON.parse(text)['coords']['longitude'];
     }
 
+
+    getData = () => {
+        Geocoder.init('AIzaSyDIhRlnq04Z60UgF6b4_fxM1q_PQD0UDAM')
+        Geocoder.from(41.89, 12.49)
+            .then(json => {
+                var addressComponent = json.results[0].address_components[0];
+                console.log(addressComponent);
+            })
+            .catch(error => console.warn(error));
+    }
+
     return (
-        <View >
+        <View>
             <Text>You are here</Text>
             <Text>Latitude: {lat}</Text>
             <Text>Longitude: {long}</Text>
+            <Text>Address: {address}</Text>
         </View>
     );
 }

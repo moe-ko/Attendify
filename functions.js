@@ -289,6 +289,7 @@ export const getEmployeesByStatus = async (status_id) => {
     await firebase.firestore()
         .collection('employees')
         .where('status_id', '==', status_id)
+        .where('permission', '==', 'Associate')
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(documentSnapshot => {
@@ -296,4 +297,16 @@ export const getEmployeesByStatus = async (status_id) => {
             });
         });
     return emp
+}
+
+export const getEventIpAddress = async (event_id) => {
+    let res = ''
+    await new firebase.firestore()
+        .collection('events')
+        .doc(event_id)
+        .get()
+        .then(documentSnapshot => {
+            res = documentSnapshot.data()['ip_address']
+        });
+    return res
 }
