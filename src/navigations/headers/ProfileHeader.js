@@ -41,7 +41,7 @@ const ProfileHeader = () => {
             }
          }}
       >
-         <Stack.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: `${permission} Profile` }} />
+         <Stack.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: `My Profile` }} />
       </Stack.Navigator>
    )
 }

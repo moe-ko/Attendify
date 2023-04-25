@@ -6,6 +6,7 @@ import { Avatar, ListItem } from '@rneui/themed';
 import { firebase } from '../../config'
 import tailwind from '../constants/tailwind';
 import { useNavigation } from "@react-navigation/native";
+import { ROUTES } from '..';
 
 const CustomDrawerComponent = props => {
     const [avatar, setAvatar] = useState('')
@@ -34,7 +35,7 @@ const CustomDrawerComponent = props => {
         firebase.auth()
             .signOut()
             .then(() => {
-                navigation.replace('Welcome')
+                navigation.replace(ROUTES.WELCOME)
             })
             .catch(error => console.log(error.message))
     }

@@ -16,7 +16,7 @@ export default {
 
     //profile
     containerWrapper2: 'w-full h-full',
-    container2: 'bg-[#62ABEF] h-32 rounded-b-3xl mb-5',
+    container2: 'bg-[#62ABEF] h-16 rounded-b-3xl mb-5',
 
 
 }
