@@ -17,6 +17,8 @@ export default {
     //profile
     containerWrapper2: 'w-full h-full',
     container2: 'bg-[#62ABEF] h-16 rounded-b-3xl mb-5',
+    //validations
+    validate: 'font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]'
 
 
 }

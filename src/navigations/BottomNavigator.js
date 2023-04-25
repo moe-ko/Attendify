@@ -49,7 +49,7 @@ const BottomTabNavigator = () => {
             headerShown: false,
             tabBarShowLabel: false,
             tabBarInactiveTintColor: COLORS.inactiveIcon,
-            tabBarActiveTintColor: '#62ABEF',
+            tabBarActiveTintColor: COLORS.primary,
             tabBarIcon: ({ color, focused }) => { return <Icon name={iconName(route, focused)} size={30} color={color} /> },
             headerRight: () => {
                 return (

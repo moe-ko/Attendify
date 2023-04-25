@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { View, Modal, StyleSheetProperties, Text, TouchableHighlight, Platform } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
 import moment from 'moment'
+import { COLORS } from '..'
 
 const Datepicker = (props) => {
     const { textStyle } = props
@@ -33,11 +34,11 @@ const Datepicker = (props) => {
                             onPress={() => setShow(false)}
                         >
                             <TouchableHighlight
-                                underlayColor={'#FFFFFF'}
-                                style={{ flex: 1, borderColor: '#E9E9E9', borderTopWidth: 1 }}
+                                underlayColor={COLORS.white}
+                                style={{ flex: 1, borderColor: COLORS.rgb, borderTopWidth: 1 }}
                                 onPress={() => console.log('Datepicker clicked')}
                             >
-                                <View style={{ backgroundColor: '#FFFFFF', height: 256, overflow: 'hidden' }}>
+                                <View style={{ backgroundColor: COLORS.white, height: 256, overflow: 'hidden' }}>
                                     <View style={{ marginTop: 20 }}>
                                         <DateTimePicker
                                             timeZoneOffsetInMinutes={0}

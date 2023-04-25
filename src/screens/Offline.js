@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { COLORS } from '..'
 
 export const Offline = (props) => {
     return (
@@ -21,7 +22,7 @@ const style = StyleSheet.create({
     },
     buttonBlue: {
         alignItems: 'center',
-        backgroundColor: '#62ABEF',
+        backgroundColor: COLORS.primary,
         padding: 10,
         borderRadius: 4,
         margin: 5

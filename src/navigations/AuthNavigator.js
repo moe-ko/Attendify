@@ -15,7 +15,7 @@ const WelcomeStackNavigator = () => {
     const optionsHeader = {
         headerBackTitleVisible: false,
         headerTitleStyle: { display: 'none' },
-        headerStyle: { backgroundColor: '#ECF0F3', elevation: 25, }
+        headerStyle: { backgroundColor: COLORS.brightGrey, elevation: 25, }
     }
     return (
         <Stack.Navigator initialRouteName="Welcome">
@@ -26,7 +26,6 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen name='Checkin' component={Checkin} options={optionsHeaderWithHeight} />
             <Stack.Screen name='EnterOTP' component={EnterOTP} options={optionsHeader} />
             <Stack.Screen name='ResetPassword' component={ResetPassword} options={optionsHeader} />
-            <Stack.Screen name='Profile' component={Profile} options={optionsHeader} />
             {/* HOME STACK */}
             <Stack.Screen name={ROUTES.HOME} component={MenuDrawerNavigator} options={{ headerShown: false }} />
 

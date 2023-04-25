@@ -137,16 +137,16 @@ const Chart = ({ navigation }) => {
         return (
             <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
                 <TouchableOpacity
-                    style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: '#62ABEF', height: '100%' }}
+                    style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: COLORS.primary, height: '100%' }}
                     onPress={() => { setIsVisible(true), setEmployeeSelected(id), setCurrentStatus(status) }}>
-                    <Icon name="ellipsis-horizontal" size={30} color="white" />
-                    <Text style={{ color: 'white', fontSize: 20, fontWeight: 'bold' }}>More</Text>
+                    <Icon name="ellipsis-horizontal" size={30} color={COLORS.white} />
+                    <Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>More</Text>
                 </TouchableOpacity>
             )}>
                 <Avatar rounded size={50} source={{ uri: `${avatar}` }} />
                 <ListItem.Content>
-                    <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}>{name}</ListItem.Title>
-                    <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[#7E7E7E]`}>{id}</ListItem.Subtitle>
+                    <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[${COLORS.grey}]`}>{name}</ListItem.Title>
+                    <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[${COLORS.grey}]`}>{id}</ListItem.Subtitle>
                 </ListItem.Content>
                 <Icon name={statusIcon(status)} size={30} color={COLORS.primary} />
                 <ListItem.Chevron />
@@ -271,7 +271,7 @@ const Chart = ({ navigation }) => {
         <>
             {eventExist ? (
                 <View>
-                    <View className={`${tailwind.viewWrapper} bg-[#fff] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
+                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.white}] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
                         shadowColor: '#000',
                         shadowOffset: {
                             width: 0,
@@ -286,7 +286,7 @@ const Chart = ({ navigation }) => {
                                 data={dates}
                                 setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
                                 placeholder={eventDate}
-                                placeholderTextColor='#726F6F'
+                                placeholderTextColor={COLORS.placeHolder}
                                 inputStyles={{
                                     color: "#666",
                                     padding: 7,
@@ -295,15 +295,15 @@ const Chart = ({ navigation }) => {
                                 boxStyles={{
                                     borderRadius: 20,
                                     color: 'black',
-                                    backgroundColor: '#F5F5F5',
+                                    backgroundColor: COLORS.whiteSmoke,
                                     borderColor: 'white',
                                 }}
                                 dropdownStyles={{
                                     borderWidth: 0,
                                     borderRadius: 4,
-                                    borderColor: '#DDDDDD',
-                                    backgroundColor: '#DDDDDD',
-                                    color: '#fff',
+                                    borderColor: COLORS.lightGrey,
+                                    backgroundColor: COLORS.lightGrey,
+                                    color: COLORS.white,
                                     marginLeft: 5,
                                     marginRight: 5,
                                     marginBottom: 5,
@@ -345,9 +345,9 @@ const Chart = ({ navigation }) => {
                         }}>
                             <Image source={require('../../../../assets/empty.webp')} style={{ height: 200, width: '100%' }} />
                             <View className={`${tailwind.viewWrapper} px-4`}>
-                                <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No records found</Text>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>No records found</Text>
                                 <View className={`flex-row justify-center items-center`}>
-                                    <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >No records found for {eventDate} </Text>
+                                    <Text className={`${tailwind.slogan} text-[${COLORS.grey}] text-center`} >No records found for {eventDate} </Text>
                                 </View>
                             </View>
                         </View>
@@ -369,13 +369,13 @@ const Chart = ({ navigation }) => {
                     justifyContent: "center",
                     alignItems: "center",
                     height: '100%',
-                    backgroundColor: '#f7fbfe'
+                    backgroundColor: COLORS.lightGreyishBlue
                 }}>
                     <Image source={require('../../../../assets/event-holder.webp')} style={{ height: 200, width: '100%' }} />
                     <View className={`${tailwind.viewWrapper} px-4`}>
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No events yet created</Text>
+                        <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>No events yet created</Text>
                         <View className={`flex-row justify-center items-center`}>
-                            <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >Create a new event in the </Text>
+                            <Text className={`${tailwind.slogan} text-[${COLORS.grey}] text-center`} >Create a new event in the </Text>
                             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.HOME) }}>
                                 <Text className={`${tailwind.slogan} ${tailwind.blueTextLink}`}> Dashboard</Text>
                             </TouchableOpacity>
