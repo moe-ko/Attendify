@@ -48,11 +48,11 @@ const EmployeesNavigator = () => {
                     headerLeft: () => {
                         return (
                             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.EMPLOYEES)}>
-                                <Icon name={'chevron-back-circle-outline'} size={30} color={'white'} style={{ marginLeft: 10 }} />
+                                <Icon name={'chevron-back-circle-outline'} size={30} color={COLORS.white} style={{ marginLeft: 10 }} />
                             </TouchableOpacity>
                         )
                     },
-                    headerTintColor: "#fff",
+                    headerTintColor: COLORS.white,
                     headerTitle: "Employee Profile"
                 }}
             />

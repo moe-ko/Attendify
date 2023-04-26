@@ -109,7 +109,7 @@ const Employee = ({ navigation, route }) => {
                     />
                 </View>
                 <View className="pb-4 justify-center items-center">
-                    <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{route.params['full_name']}</Text>
+                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}]`}>{route.params['full_name']}</Text>
                     <Text className={`${tailwind.slogan}`}>{route.params['employee_id']}</Text>
                 </View>
             </>
@@ -226,22 +226,22 @@ const Employee = ({ navigation, route }) => {
                                     data={units}
                                     setSelected={selected => setSubunitSelected(selected)}
                                     placeholder={`${unit}`}
-                                    placeholderTextColor='#F5F5F5'
+                                    placeholderTextColor={COLORS.whiteSmoke}
                                     inputStyles={{
                                         margin: 0,
                                     }}
                                     boxStyles={{
                                         borderRadius: 15,
-                                        borderColor: '#fff',
-                                        color: '#fff',
-                                        backgroundColor: '#F5F5F5'
+                                        borderColor: COLORS.white,
+                                        color: COLORS.white,
+                                        backgroundColor: COLORS.whiteSmoke
                                     }}
                                     dropdownStyles={{
                                         borderWidth: 1,
                                         borderRadius: 4,
-                                        borderColor: '#DDDDDD',
-                                        backgroundColor: '#DDDDDD',
-                                        color: '#fff',
+                                        borderColor: COLORS.lightGrey,
+                                        backgroundColor: COLORS.lightGrey,
+                                        color: COLORS.white,
                                         marginLeft: 5,
                                         marginRight: 5,
                                         marginBottom: 5,
@@ -287,7 +287,7 @@ const Employee = ({ navigation, route }) => {
                             style={{
                                 width: '80%',
                                 margin: 20,
-                                backgroundColor: 'white',
+                                backgroundColor: COLORS.white,
                                 borderRadius: 20,
                                 padding: 10,
                                 alignItems: 'center',
@@ -306,22 +306,22 @@ const Employee = ({ navigation, route }) => {
                                     data={permissions}
                                     setSelected={selected => setPermission(selected)}
                                     placeholder={permission}
-                                    placeholderTextColor='#F5F5F5'
+                                    placeholderTextColor={COLORS.whiteSmoke}
                                     inputStyles={{
                                         margin: 0,
                                     }}
                                     boxStyles={{
                                         borderRadius: 15,
-                                        borderColor: '#fff',
-                                        color: '#fff',
-                                        backgroundColor: '#F5F5F5'
+                                        borderColor: COLORS.white,
+                                        color: COLORS.white,
+                                        backgroundColor: COLORS.whiteSmoke
                                     }}
                                     dropdownStyles={{
                                         borderWidth: 1,
                                         borderRadius: 4,
-                                        borderColor: '#DDDDDD',
-                                        backgroundColor: '#DDDDDD',
-                                        color: '#fff',
+                                        borderColor: COLORS.lightGrey,
+                                        backgroundColor: COLORS.lightGrey,
+                                        color: COLORS.white,
                                         marginLeft: 5,
                                         marginRight: 5,
                                         marginBottom: 5,
@@ -360,7 +360,7 @@ const Employee = ({ navigation, route }) => {
                             style={{
                                 width: '80%',
                                 margin: 20,
-                                backgroundColor: 'white',
+                                backgroundColor: COLORS.white,
                                 borderRadius: 20,
                                 padding: 10,
                                 alignItems: 'center',
@@ -379,22 +379,22 @@ const Employee = ({ navigation, route }) => {
                                     data={allStatus}
                                     setSelected={selected => setStatusId(selected)}
                                     placeholder={statusName}
-                                    placeholderTextColor='#F5F5F5'
+                                    placeholderTextColor={COLORS.whiteSmoke}
                                     inputStyles={{
                                         margin: 0,
                                     }}
                                     boxStyles={{
                                         borderRadius: 15,
-                                        borderColor: '#fff',
-                                        color: '#fff',
-                                        backgroundColor: '#F5F5F5'
+                                        borderColor: COLORS.white,
+                                        color: COLORS.white,
+                                        backgroundColor: COLORS.whiteSmoke
                                     }}
                                     dropdownStyles={{
                                         borderWidth: 1,
                                         borderRadius: 4,
-                                        borderColor: '#DDDDDD',
-                                        backgroundColor: '#DDDDDD',
-                                        color: '#fff',
+                                        borderColor: COLORS.lightGrey,
+                                        backgroundColor: COLORS.lightGrey,
+                                        color: COLORS.white,
                                         marginLeft: 5,
                                         marginRight: 5,
                                         marginBottom: 5,
@@ -425,8 +425,8 @@ const Employee = ({ navigation, route }) => {
                             </TouchableOpacity>
                         </View>
                         <View className={`${tailwind.viewWrapper} px-4`}>
-                            <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>Bench Projects</Text>
-                            <Text className={`${tailwind.slogan} text-[#7E7E7E]`}>Coming soon</Text>
+                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}]`}>Bench Projects</Text>
+                            <Text className={`${tailwind.slogan} text-[${COLORS.grey}]`}>Coming soon</Text>
                         </View>
                     </>
                 )}

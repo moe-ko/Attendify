@@ -5,7 +5,7 @@ import { firebase } from '../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { handleSignUp, fetchUnit } from '../../../functions'
 import tailwind from '../../constants/tailwind'
-import { ROUTES } from '../..'
+import { COLORS, ROUTES } from '../..'
 import { Platform } from 'react-native'
 
 const SignUp = ({ navigation }) => {
@@ -88,13 +88,12 @@ const SignUp = ({ navigation }) => {
                     />
                 </View>
 
-                {validempId ? <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Employee Id must be 8 digits </Text>
+                {validempId ? <Text className={`${tailwind.validate}`}>Employee Id must be 7 digits </Text>
                     : null}
 
                 <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
                         //keyboardType='name-phone-pad'
-
                         className={`${tailwind.inputs}`}
                         onChangeText={(text) => setName(text)}
                         //onChangeText={text => handleOnchange(text, 'name')}
@@ -113,7 +112,7 @@ const SignUp = ({ navigation }) => {
                             data={units}
                             setSelected={setSubunitSelected}
                             placeholder='Select Unit/Subunit'
-                            placeholderTextColor='#726F6F'
+                            placeholderTextColor={COLORS.primary}
                             inputStyles={{
                                 padding: 2,
                                 margin: 0,
@@ -122,16 +121,16 @@ const SignUp = ({ navigation }) => {
                             boxStyles={{
                                 borderRadius: 15,
 
-                                borderColor: '#fff',
-                                color: '#fff',
-                                backgroundColor: '#fff'
+                                borderColor: COLORS.white,
+                                color: COLORS.white,
+                                backgroundColor: COLORS.white
                             }}
                             dropdownStyles={{
                                 borderWidth: 1,
                                 borderRadius: 4,
-                                borderColor: '#DDDDDD',
-                                backgroundColor: '#DDDDDD',
-                                color: '#fff',
+                                borderColor: COLORS.lightGrey,
+                                backgroundColor: COLORS.lightGrey,
+                                color: COLORS.white,
                                 marginLeft: 5,
                                 marginRight: 5,
                                 marginBottom: 5,
@@ -143,7 +142,7 @@ const SignUp = ({ navigation }) => {
                             data={units}
                             setSelected={setSubunitSelected}
                             placeholder='Select Unit/Subunit'
-                            placeholderTextColor='#726F6F'
+                            placeholderTextColor={COLORS.placeHolder}
                             inputStyles={{
                                 padding: 5,
                                 margin: 0,
@@ -154,16 +153,16 @@ const SignUp = ({ navigation }) => {
                             boxStyles={{
                                 borderRadius: 15,
 
-                                borderColor: '#fff',
-                                color: '#fff',
-                                backgroundColor: '#fff'
+                                borderColor: COLORS.white,
+                                color: COLORS.white,
+                                backgroundColor: COLORS.white
                             }}
                             dropdownStyles={{
                                 borderWidth: 1,
                                 borderRadius: 4,
-                                borderColor: '#DDDDDD',
-                                backgroundColor: '#DDDDDD',
-                                color: '#fff',
+                                borderColor: COLORS.lightGrey,
+                                backgroundColor: COLORS.lightGrey,
+                                color: COLORS.white,
                                 marginLeft: 5,
                                 marginRight: 5,
                                 marginBottom: 5,
@@ -184,7 +183,7 @@ const SignUp = ({ navigation }) => {
                     />
 
                 </View>
-                {checkValidEmail && (<Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">please use the email associated with @infosys.com</Text>)}
+                {checkValidEmail && (<Text className={`${tailwind.validate}`}>please use the email associated with @infosys.com</Text>)}
 
                 {/* <Text className="text-[#ff0000]"></Text>)
                      <View className={`${tailwind.viewWrapper}`}>
@@ -240,12 +239,12 @@ const SignUp = ({ navigation }) => {
                     />
                 </View>
 
-                {validpasswordSpace && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password shouldn`t contain space</Text>}
-                {validpassword && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password must be 8-16 characters long</Text>}
+                {validpasswordSpace && <Text className={`${tailwind.validate}`}>Password shouldn`t contain space</Text>}
+                {validpassword && <Text className={`${tailwind.validate}`}>Password must be 8-16 characters long</Text>}
 
-                {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast an uppercase </Text>}
-                {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a lowercase</Text>}
-                {validpasswordChar && <Text className="font-medium tracking-wide text-red-500 text-xs mb-2 mt-[-7]">Password should contain atleast a number</Text>}
+                {validpasswordChar && <Text className={`${tailwind.validate}`}>Password should contain atleast an uppercase </Text>}
+                {validpasswordChar && <Text className={`${tailwind.validate}`}>Password should contain atleast a lowercase</Text>}
+                {validpasswordChar && <Text className={`${tailwind.validate}`}>Password should contain atleast a number</Text>}
 
 
                 <View className={`${tailwind.viewWrapper}`}>
@@ -258,8 +257,8 @@ const SignUp = ({ navigation }) => {
                         autoCorrect={false}
                     />
                 </View>
-                {validconfirmPassword ? (<Text className="text-[#ff0000]"></Text>)
-                    : (<Text className=" text-red-500">Password should match</Text>)}
+                {validconfirmPassword ? (<Text className={`text-[${COLORS.red}]`}></Text>)
+                    : (<Text className={`text-[${COLORS.red}]`}>Password should match</Text>)}
 
 
                 <View className={`${tailwind.viewWrapper}`}>
