@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image, Alert } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
 import { COLORS, ROUTES } from '../../..'
@@ -10,6 +10,14 @@ import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 import { arrayUnion } from 'firebase/firestore'
 import tailwind from '../../../constants/tailwind'
+import * as XLSX from 'xlsx'
+import * as FileSystem from 'expo-file-system'
+import { shareAsync } from 'expo-sharing'
+import { Button } from '@rneui/base'
+import * as Print from 'expo-print';
+import { fetchUnitId, fetchUnit } from '../../../../functions'
+// import { printToFileAsync } from 'expo-print'
+
 
 const Chart = ({ navigation }) => {
     const [eventDate, setEventDate] = useState('')
@@ -25,6 +33,8 @@ const Chart = ({ navigation }) => {
     const [currentStatus, setCurrentStatus] = useState('')
     const [isVisible, setIsVisible] = useState(false);
     const [eventExist, setEventExist] = useState(true)
+    const [unitId, setUnitId] = useState('')
+    const [unit, setUnit] = useState('')
     let employees = clear
 
     useEffect(() => {
@@ -97,10 +107,18 @@ const Chart = ({ navigation }) => {
             .collection('employees')
             .doc(id)
             .onSnapshot(documentSnapshot => {
-                employees.push({ id: id, name: `${documentSnapshot.data()['full_name']}`, avatar: `${documentSnapshot.data()['avatar']}`, status: status })
+                employees.push({
+                    id: id,
+                    email: `${documentSnapshot.data()['email']}`,
+                    name: `${documentSnapshot.data()['full_name']}`,
+                    avatar: `${documentSnapshot.data()['avatar']}`,
+                    subunit: documentSnapshot.data()['subunit_id'],
+                    status: status
+                })
             });
         return () => subscriber();
     }
+
 
     const attendPercent = Math.round(attend / totalAssitance * 100)
     const absentPercent = Math.round(absent / totalAssitance * 100)
@@ -267,6 +285,117 @@ const Chart = ({ navigation }) => {
             )
     }
 
+    const generatePDF = async () => {
+        const array = employees
+        var table = ''
+        for (let i in array) {
+            table = table + `
+            <tr>
+            <td>${array[i]['id']}</td>
+            <td>${array[i]['name']}</td> 
+            <td>${array[i]['email']}</td> 
+            <td style="color:${array[i]['status'] == 'absent' ? 'red' : ''}">${array[i]['status'] == 'absent' ? 'Absent' : array[i]['status'] == 'attendance' ? 'Attend' : array[i]['status'] == 'annual_leave' ? 'Annual Leave' : 'Sick Leave'}
+            </td>
+            </tr>`
+        }
+        const html = `
+                <html>
+                <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+                    <style>
+                        h1{
+                            font-size: 40px; 
+                            font-family: Helvetica Neue; 
+                            font-weight: bold; 
+                            color:#62ABEF;
+                            margin:0;
+                        }
+                        h3{
+                            font-size: 30px; 
+                            font-family: Helvetica Neue; 
+                            font-weight: light; 
+                            color:#7E7E7E;
+                            margin:0;
+                        }
+                        .styled-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 25px 0;
+                            font-size: 1em;
+                            font-family: sans-serif;
+                            min-width: 400px; 
+                        }
+                        th{ 
+                            background-color: #62ABEF;
+                            border: 1px solid #DDDDDD;
+                            font-weight: bold;
+                            text-align: center;
+                            color: white;
+                            font-size: 20px; 
+                        }  
+                        tbody tr{
+                           font-size: 16px; 
+                        }
+                        tbody tr:nth-of-type(even) {
+                            background-color: rgba(0, 0, 0, 0.12);
+                        }
+                    </style>
+                </head>
+                <body>
+                    <h1>Attendify</h1>
+                    <h3>Event report</h3>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Employee Id</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>${eventDate}</th>
+                            </tr>
+                        </th>
+                        <tbody>${table}</tbody> 
+                    </table>
+                </body>
+                </html>
+                `;
+
+        // On iOS/android prints the given html. On web prints the HTML from the current page.
+        const { uri } = await Print.printToFileAsync({
+            html,
+            margins: {
+                left: 20,
+                top: 50,
+                right: 20,
+                bottom: 100,
+            },
+        });
+
+        const pdfName = `${uri.slice(
+            0,
+            uri.lastIndexOf('/') + 1
+        )}attendify_event_${eventDate.split(" ").join("_").split(":").join("-")}.pdf`
+
+        await FileSystem.moveAsync({
+            from: uri,
+            to: pdfName,
+        })
+
+        await shareAsync(pdfName)
+        // console.log(uri)
+        // Alert.alert('Successfuly saved'[
+        //     { text: 'Cancel', style: 'cancel' },
+        //     { text: 'Open', onPress: () => openFile(uri) }
+        // ])
+    }
+
+    // const openFile = (filepath) => {
+    //     const path = FileViewer.open(filepath) // absolute-path-to-my-local-file.
+    //         .then(() => { 
+    //         })
+    //         .catch((error) => { 
+    //         });
+    // }
+
     return (
         <>
             {eventExist ? (
@@ -311,6 +440,7 @@ const Chart = ({ navigation }) => {
                                     position: 'relative'
                                 }}
                             />
+                            <Button title='Download' onPress={generatePDF} />
                         </View>
                     </View>
                     {viewDetails ? (

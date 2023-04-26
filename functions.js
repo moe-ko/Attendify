@@ -43,14 +43,25 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
             dark_mode: false
         })
 }
-export const fetchUnit = async (subunit_name, id) => {
+export const fetchUnitId = async (id) => {
+    let unit_id = ''
+    await firebase.firestore()
+        .collection('subunits')
+        .doc(id)
+        .get()
+        .then(querySnapshot => {
+            unit_id = `${querySnapshot.data()['unit_id']}`
+        });
+    return unit_id
+}
+export const fetchUnit = async (subunit_name = '', id) => {
     let unit = ''
     await firebase.firestore()
         .collection('units')
         .doc(id)
         .get()
         .then(querySnapshot => {
-            unit = `${querySnapshot.data()['name']}  (${subunit_name})`
+            unit = `${querySnapshot.data()['name']}${subunit_name != '' ? ' (' + subunit_name + ')' : ''}`
         });
     return unit
 }
