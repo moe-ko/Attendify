@@ -257,8 +257,8 @@ const SignUp = ({ navigation }) => {
                         autoCorrect={false}
                     />
                 </View>
-                {validconfirmPassword ? (<Text className={`text-[${COLORS.red}]`}></Text>)
-                    : (<Text className={`text-[${COLORS.red}]`}>Password should match</Text>)}
+                {validconfirmPassword ? (<Text className={`text-red-500`}></Text>)
+                    : (<Text className={`text-red-500`}>Password should match</Text>)}
 
 
                 <View className={`${tailwind.viewWrapper}`}>
