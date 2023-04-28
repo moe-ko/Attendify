@@ -9,6 +9,8 @@ export default {
     placeHolder: '#726F6F',
     grey: '#7E7E7E',
     white: '#FFF',
-    lightGrey: '#DDDDDD'
+    lightGrey: '#DDDDDD',
+    blueA700: '#0091EA',
+    blue900: '#01579B'
 
 }

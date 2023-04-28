@@ -16,6 +16,7 @@ import { shareAsync } from 'expo-sharing'
 import { Button } from '@rneui/base'
 import * as Print from 'expo-print';
 import { fetchUnitId, fetchUnit } from '../../../../functions'
+import BoxInfo from './BoxInfo'
 // import { printToFileAsync } from 'expo-print'
 
 
@@ -172,17 +173,6 @@ const Chart = ({ navigation }) => {
         )
     }
 
-    BoxInfo = ({ bg, label, status }) => (
-        <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', display: 'flex', width: '100%' }}>
-            <View style={{ width: '90%', padding: 2, borderRadius: 4, marginTop: 8, backgroundColor: `${bg}`, alignItems: 'center', }}>
-                <Icon name={statusIcon(status)} size={20} color={COLORS.secondary} fontWeight='bold' />
-                <Text style={{ fontSize: 16, fontWeight: 600, text: 'center', color: COLORS.secondary }}>
-                    {label}
-                </Text>
-            </View>
-        </View>
-    );
-
     const bottomSheetList = [
         {
             title: 'Attend',
@@ -288,15 +278,37 @@ const Chart = ({ navigation }) => {
     const generatePDF = async () => {
         const array = employees
         var table = ''
+        const statusInfo = (status) => {
+            switch (status) {
+                case 'attendance': case '0':
+                    return [COLORS.blue900, 'Attend']
+                case 'absent': case '1':
+                    return [COLORS.blueA700, 'Absent']
+                case 'sick_leave': case '2':
+                    return [COLORS.primary, 'Sick Leave']
+                case 'annual_leave': case '3':
+                    return [COLORS.lightblue700, 'Annual Leave']
+            }
+        }
         for (let i in array) {
             table = table + `
             <tr>
             <td>${array[i]['id']}</td>
             <td>${array[i]['name']}</td> 
             <td>${array[i]['email']}</td> 
-            <td style="color:${array[i]['status'] == 'absent' ? 'red' : ''}">${array[i]['status'] == 'absent' ? 'Absent' : array[i]['status'] == 'attendance' ? 'Attend' : array[i]['status'] == 'annual_leave' ? 'Annual Leave' : 'Sick Leave'}
-            </td>
+            <td style="font-weight:bold; color:white; background-color:${statusInfo(array[i]['status'])[0]}">${statusInfo(array[i]['status'])[1]}</td>
             </tr>`
+        }
+
+        let gData = ''
+        for (let i in graphicData) {
+            if (graphicData[i]['y'] > 0) {
+                gData = gData + `{
+                    y: ${graphicData[i]['y']}, 
+                    label: "${statusInfo(i)[1]}",
+                    color:"${statusInfo(i)[0]}"
+                },`
+            }
         }
         const html = `
                 <html>
@@ -340,6 +352,24 @@ const Chart = ({ navigation }) => {
                             background-color: rgba(0, 0, 0, 0.12);
                         }
                     </style>
+                    <script>
+                    window.onload = function() {
+
+                    var chart = new CanvasJS.Chart("chartContainer", {
+                        animationEnabled: false,
+                        data: [{
+                            type: "pie",
+                            startAngle: 240,
+                            yValueFormatString: "##0.00\"%\"",
+                            indexLabel: "{label} {y}%",
+                            indexLabelPlacement: "inside", 
+                            dataPoints: [${gData}]
+                        }]
+                    });
+                    chart.render();
+
+                    }
+                    </script>
                 </head>
                 <body>
                     <h1>Attendify</h1>
@@ -355,6 +385,8 @@ const Chart = ({ navigation }) => {
                         </th>
                         <tbody>${table}</tbody> 
                     </table>
+                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+                    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
                 </body>
                 </html>
                 `;
@@ -410,56 +442,73 @@ const Chart = ({ navigation }) => {
                         shadowRadius: 4,
                         elevation: 5,
                     }}>
-                        <View className={` w-screen px-3`}>
-                            <SelectList
-                                data={dates}
-                                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
-                                placeholder={eventDate}
-                                placeholderTextColor='#726F6F'
-                                inputStyles={{
-                                    color: "#666",
-                                    padding: 7,
-                                    margin: 0,
-                                }}
-                                boxStyles={{
-                                    borderRadius: 20,
-                                    color: 'black',
-                                    backgroundColor: '#F5F5F5',
-                                    borderColor: 'white',
-                                }}
-                                dropdownStyles={{
-                                    borderWidth: 0,
-                                    borderRadius: 4,
-                                    borderColor: '#DDDDDD',
-                                    backgroundColor: '#DDDDDD',
-                                    color: '#fff',
-                                    marginLeft: 5,
-                                    marginRight: 5,
-                                    marginBottom: 5,
-                                    marginTop: 0,
-                                    position: 'relative'
-                                }}
-                            />
-                            <Button title='Download' onPress={generatePDF} />
+                        <View className={`w-screen px-3 d-flex flex-row justify-between`}>
+                            <View className={`w-10/12 `}>
+                                <SelectList
+                                    data={dates}
+                                    setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
+                                    placeholder={eventDate}
+                                    placeholderTextColor='#726F6F'
+                                    inputStyles={{
+                                        color: "#666",
+                                        padding: 2,
+                                        margin: 0,
+                                    }}
+                                    boxStyles={{
+                                        borderRadius: 20,
+                                        color: 'black',
+                                        backgroundColor: '#F5F5F5',
+                                        borderColor: 'white',
+                                    }}
+                                    dropdownStyles={{
+                                        borderWidth: 0,
+                                        borderRadius: 4,
+                                        borderColor: '#DDDDDD',
+                                        backgroundColor: '#DDDDDD',
+                                        color: '#fff',
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                        marginBottom: 5,
+                                        marginTop: 0,
+                                        position: 'relative',
+                                    }}
+                                />
+                            </View>
+                            <TouchableOpacity onPress={generatePDF} >
+                                <Icon name={'cloud-download'} size={30} color={COLORS.primary} style={{ marginLeft: 10 }} />
+                                <Text className={`${tailwind.slogan} text-xs text-[${COLORS.grey}]`}>Download</Text>
+                            </TouchableOpacity>
+
                         </View>
                     </View>
                     {viewDetails ? (
                         <>
                             <ScrollView>
-                                <VictoryPie
-                                    data={graphicData}
-                                    width={Dimensions.get('window').width}
-                                    style={{ width: '100%', labels: { fill: "white", fontSize: 20, fontWeight: "light" } }}
-                                    labelRadius={({ innerRadius }) => innerRadius + 60}
-                                    innerRadius={20}
-                                    colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
-                                />
-                                <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
-                                    <BoxInfo bg={COLORS.primary} label='Attend' status='attendance' />
-                                    <BoxInfo bg={COLORS.lightblue700} label='Absent' status='absent' />
-                                    <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
-                                    <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] ml-5`}>Graphic Report</Text>
+                                <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5`}>{eventDate}</Text>
+                                <View style={{ flex: 1, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
+                                    <View style={{ width: '80%' }}>
+                                        <VictoryPie
+                                            data={graphicData}
+                                            width={300}
+                                            height={300}
+                                            padding={5}
+                                            margin={0}
+                                            style={{ labels: { fill: "white", fontSize: 20, fontWeight: "light" } }}
+                                            labelRadius={({ innerRadius }) => innerRadius + 40}
+                                            innerRadius={30}
+                                            colorScale={[COLORS.blue900, COLORS.blueA700, COLORS.primary, COLORS.lightblue700]}
+                                        />
+                                    </View>
+                                    <View style={{ width: '20%', display: 'flex', justifyContent: 'center' }}>
+                                        <BoxInfo props={{ bg: COLORS.blue900, label: 'Attend', status: 'attendance' }} />
+                                        <BoxInfo props={{ bg: COLORS.blueA700, label: 'Absent', status: 'absent' }} />
+                                        <BoxInfo props={{ bg: COLORS.primary, label: 'Sick', status: 'sick_leave' }} />
+                                        <BoxInfo props={{ bg: COLORS.lightblue700, label: 'Attend', status: 'annual_leave' }} />
+                                    </View>
                                 </View>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] ml-5`}>Assistance</Text>
+                                <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5 mb-5`}>Employees</Text>
                                 <FlatList marginBottom={100}
                                     data={employees}
                                     renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} status={item.status} />}
