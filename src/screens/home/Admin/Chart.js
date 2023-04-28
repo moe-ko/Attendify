@@ -319,15 +319,22 @@ const Chart = ({ navigation }) => {
                             font-size: 40px; 
                             font-family: Helvetica Neue; 
                             font-weight: bold; 
-                            color:#62ABEF;
-                            margin:0;
+                            color: #62ABEF;
+                            margin: 0;
                         }
                         h3{
                             font-size: 30px; 
                             font-family: Helvetica Neue; 
                             font-weight: light; 
-                            color:#7E7E7E;
-                            margin:0;
+                            color: #7E7E7E;
+                            margin: 0;
+                        }
+                        h6{
+                            font-size: 15px; 
+                            font-family: Helvetica Neue; 
+                            font-weight: light; 
+                            color: black;
+                            margin: 0;
                         }
                         .styled-table {
                             width: 100%;
@@ -353,27 +360,35 @@ const Chart = ({ navigation }) => {
                         }
                     </style>
                     <script>
-                    window.onload = function() {
-
-                    var chart = new CanvasJS.Chart("chartContainer", {
-                        animationEnabled: false,
-                        data: [{
-                            type: "pie",
-                            startAngle: 240,
-                            yValueFormatString: "##0.00\"%\"",
-                            indexLabel: "{label} {y}%",
-                            indexLabelPlacement: "inside", 
-                            dataPoints: [${gData}]
-                        }]
-                    });
-                    chart.render();
-
+                        window.onload = function() {
+                        var chart = new CanvasJS.Chart("chartContainer", {
+                            animationEnabled: false,
+                            data: [{
+                                type: "pie",
+                                startAngle: 240,
+                                yValueFormatString: "##0.00\"%\"",
+                                indexLabel: "{label} {y}%",
+                                indexLabelPlacement: "inside", 
+                                indexLabelFontColor:"white",
+                                indexLabelFontWeight: "bold",
+                                dataPoints: [${gData}]
+                            }]
+                        });
+                        chart.render();
                     }
                     </script>
                 </head>
                 <body>
-                    <h1>Attendify</h1>
-                    <h3>Event report</h3>
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="width:40%; justify-content: center;">
+                            <h1>Attendify</h1>
+                            <h3>Event report</h3>
+                            <h6>Date: ${eventDate}</h6>
+                        </div>
+                        <div style="width:60%">
+                            <div id="chartContainer" style="height: 370px; width:100%;"></div>
+                        </div> 
+                    </div>
                     <table class="styled-table">
                         <thead>
                             <tr>
@@ -385,7 +400,6 @@ const Chart = ({ navigation }) => {
                         </th>
                         <tbody>${table}</tbody> 
                     </table>
-                    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
                     <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
                 </body>
                 </html>
