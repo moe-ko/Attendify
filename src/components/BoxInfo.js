@@ -2,9 +2,9 @@ import React, { useState } from 'react'
 import {
   View, Text
 } from 'react-native'
-import { COLORS } from '../../..'
+import { COLORS } from '..';
 import { Avatar } from '@rneui/themed';
-import { getStatusIcon } from '../../../../functions';
+import { getStatusIcon } from '../../functions';
 
 const BoxInfo = ({ props }) => {
   const [icon, setIcon] = useState('')

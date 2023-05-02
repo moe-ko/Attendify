@@ -6,6 +6,7 @@ import Icon from 'react-native-vector-icons/Ionicons'
 import tailwind from '../../../constants/tailwind';
 import { ScrollView } from 'react-native-gesture-handler';
 import { COLORS, ROUTES } from '../../..';
+import { getStatusIcon } from '../../../../functions';
 
 const Employees = ({ navigation }) => {
     const [filteredData, setFilteredData] = useState([])
@@ -52,27 +53,21 @@ const Employees = ({ navigation }) => {
     }
 
     const Item = ({ id, data }) => {
-        let icon = ''
-        switch (data['status_id']) {
-            case '0':
-                icon = 'close'
-                break;
-            case '1':
-                icon = 'done'
-                break;
-            case '2':
-                icon = 'flight'
-                break;
-            case '3':
-                icon = 'favorite'
-                break;
-        }
+        const [icon, setIcon] = useState('')
+
+        getStatusIcon(data['status_id']).then(res => setIcon(res))
+
         return (
             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.EMPLOYEE, data) }}>
                 <ListItem bottomDivider>
                     <Avatar rounded size={50} source={{ uri: `${data['avatar']}` }} >
                         <View style={{
-                            position: 'absolute', top: 30, left: 30, backgroundColor: COLORS.primary, color: 'white', borderRadius: 100,
+                            position: 'absolute',
+                            top: 30,
+                            left: 30,
+                            backgroundColor: icon == 'done' ? COLORS.blue900 : icon == 'close' ? COLORS.blueA700 : icon == 'favorite' ? COLORS.primary : COLORS.lightblue700,
+                            color: 'white',
+                            borderRadius: 100,
                             shadowColor: '#000',
                             shadowOffset: { width: -2, height: 0 },
                             shadowOpacity: 0.5,

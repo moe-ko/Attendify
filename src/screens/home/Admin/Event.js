@@ -8,7 +8,7 @@ import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../..'
-import { TimePickerModal, DatePickerModal, registerTranslation } from 'react-native-paper-dates'
+import { TimePickerModal, DatePickerModal, registerTranslation, useTheme } from 'react-native-paper-dates'
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 
 registerTranslation('pl', {
@@ -286,8 +286,8 @@ const Event = ({ props }) => {
                         {permission == 'Admin' || permission == 'Super Admin' ? (
                             <View className={`${tailwind.viewWrapper}`}>
                                 <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Create a new session</Text>
-                                <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl`}>
-                                    <View className={` w-10/12 m-auto mt-5`}>
+                                <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
+                                    <View className={` w-12/12 mb-3`}>
                                         <SelectList
                                             data={locations}
                                             setSelected={setSelectedLocation}
@@ -319,26 +319,30 @@ const Event = ({ props }) => {
                                         />
                                     </View>
                                     <TextInput
-                                        className={`${tailwind.inputs} w-10/12 m-auto my-3`}
+                                        className={`${tailwind.inputs} w-12/12 mb-3`}
                                         value={title}
                                         placeholder={'Event title'}
                                         onChangeText={(text) => setTitle(text)}
                                         autoCorrect={false}
                                         placeholderTextColor={COLORS.placeHolder}
                                     />
-
-                                    <View className={`${tailwind.viewWrapper} flex-column justify-center items-center mb-5`}>
-                                        <View className={`flex-row justify-between w-10/12`}>
-                                            <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
-                                                <View className="pl-[10] flex-row align-items-center my-2">
+                                    <TextInput
+                                        className={`${tailwind.inputs} w-12/12 mb-3`}
+                                        value={`From now ${format(new Date(), 'dd-MMM-yy HH:mm')}`}
+                                        editable={false}
+                                    />
+                                    <View className={`${tailwind.viewWrapper} flex-column mb-3`}>
+                                        <View className={`flex-row justify-between w-12/12`}>
+                                            <TouchableOpacity className={`bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
+                                                <View className="pl-[10] flex-row align-items-center my-3">
                                                     <Icon name="calendar" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
-                                                    <Text className={`text-[${COLORS.placeHolder}] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
+                                                    <Text className={`text-[${COLORS.placeHolder}] ml-3 my-auto`}>{date == undefined ? 'Until date' : format(date, 'dd-MMM-yy')}</Text>
                                                 </View>
                                             </TouchableOpacity>
-                                            <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
-                                                <View className="pl-[10] flex-row align-items-center my-2">
+                                            <TouchableOpacity className={`bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
+                                                <View className="pl-[10] flex-row align-items-center my-3">
                                                     <Icon name="time" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
-                                                    <Text className={`text-[${COLORS.placeHolder}]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
+                                                    <Text className={`text-[${COLORS.placeHolder}]  ml-3 my-auto`}>{time == undefined ? 'Until time' : time}</Text>
                                                 </View>
                                             </TouchableOpacity>
                                         </View>
@@ -349,25 +353,27 @@ const Event = ({ props }) => {
                                             onDismiss={onDismissDate}
                                             date={date}
                                             onConfirm={onConfirmDate}
-                                        // theme={
-                                        //     { colors: { primary: COLORS.primary } }
-                                        // }
+                                            validRange={{
+                                                startDate: new Date()
+                                            }}
+
                                         />
                                         <TimePickerModal
                                             visible={timePickerVisible}
                                             onDismiss={onDismissTime}
-                                            hours={format(new Date, 'H') - 1}
+                                            hours={format(new Date, 'H')}
                                             minutes={format(new Date, 'mm')}
                                             onConfirm={onConfirmTime}
+                                            use24HourClock={true}
+
+
                                         />
                                     </View>
-                                </View>
-                                <View className="justify-center items-center">
-                                    <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
                                             hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps), getCurrentEvent()
                                         }}>
-                                        <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
