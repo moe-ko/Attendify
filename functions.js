@@ -92,7 +92,20 @@ export const getEmployeeId = async () => {
         });
     return id
 }
-
+export const getEmployeeName = async (email) => {
+    let name = ''
+    await firebase.firestore()
+        .collection('employees')
+        .where('email', '==', email)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                name = documentSnapshot.data()['full_name']
+                // emp_data.push({ key: `${documentSnapshot.id}` });
+            });
+        });
+    return name
+}
 export const getPermission = async (currentEmail) => {
     let permission = false
     await firebase.firestore()
@@ -132,7 +145,7 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = async (selectedLocation, title, endDate, endTime, absent, sick_leave, annual_leave) => {
+export const hanldeCreateEvent = async (selectedLocation, title, endDate, endTime, absent, sick_leave, annual_leave, createdBy) => {
     endDate = format(endDate, 'yyyy-MM-dd') + ' ' + endTime
     await firebase.firestore()
         .collection('events')
@@ -148,7 +161,8 @@ export const hanldeCreateEvent = async (selectedLocation, title, endDate, endTim
             absent: absent,
             sick_leave: sick_leave,
             annual_leave: annual_leave,
-            hasEnded: endDate > format(new Date(), "yyyy-MM-dd H:mm") ? false : true
+            hasEnded: endDate > format(new Date(), "yyyy-MM-dd H:mm") ? false : true,
+            createdBy: createdBy
         })
         .then(() => {
             Alert.alert('Event Created', 'New event has been created', [

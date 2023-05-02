@@ -3,14 +3,15 @@ import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, S
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getEmployeeName } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../../..'
+import { COLORS, ROUTES } from '../../..'
 import { TimePickerModal, DatePickerModal, registerTranslation, useTheme } from 'react-native-paper-dates'
 import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+import { useNavigation } from '@react-navigation/native';
 
 registerTranslation('pl', {
     save: 'Save',
@@ -31,6 +32,7 @@ registerTranslation('pl', {
     close: 'Close',
 })
 const Event = ({ props }) => {
+    const navigation = useNavigation();
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
@@ -104,6 +106,7 @@ const Event = ({ props }) => {
                             title: docSnapshot.data()['title'],
                             end: docSnapshot.data()['end'],
                             ip_address: docSnapshot.data()['ip_address'],
+                            createdBy: docSnapshot.data()['createdBy']
                         }
                     ))
                     if (res.length > 0) {
@@ -125,6 +128,7 @@ const Event = ({ props }) => {
         firebase.firestore()
             .collection('events')
             .where('hasEnded', '==', true)
+            .orderBy('end', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
@@ -132,7 +136,8 @@ const Event = ({ props }) => {
                             id: docSnapshot.id,
                             title: docSnapshot.data()['title'],
                             startDate: docSnapshot.data()['start'],
-                            totalAttendance: docSnapshot.data()['attendance'].length
+                            totalAttendance: docSnapshot.data()['attendance'].length + docSnapshot.data()['absent'].length + docSnapshot.data()['sick_leave'].length + docSnapshot.data()['annual_leave'].length,
+                            createdBy: docSnapshot.data()['createdBy'],
                         }
                     ))
                     setPrevEvents(res)
@@ -140,19 +145,32 @@ const Event = ({ props }) => {
             })
     }
 
-    const Item = ({ title, startDate, totalAttendance }) => (
-        // <TouchableOpacity onPress={() => { }}>
-        <ListItem bottomDivider marginHorizontal={20} marginVertical={4} padding={0} borderRadius={20}>
-            <Avatar title="E" containerStyle={{ backgroundColor: COLORS.primary }} />
-            {/* <Icon name={'calendar'} size={30} color={COLORS.primary} /> */}
-            <ListItem.Content padding={0}>
-                <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}>{title}</ListItem.Title>
-                <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[#7E7E7E]`}>{totalAttendance} | {startDate}</ListItem.Subtitle>
-            </ListItem.Content>
+    const Item = ({ title, startDate, totalAttendance, createdBy }) => {
+        const [creator, setCreator] = useState('')
+        getEmployeeName(createdBy).then(res => setCreator(res))
+        return (<>
 
-        </ListItem>
-        // </TouchableOpacity >
-    );
+            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
+                <View className={`d-flex flex-row mx-5 my-1 bg-[#fff] rounded-2xl`}>
+                    <View className={`bg-[${COLORS.primary}] p-1 d-flex justify-center w-2/12 rounded-2xl`}>
+                        <Text className={`font-medium text-3xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'dd')}</Text>
+                        <Text className={`font-medium text-xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'MMM').toUpperCase()}</Text>
+                    </View>
+                    <View className={`py-1 px-2 d-flex justify-center`}>
+                        <View>
+                            <Text className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}> {title}</Text>
+                        </View>
+                        <View className={`d-flex flex-row`}>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.grey} /> {format(new Date(startDate), 'HH:mm')}</Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} /> {totalAttendance}</Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E]`}> <Icon name={'person'} size={15} color={COLORS.grey} /> {creator} </Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        </>
+        )
+    };
 
     const getAttendance = () => {
         firebase.firestore()
@@ -245,9 +263,12 @@ const Event = ({ props }) => {
                                                 <Text className={`${tailwind.titleText} font-light text-white text-center`}>Session Code:</Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
                                                 <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {currentEvent['end']}</Text>
-                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
-                                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel Event</Text>
-                                                </TouchableOpacity>
+                                                {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
+                                                    <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
+                                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel Event</Text>
+                                                    </TouchableOpacity>
+                                                ) : null}
+
                                             </>
                                         ) : (
                                             <>
@@ -397,7 +418,7 @@ const Event = ({ props }) => {
                                     </View>
                                     <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps), getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email), getCurrentEvent()
                                         }}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
@@ -408,7 +429,7 @@ const Event = ({ props }) => {
                     <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5`}>Previous events</Text>
                     <FlatList
                         data={prevEvents}
-                        renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} />}
+                        renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} createdBy={item.createdBy} />}
                         keyExtractor={item => item.id}
                     />
                 </KeyboardAvoidingView>
