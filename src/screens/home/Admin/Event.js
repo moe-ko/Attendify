@@ -95,7 +95,7 @@ const Event = ({ props }) => {
     const getCurrentEvent = () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('end', 'desc')
+            .where('hasEnded', '==', false)
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
@@ -331,9 +331,9 @@ const Event = ({ props }) => {
                             </>
                         ) : null}
                         {/* {(createEventVisible) ? ( */}
-                        {permission == 'Admin' || permission == 'Super Admin' ? (
+                        {(permission == 'Admin' || permission == 'Super Admin') && currentEvent.length == 0 ? (
                             <View className={`${tailwind.viewWrapper}`}>
-                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Create a new session</Text>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2  mt-2`}>Create a new session</Text>
                                 <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
                                     <View className={` w-12/12 mb-3`}>
                                         <SelectList
