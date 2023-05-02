@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform } from 'react-native'
+import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList, Button } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
@@ -9,6 +9,7 @@ import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS } from '../../..'
 import { TimePickerModal, DatePickerModal, registerTranslation, useTheme } from 'react-native-paper-dates'
+import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 
 registerTranslation('pl', {
@@ -52,6 +53,7 @@ const Event = ({ props }) => {
     const [inactiveEmps, setInactiveEmps] = useState([])
     const [eventIpAddress, setEventIpAddress] = useState('')
     const [disabled, setDisabled] = useState(true)
+    const [prevEvents, setPrevEvents] = useState()
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
@@ -59,6 +61,7 @@ const Event = ({ props }) => {
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
         getEmployeesByStatus('3').then(res => setSickEmps(res))
         getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
+        getPrevEvents()
     }, [permission, eventIpAddress])
 
     eventTimer = (end) => {
@@ -118,6 +121,39 @@ const Event = ({ props }) => {
             })
     }
 
+    const getPrevEvents = () => {
+        firebase.firestore()
+            .collection('events')
+            .where('hasEnded', '==', true)
+            .onSnapshot({
+                next: querySnapshot => {
+                    const res = querySnapshot.docs.map(docSnapshot => (
+                        {
+                            id: docSnapshot.id,
+                            title: docSnapshot.data()['title'],
+                            startDate: docSnapshot.data()['start'],
+                            totalAttendance: docSnapshot.data()['attendance'].length
+                        }
+                    ))
+                    setPrevEvents(res)
+                }
+            })
+    }
+
+    const Item = ({ title, startDate, totalAttendance }) => (
+        // <TouchableOpacity onPress={() => { }}>
+        <ListItem bottomDivider marginHorizontal={20} marginVertical={4} padding={0} borderRadius={20}>
+            <Avatar title="E" containerStyle={{ backgroundColor: COLORS.primary }} />
+            {/* <Icon name={'calendar'} size={30} color={COLORS.primary} /> */}
+            <ListItem.Content padding={0}>
+                <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}>{title}</ListItem.Title>
+                <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[#7E7E7E]`}>{totalAttendance} | {startDate}</ListItem.Subtitle>
+            </ListItem.Content>
+
+        </ListItem>
+        // </TouchableOpacity >
+    );
+
     const getAttendance = () => {
         firebase.firestore()
             .collection('events')
@@ -138,16 +174,6 @@ const Event = ({ props }) => {
 
     if (currentEvent.length == 0) {
         getCurrentEvent()
-    }
-
-    updateStatusEvent = (event_id) => {
-        const subscriber = firebase.firestore()
-            .collection('events')
-            .doc(event_id)
-            .update({
-                status_id: '0',
-            })
-        subscriber();
     }
 
     handleAttendify = (code, eventId) => {
@@ -203,23 +229,24 @@ const Event = ({ props }) => {
         <>
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
-                    <View className="h-screen items-center px-4 w-full">
+                    <View className="items-center px-4 w-full">
                         {(currentEventVisible && currentEvent) ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
-                                    <View className="flex-row align-items-center my-2">
-                                        <Icon name="location-outline" size={20} color={COLORS.primary} className="pr-5" />
-                                        <Text className={`${tailwind.slogan} text-[${COLORS.grey}]`}>{locationName}</Text>
-                                    </View>
-                                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Latest event</Text>
-                                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl`}>
+                                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 mt-2`}>Latest event</Text>
+                                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
-                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code:</Text>
-                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
-                                                <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
-                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mb-6`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
-                                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center`}>{currentEvent['title']}</Text>
+                                                <View className="flex-row justify-center  text-center mb-3 ">
+                                                    <Icon name="location-outline" size={20} color={COLORS.white} className="pr-5" />
+                                                    <Text className={`${tailwind.slogan} text-white`}>{locationName}</Text>
+                                                </View>
+                                                <Text className={`${tailwind.titleText} font-light text-white text-center`}>Session Code:</Text>
+                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {currentEvent['end']}</Text>
+                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
+                                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel Event</Text>
                                                 </TouchableOpacity>
                                             </>
                                         ) : (
@@ -359,14 +386,13 @@ const Event = ({ props }) => {
 
                                         />
                                         <TimePickerModal
+                                            label='This'
                                             visible={timePickerVisible}
                                             onDismiss={onDismissTime}
                                             hours={format(new Date, 'H')}
                                             minutes={format(new Date, 'mm')}
                                             onConfirm={onConfirmTime}
                                             use24HourClock={true}
-
-
                                         />
                                     </View>
                                     <TouchableOpacity className={`${tailwind.buttonWhite}`}
@@ -379,6 +405,12 @@ const Event = ({ props }) => {
                             </View>
                         ) : null}
                     </View>
+                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5`}>Previous events</Text>
+                    <FlatList
+                        data={prevEvents}
+                        renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} />}
+                        keyExtractor={item => item.id}
+                    />
                 </KeyboardAvoidingView>
             </ScrollView>
         </>

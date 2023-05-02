@@ -132,23 +132,23 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = async (selectedLocation, title, date, time, absent, sick_leave, annual_leave) => {
-    date = format(date, 'yyyy-MM-dd') + ' ' + time
+export const hanldeCreateEvent = async (selectedLocation, title, endDate, endTime, absent, sick_leave, annual_leave) => {
+    endDate = format(endDate, 'yyyy-MM-dd') + ' ' + endTime
     await firebase.firestore()
         .collection('events')
         .add({
             start: format(new Date(), "yyyy-MM-dd H:mm"),
-            end: date,
+            end: endDate,
             ip_address: '',
             location: selectedLocation,
             code: generatePasscode(6),
             wifi_name: 'test_wifi',
-            status_id: '1',
             title: title,
             attendance: [],
             absent: absent,
             sick_leave: sick_leave,
             annual_leave: annual_leave,
+            hasEnded: endDate > format(new Date(), "yyyy-MM-dd H:mm") ? false : true
         })
         .then(() => {
             Alert.alert('Event Created', 'New event has been created', [
