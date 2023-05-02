@@ -3,7 +3,7 @@ import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, S
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getEmployeeName } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getEmployeeName, getStatusIcon } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -56,7 +56,9 @@ const Event = ({ props }) => {
     const [eventIpAddress, setEventIpAddress] = useState('')
     const [disabled, setDisabled] = useState(true)
     const [prevEvents, setPrevEvents] = useState()
-
+    const [hasAttendedAs, setHasAttendedAs] = useState('')
+    const [icon, setIcon] = useState('')
+    const [bgStatus, setBgStatus] = useState(COLORS.primary)
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
         getEmployeesByStatus('0').then(res => setInactiveEmps(res))
@@ -148,8 +150,7 @@ const Event = ({ props }) => {
     const Item = ({ title, startDate, totalAttendance, createdBy }) => {
         const [creator, setCreator] = useState('')
         getEmployeeName(createdBy).then(res => setCreator(res))
-        return (<>
-
+        return (
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
                 <View className={`d-flex flex-row mx-5 my-1 bg-[#fff] rounded-2xl`}>
                     <View className={`bg-[${COLORS.primary}] p-1 d-flex justify-center w-2/12 rounded-2xl`}>
@@ -168,7 +169,6 @@ const Event = ({ props }) => {
                     </View>
                 </View>
             </TouchableOpacity>
-        </>
         )
     };
 
@@ -181,6 +181,20 @@ const Event = ({ props }) => {
                 if (documentSnapshot.data()['attendance'].includes(props.empId) || documentSnapshot.data()['absent'].includes(props.empId) || documentSnapshot.data()['sick_leave'].includes(props.empId) || documentSnapshot.data()['annual_leave'].includes(props.empId)) {
                     setLoading(false)
                     setHasAttended(true)
+                    if (documentSnapshot.data()['attendance'].includes(props.empId)) {
+                        setHasAttendedAs('attendance')
+                        setBgStatus(COLORS.blue900)
+                    } else if (documentSnapshot.data()['absent'].includes(props.empId)) {
+                        setHasAttendedAs('absent')
+                        setBgStatus(COLORS.blueA700)
+                    } else if (documentSnapshot.data()['sick_leave'].includes(props.empId)) {
+                        setHasAttendedAs('sick_leave')
+                        setBgStatus(COLORS.primary)
+                    } else if (documentSnapshot.data()['annual_leave'].includes(props.empId)) {
+                        setHasAttendedAs('annual_leave')
+                        setBgStatus(COLORS.lightblue700)
+                    }
+                    getStatusIcon(hasAttendedAs).then(res => setIcon(res))
                 } else {
                     setLoading(false)
                     setHasAttended(false)
@@ -242,7 +256,7 @@ const Event = ({ props }) => {
             handleAttendify(code, eventId)
         }
     }
-
+    console.log(bgStatus, COLORS.primary)
     return (
         <>
             <ScrollView>
@@ -252,15 +266,15 @@ const Event = ({ props }) => {
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
                                     <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 mt-2`}>Latest event</Text>
-                                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
+                                    <View className={`${tailwind.viewWrapper} bg-[${bgStatus}] rounded-2xl p-6`}>
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
-                                                <Text className={`${tailwind.slogan} text-white text-center`}>{currentEvent['title']}</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center text-3xl`}>{currentEvent['title']}</Text>
                                                 <View className="flex-row justify-center  text-center mb-3 ">
                                                     <Icon name="location-outline" size={20} color={COLORS.white} className="pr-5" />
                                                     <Text className={`${tailwind.slogan} text-white`}>{locationName}</Text>
                                                 </View>
-                                                <Text className={`${tailwind.titleText} font-light text-white text-center`}>Session Code:</Text>
+                                                <Text className={`${tailwind.titleText} font-light text-white text-center  text-3xl`}>Session Code:</Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
                                                 <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {currentEvent['end']}</Text>
                                                 {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
@@ -282,20 +296,16 @@ const Event = ({ props }) => {
                                                     <>
                                                         {hasAttended ?
                                                             <>
-                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded successfully</Text>
-                                                                <View className="flex-row align-items-center justify-center my-5">
-                                                                    <Icon
-                                                                        name="checkmark-done"
-                                                                        color='white'
-                                                                        size={100}
-                                                                    />
+                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded as {hasAttendedAs}</Text>
+                                                                <View className="flex-row align-items-center justify-center">
+                                                                    <Avatar size={200} icon={{ name: icon, type: "material" }} />
                                                                 </View>
                                                             </>
                                                             :
                                                             <>
                                                                 <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
                                                                 <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
-                                                                <View className={`w-10/12 h-20 m-auto`}>
+                                                                <View className={`w-12/12 h-20 m-auto`}>
                                                                     <OTPInputView
                                                                         pinCount={6}
                                                                         autoFocusOnLoad={false}
