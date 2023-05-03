@@ -10,7 +10,7 @@ export default {
     grey: '#7E7E7E',
     white: '#FFF',
     blueA700: '#0091EA',
-    blue900: '#01579B'
+    blue900: '#01579B',
     red: '#Ff0000',
     lightGrey: '#DDDDDD',
     brightGrey: '#ECF0F3',
