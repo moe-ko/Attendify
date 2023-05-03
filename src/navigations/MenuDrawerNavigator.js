@@ -24,14 +24,14 @@ const MenuDrawerNavigator = () => {
         return {
             title: title,
             drawerIcon: ({ focused, color }) => (
-                <Avatar size={40} rounded icon={{ name: icon, type: "material" }} containerStyle={{ backgroundColor: '#D0E2F2', color: 'red' }} />
+                <Avatar size={40} rounded icon={{ name: icon, type: "material" }} containerStyle={{ backgroundColor: '#D0E2F2', color: COLORS.red }} />
             )
         }
     }
     const screenOptions = () => {
         return {
             headerShown: false,
-            drawerActiveBackgroundColor: 'white',
+            drawerActiveBackgroundColor: COLORS.white,
             drawerActiveTintColor: COLORS.primary,
             drawerLabelStyle: { marginLeft: -20 }
         }

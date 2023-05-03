@@ -74,12 +74,12 @@ const Employees = ({ navigation }) => {
                             shadowRadius: 2,
                             elevation: 10,
                         }} >
-                            <Avatar size={25} rounded icon={{ name: icon, type: "material" }} color={'white'} />
+                            <Avatar size={25} rounded icon={{ name: icon, type: "material" }} color={COLORS.white} />
                         </View>
                     </Avatar>
                     <ListItem.Content>
-                        <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}>{data['full_name']}</ListItem.Title>
-                        <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[#7E7E7E]`}>{id}</ListItem.Subtitle>
+                        <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[${COLORS.grey}]`}>{data['full_name']}</ListItem.Title>
+                        <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[${COLORS.grey}]`}>{id}</ListItem.Subtitle>
                     </ListItem.Content>
                     {/* <Icon name={icon} size={30} color={COLORS.primary} /> */}
                 </ListItem>
@@ -89,8 +89,8 @@ const Employees = ({ navigation }) => {
 
     return (
         <SafeAreaView >
-            <View className={`bg-[#fff]`}>
-                <View className={`${tailwind.viewWrapper} bg-[#fff] rounded-b-3xl items-center  py-4 justify-center`} style={{
+            <View className={`bg-[${COLORS.white}]`}>
+                <View className={`${tailwind.viewWrapper} bg-[${COLORS.white}] rounded-b-3xl items-center  py-4 justify-center`} style={{
                     shadowColor: '#000',
                     shadowOffset: {
                         width: 0,
@@ -100,7 +100,7 @@ const Employees = ({ navigation }) => {
                     shadowRadius: 4,
                     elevation: 5,
                 }}>
-                    <View className={`${tailwind.inputs} bg-[#F5F5F5] w-11/12 flex-row justify-between`}>
+                    <View className={`${tailwind.inputs} bg-[${COLORS.whiteSmoke}] w-11/12 flex-row justify-between`}>
                         <Icon name="ios-search" size={20} color="#000" className={`w-1/12`} />
                         <TextInput
                             value={search}

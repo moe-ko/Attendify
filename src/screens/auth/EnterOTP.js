@@ -10,14 +10,14 @@ import {
 import tailwind from '../../constants/tailwind'
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { ROUTES } from '../..';
+import { COLORS, ROUTES } from '../..';
 
 const EnterOTP = ({ navigation }) => {
   resendOTP = () => { };
 
   return (
     <KeyboardAvoidingView>
-      <View className={`${tailwind.containerWrapper}bg-[#ECF0F3] items-center h-full`}>
+      <View className={`${tailwind.containerWrapper}bg-[${COLORS.brightGrey}] items-center h-full`}>
         <View>
           <Pressable onPress={() => navigation.goBack(null)}>
             {/* <SvgIcon icon={'back'} width={30} height={30} />*/}
@@ -42,7 +42,7 @@ const EnterOTP = ({ navigation }) => {
                 pinCount={4}
                 autoFocusOnLoad
                 style={{ width: '80%', height: 70 }}
-                codeInputFieldStyle={{ color: '#62ABEF' }}
+                codeInputFieldStyle={{ color: COLORS.primary }}
                 onCodeFilled={code =>
                   navigation.navigate(ROUTES.RESET_PASS)
                 }

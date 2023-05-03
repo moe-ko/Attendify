@@ -30,7 +30,7 @@ const ForgotPasswordMsg = ({ navigation }) => {
     return (
         <KeyboardAvoidingView behavior="position">
 
-            <View className="bg-[#ECF0F3] mx-5">
+            <View className={`bg-[${COLORS.brightGrey}] mx-5"`}>
                 <View>
                     <View className=" mt-44 mb-9">
                         <Text className={`${tailwind.titleText}`}>Forgot Password?</Text>
@@ -59,7 +59,7 @@ const ForgotPasswordMsg = ({ navigation }) => {
                             />
                         ) : null}
                         {error ? (
-                            <Text className={`${tailwind.slogan} tracking-wide text-red-600 mt-[7]`} > No email found, please try again</Text>
+                            <Text className={`${tailwind.slogan} tracking-wide text-[${COLORS.red}] mt-[7]`} > No email found, please try again</Text>
                         ) : null}
                         <View className="mt-10">
                             <Pressable

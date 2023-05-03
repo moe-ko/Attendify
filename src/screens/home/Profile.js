@@ -219,7 +219,7 @@ const Profile = ({ navigation }) => {
                                 size={130}
                                 rounded
                                 source={{ uri: 'https://media.tenor.com/images/e549f9798674301c5af2c91581194091/tenor.gif' }}
-                                containerStyle={{ backgroundColor: 'white' }}
+                                containerStyle={{ backgroundColor: COLORS.white }}
                             >
                             </Avatar>
                         </> : <>
@@ -228,14 +228,14 @@ const Profile = ({ navigation }) => {
                                 size={130}
                                 rounded
                                 source={{ uri: avatar }}
-                                containerStyle={{ backgroundColor: 'white' }}
+                                containerStyle={{ backgroundColor: COLORS.white }}
                             >
                                 <View style={{
                                     position: 'absolute',
                                     top: 90,
                                     left: 90,
                                     backgroundColor: COLORS.primary,
-                                    color: 'white',
+                                    color: COLORS.white,
                                     borderRadius: 100,
                                     shadowColor: '#000',
                                     shadowOffset: { width: -2, height: 0 },
@@ -243,7 +243,7 @@ const Profile = ({ navigation }) => {
                                     shadowRadius: 2,
                                     elevation: 10,
                                 }} >
-                                    <Avatar size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                    <Avatar size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={COLORS.white} />
                                 </View>
                             </Avatar>
                         </>}
@@ -252,7 +252,7 @@ const Profile = ({ navigation }) => {
                 </View>
                 <View className="pb-4 justify-center items-center">
                     <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E]`}>{name}</Text>
+                        <Text className={`${tailwind.titleText} text-[${COLORS.grey}]`}>{name}</Text>
                     </TouchableOpacity>
                     <Text className={`${tailwind.slogan}`}>{empId}</Text>
                 </View>
@@ -320,7 +320,7 @@ const Profile = ({ navigation }) => {
                             <View style={{
                                 width: '80%',
                                 margin: 20,
-                                backgroundColor: 'white',
+                                backgroundColor: COLORS.white,
                                 borderRadius: 20,
                                 padding: 10,
                                 alignItems: 'center',

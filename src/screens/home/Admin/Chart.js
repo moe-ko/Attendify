@@ -143,6 +143,7 @@ const Chart = ({ navigation }) => {
     ]
 
     const data = [
+
         {
             id: 1,
             name: 'Item 1'
@@ -328,7 +329,7 @@ const Chart = ({ navigation }) => {
         <>
             {eventExist ? (
                 <View>
-                    <View className={`${tailwind.viewWrapper} bg-[#fff] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
+                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.white}] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
                         shadowColor: '#000',
                         shadowOffset: {
                             width: 0,
@@ -374,7 +375,6 @@ const Chart = ({ navigation }) => {
                                 <Icon name={'cloud-download'} size={30} color={COLORS.primary} style={{ marginLeft: 10 }} />
                                 <Text className={`${tailwind.slogan} text-xs text-[${COLORS.grey}]`}>Download</Text>
                             </TouchableOpacity>
-
                         </View>
                     </View>
                     {viewDetails ? (
@@ -420,9 +420,9 @@ const Chart = ({ navigation }) => {
                         }}>
                             <Image source={require('../../../../assets/empty.webp')} style={{ height: 200, width: '100%' }} />
                             <View className={`${tailwind.viewWrapper} px-4`}>
-                                <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No records found</Text>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>No records found</Text>
                                 <View className={`flex-row justify-center items-center`}>
-                                    <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >No records found for {eventDate} </Text>
+                                    <Text className={`${tailwind.slogan} text-[${COLORS.grey}] text-center`} >No records found for {eventDate} </Text>
                                 </View>
                             </View>
                         </View>
@@ -444,13 +444,13 @@ const Chart = ({ navigation }) => {
                     justifyContent: "center",
                     alignItems: "center",
                     height: '100%',
-                    backgroundColor: '#f7fbfe'
+                    backgroundColor: COLORS.lightGreyishBlue
                 }}>
                     <Image source={require('../../../../assets/event-holder.webp')} style={{ height: 200, width: '100%' }} />
                     <View className={`${tailwind.viewWrapper} px-4`}>
-                        <Text className={`${tailwind.titleText} text-[#7E7E7E] text-center`}>No events yet created</Text>
+                        <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>No events yet created</Text>
                         <View className={`flex-row justify-center items-center`}>
-                            <Text className={`${tailwind.slogan} text-[#7E7E7E] text-center`} >Create a new event in the </Text>
+                            <Text className={`${tailwind.slogan} text-[${COLORS.grey}] text-center`} >Create a new event in the </Text>
                             <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.HOME) }}>
                                 <Text className={`${tailwind.slogan} ${tailwind.blueTextLink}`}> Dashboard</Text>
                             </TouchableOpacity>

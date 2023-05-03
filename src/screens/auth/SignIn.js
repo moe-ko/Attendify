@@ -35,7 +35,10 @@ const SignIn = ({ navigation }) => {
                             value={email}
                             placeholder={'Employee ID'}
                             onChangeText={(text) => setEmail(text)}
-                            onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+
+                            // ReferenceError: Property 'handleValidUser' doesn't exist, js engine: hermes
+                            // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
+                            
                             autoCapitalize={'none'}
                             keyboardType={'email-address'}
                             required
@@ -59,8 +62,9 @@ const SignIn = ({ navigation }) => {
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
                             // onPress={() => { signInUser('test@test.com', '123456') }}
-                            // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
-                            onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
+                            // onPress={() => { signInUser('test.test@infosys.com', 'Testtest23') }}
+                            onPress={() => { signInUser('admin@admin.com', 'admin2') }}
+                            // onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
                         // onPress={() => { signInUser(email, password) }}
                         // disabled={(!email.trim() || !password.trim())}
                         >
