@@ -120,7 +120,7 @@ const Event = ({ props }) => {
                                 setLocationName(res)
                             })
                         }
-                        eventTimer(res[0]['end'])
+                        // eventTimer(res[0]['end'])        //timer runtime
                     } else {
                         setCurrentEvent('')
                     }
