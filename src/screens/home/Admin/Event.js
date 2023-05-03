@@ -3,7 +3,7 @@ import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, S
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getEmployeeName, getStatusIcon } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -55,10 +55,11 @@ const Event = ({ props }) => {
     const [inactiveEmps, setInactiveEmps] = useState([])
     const [eventIpAddress, setEventIpAddress] = useState('')
     const [disabled, setDisabled] = useState(true)
-    const [prevEvents, setPrevEvents] = useState()
+    const [prevEvents, setPrevEvents] = useState([])
     const [hasAttendedAs, setHasAttendedAs] = useState('')
     const [icon, setIcon] = useState('')
     const [bgStatus, setBgStatus] = useState(COLORS.primary)
+
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
         getEmployeesByStatus('0').then(res => setInactiveEmps(res))
@@ -87,6 +88,7 @@ const Event = ({ props }) => {
             }
         }, 1000);
     }
+
 
     if (locations == '') {
         getLocations().then(res => {
@@ -118,7 +120,7 @@ const Event = ({ props }) => {
                                 setLocationName(res)
                             })
                         }
-                        // eventTimer(res[0]['end'])
+                        eventTimer(res[0]['end'])
                     } else {
                         setCurrentEvent('')
                     }
@@ -139,7 +141,7 @@ const Event = ({ props }) => {
                             title: docSnapshot.data()['title'],
                             startDate: docSnapshot.data()['start'],
                             totalAttendance: docSnapshot.data()['attendance'].length + docSnapshot.data()['absent'].length + docSnapshot.data()['sick_leave'].length + docSnapshot.data()['annual_leave'].length,
-                            createdBy: docSnapshot.data()['createdBy'],
+                            location: docSnapshot.data()['location'],
                         }
                     ))
                     setPrevEvents(res)
@@ -147,9 +149,7 @@ const Event = ({ props }) => {
             })
     }
 
-    const Item = ({ title, startDate, totalAttendance, createdBy }) => {
-        const [creator, setCreator] = useState('')
-        getEmployeeName(createdBy).then(res => setCreator(res))
+    const Item = ({ title, startDate, totalAttendance, location }) => {
         return (
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
                 <View className={`d-flex flex-row mx-5 my-1 bg-[#fff] rounded-2xl`}>
@@ -164,7 +164,8 @@ const Event = ({ props }) => {
                         <View className={`d-flex flex-row`}>
                             <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.grey} /> {format(new Date(startDate), 'HH:mm')}</Text>
                             <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} /> {totalAttendance}</Text>
-                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E]`}> <Icon name={'person'} size={15} color={COLORS.grey} /> {creator} </Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} />
+                                { }</Text>
                         </View>
                     </View>
                 </View>
@@ -256,7 +257,7 @@ const Event = ({ props }) => {
             handleAttendify(code, eventId)
         }
     }
-    console.log(bgStatus, COLORS.primary)
+
     return (
         <>
             <ScrollView>
@@ -266,7 +267,7 @@ const Event = ({ props }) => {
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
                                     <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 mt-2`}>Latest event</Text>
-                                    <View className={`${tailwind.viewWrapper} bg-[${bgStatus}] rounded-2xl p-6`}>
+                                    <View style={{ backgroundColor: bgStatus }} className={`${tailwind.viewWrapper} rounded-2xl p-6`}>
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
                                                 <Text className={`${tailwind.slogan} text-white text-center text-3xl`}>{currentEvent['title']}</Text>
@@ -276,7 +277,7 @@ const Event = ({ props }) => {
                                                 </View>
                                                 <Text className={`${tailwind.titleText} font-light text-white text-center  text-3xl`}>Session Code:</Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
-                                                <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {currentEvent['end']}</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {hrs}:{mins}:{secs} {currentEvent['end']}</Text>
                                                 {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
                                                     <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
                                                         <Text className={`${tailwind.buttonBlueText}`}>Cancel Event</Text>
@@ -296,7 +297,7 @@ const Event = ({ props }) => {
                                                     <>
                                                         {hasAttended ?
                                                             <>
-                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded as {hasAttendedAs}</Text>
+                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded as {hasAttendedAs == 'attendance' ? 'Attended, thank you for coming!' : hasAttendedAs == 'absent' ? 'Absent, we missed you!' : hasAttendedAs == 'sick_leave' ? 'Sick Leave, get well soon!' : 'Holiday, have a great time!'}</Text>
                                                                 <View className="flex-row align-items-center justify-center">
                                                                     <Avatar size={200} icon={{ name: icon, type: "material" }} />
                                                                 </View>
@@ -436,12 +437,17 @@ const Event = ({ props }) => {
                             </View>
                         ) : null}
                     </View>
-                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5`}>Previous events</Text>
-                    <FlatList
-                        data={prevEvents}
-                        renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} createdBy={item.createdBy} />}
-                        keyExtractor={item => item.id}
-                    />
+                    {prevEvents.length > 0 ? (
+                        <>
+                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5 mt-2`}>Previous events</Text>
+                            <FlatList
+                                data={prevEvents}
+                                renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} />}
+                                keyExtractor={item => item.id}
+                            />
+                        </>
+                    ) : null}
+
                 </KeyboardAvoidingView>
             </ScrollView>
         </>
