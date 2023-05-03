@@ -39,10 +39,10 @@ const Chart = ({ navigation }) => {
     getCurrentEventDate = async () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('end', 'desc')
+            .orderBy('start', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
-                    const res = querySnapshot.docs.map(docSnapshot => ({ key: docSnapshot.data()['end'], value: docSnapshot.data()['end'] }))
+                    const res = querySnapshot.docs.map(docSnapshot => ({ key: docSnapshot.data()['start'], value: docSnapshot.data()['start'] }))
                     if (res.length > 0) {
                         setEventDate(res[0]['key'])
                         setDates(res)
@@ -58,7 +58,7 @@ const Chart = ({ navigation }) => {
     getTotalAttendance = () => {
         const conn = firebase.firestore()
             .collection('events')
-            .where('end', '==', eventDate)
+            .where('start', '==', eventDate)
             .get()
             .then(querySnapshot => {
                 querySnapshot.forEach(documentSnapshot => {
@@ -116,34 +116,14 @@ const Chart = ({ navigation }) => {
     const slPercent = Math.round(sickLeave / totalAssitance * 100)
     const alPercent = Math.round(annualLeave / totalAssitance * 100)
 
-    const statusIcon = (status) => {
-        let icon = ''
-        switch (status) {
-            case 'attendance':
-                icon = 'checkmark'
-                break;
-            case 'absent':
-                icon = 'close'
-                break;
-            case 'sick_leave':
-                icon = 'pulse-outline'
-                break;
-            case 'annual_leave':
-                icon = 'rocket-outline'
-                break;
-        }
-        return icon
-    }
-
     const graphicData = [
-        { x: `${attendPercent}%`, y: attendPercent },
-        { x: `${absentPercent}%`, y: absentPercent },
-        { x: `${slPercent}%`, y: slPercent },
-        { x: `${alPercent}%`, y: alPercent },
+        { x: `${attendPercent}% ✔️`, y: attendPercent },
+        { x: `${absentPercent}% ❌`, y: absentPercent },
+        { x: `${slPercent}% ❤`, y: slPercent },
+        { x: `${alPercent}% ✈️`, y: alPercent },
     ]
 
     const data = [
-
         {
             id: 1,
             name: 'Item 1'

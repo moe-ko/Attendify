@@ -3,7 +3,7 @@ import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, S
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon, finishEvent, getEmployeeName } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -13,24 +13,24 @@ import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { useNavigation } from '@react-navigation/native';
 
-registerTranslation('pl', {
-    save: 'Save',
-    selectSingle: 'Select date',
-    selectMultiple: 'Select dates',
-    selectRange: 'Select period',
-    notAccordingToDateFormat: (inputFormat) =>
-        `Date format must be ${inputFormat}`,
-    mustBeHigherThan: (date) => `Must be later then ${date}`,
-    mustBeLowerThan: (date) => `Must be earlier then ${date}`,
-    mustBeBetween: (startDate, endDate) =>
-        `Must be between ${startDate} - ${endDate}`,
-    dateIsDisabled: 'Day is not allowed',
-    previous: 'Previous',
-    next: 'Next',
-    typeInDate: 'Type in date',
-    pickDateFromCalendar: 'Pick date from calendar',
-    close: 'Close',
-})
+// registerTranslation('pl', {
+//     save: 'Save',
+//     selectSingle: 'Select date',
+//     selectMultiple: 'Select dates',
+//     selectRange: 'Select period',
+//     notAccordingToDateFormat: (inputFormat) =>
+//         `Date format must be ${inputFormat}`,
+//     mustBeHigherThan: (date) => `Must be later then ${date}`,
+//     mustBeLowerThan: (date) => `Must be earlier then ${date}`,
+//     mustBeBetween: (startDate, endDate) =>
+//         `Must be between ${startDate} - ${endDate}`,
+//     dateIsDisabled: 'Day is not allowed',
+//     previous: 'Previous',
+//     next: 'Next',
+//     typeInDate: 'Type in date',
+//     pickDateFromCalendar: 'Pick date from calendar',
+//     close: 'Close',
+// })
 const Event = ({ props }) => {
     const navigation = useNavigation();
     const [locations, setLocations] = useState('');
@@ -69,25 +69,26 @@ const Event = ({ props }) => {
         getPrevEvents()
     }, [permission, eventIpAddress])
 
-    eventTimer = (end) => {
-        const eventExpirationDate = new Date(end)
-        setInterval(() => {
-            const now = new Date().getTime()
-            const timeLeft = eventExpirationDate - now
-            const hrs = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
-            const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
-            setHrs(hrs)
-            setMins(mins)
-            setSecs(secs)
-            if (timeLeft < 0) {
-                clearInterval(eventTimer)
-                setHrs(0)
-                setMins(0)
-                setSecs(0)
-            }
-        }, 1000);
-    }
+    // eventTimer = (end) => {
+    //     console.log('end', end)
+    //     const eventExpirationDate = new Date(end) 
+    //     setInterval(() => {
+    //         const now = new Date().getTime()
+    //         const timeLeft = eventExpirationDate - now
+    //         const hrs = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    //         const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
+    //         const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
+    //         setHrs(hrs)
+    //         setMins(mins)
+    //         setSecs(secs)
+    //         if (timeLeft < 0) {
+    //             clearInterval(eventTimer)
+    //             setHrs(0)
+    //             setMins(0)
+    //             setSecs(0)
+    //         }
+    //     }, 1000);
+    // }
 
 
     if (locations == '') {
@@ -120,7 +121,7 @@ const Event = ({ props }) => {
                                 setLocationName(res)
                             })
                         }
-                        eventTimer(res[0]['end'])
+                        // eventTimer(res[0]['end'])
                     } else {
                         setCurrentEvent('')
                     }
@@ -132,7 +133,7 @@ const Event = ({ props }) => {
         firebase.firestore()
             .collection('events')
             .where('hasEnded', '==', true)
-            .orderBy('end', 'desc')
+            // .orderBy('start', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
@@ -142,6 +143,7 @@ const Event = ({ props }) => {
                             startDate: docSnapshot.data()['start'],
                             totalAttendance: docSnapshot.data()['attendance'].length + docSnapshot.data()['absent'].length + docSnapshot.data()['sick_leave'].length + docSnapshot.data()['annual_leave'].length,
                             location: docSnapshot.data()['location'],
+                            createdBy: docSnapshot.data()['createdBy'],
                         }
                     ))
                     setPrevEvents(res)
@@ -149,7 +151,13 @@ const Event = ({ props }) => {
             })
     }
 
-    const Item = ({ title, startDate, totalAttendance, location }) => {
+    const Item = ({ title, startDate, totalAttendance, createdBy }) => {
+        const [creator, setCreator] = useState('')
+        useEffect(() => {
+            getEmployeeName(createdBy).then(res => setCreator(res))
+        }, [creator])
+
+
         return (
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
                 <View className={`d-flex flex-row mx-5 my-1 bg-[#fff] rounded-2xl`}>
@@ -164,8 +172,6 @@ const Event = ({ props }) => {
                         <View className={`d-flex flex-row`}>
                             <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.grey} /> {format(new Date(startDate), 'HH:mm')}</Text>
                             <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} /> {totalAttendance}</Text>
-                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} />
-                                { }</Text>
                         </View>
                     </View>
                 </View>
@@ -277,11 +283,16 @@ const Event = ({ props }) => {
                                                 </View>
                                                 <Text className={`${tailwind.titleText} font-light text-white text-center  text-3xl`}>Session Code:</Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
-                                                <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {hrs}:{mins}:{secs} {currentEvent['end']}</Text>
+                                                {/* <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {hrs}:{mins}:{secs} {currentEvent['end']}</Text> */}
                                                 {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
-                                                    <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
-                                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel Event</Text>
-                                                    </TouchableOpacity>
+                                                    <>
+                                                        <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { finishEvent(currentEvent['id']), getPrevEvents() }}>
+                                                            <Text className={`${tailwind.buttonBlueText}`}>Finish Event</Text>
+                                                        </TouchableOpacity>
+                                                        <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12 mt-4`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
+                                                            <Text className={`${tailwind.buttonBlueText} text-[#FF0000]`}>Cancel</Text>
+                                                        </TouchableOpacity>
+                                                    </>
                                                 ) : null}
 
                                             </>
@@ -385,7 +396,7 @@ const Event = ({ props }) => {
                                         autoCorrect={false}
                                         placeholderTextColor={COLORS.placeHolder}
                                     />
-                                    <TextInput
+                                    {/* <TextInput
                                         className={`${tailwind.inputs} w-12/12 mb-3`}
                                         value={`From now ${format(new Date(), 'dd-MMM-yy HH:mm')}`}
                                         editable={false}
@@ -426,10 +437,10 @@ const Event = ({ props }) => {
                                             onConfirm={onConfirmTime}
                                             use24HourClock={true}
                                         />
-                                    </View>
+                                    </View> */}
                                     <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email), getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email), getCurrentEvent()
                                         }}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
@@ -442,7 +453,7 @@ const Event = ({ props }) => {
                             <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5 mt-2`}>Previous events</Text>
                             <FlatList
                                 data={prevEvents}
-                                renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} />}
+                                renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} createdBy={item.createdBy} />}
                                 keyExtractor={item => item.id}
                             />
                         </>
