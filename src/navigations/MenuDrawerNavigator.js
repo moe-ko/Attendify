@@ -33,7 +33,9 @@ const MenuDrawerNavigator = () => {
             headerShown: false,
             drawerActiveBackgroundColor: COLORS.white,
             drawerActiveTintColor: COLORS.primary,
-            drawerLabelStyle: { marginLeft: -20 }
+            drawerLabelStyle: { marginLeft: -20 },
+            drawerPosition: 'right' ,    //position right
+            // overlayColor: 'transparent'
         }
     }
     return (
