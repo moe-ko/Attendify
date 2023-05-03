@@ -35,7 +35,11 @@ const MenuDrawerNavigator = () => {
             drawerActiveTintColor: COLORS.primary,
             drawerLabelStyle: { marginLeft: -20 },
             drawerPosition: 'right' ,    //position right
-            // overlayColor: 'transparent'
+            drawerStyle: {      //works on android
+                // width: 225,
+                borderBottomLeftRadius: 30,
+                borderTopLeftRadius: 30
+            }
         }
     }
     return (
