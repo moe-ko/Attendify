@@ -262,7 +262,7 @@ const Event = ({ props }) => {
         <>
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
-                    <View className="items-center px-4 w-full">
+                    <View className="items-center px-4 w-full my-5">
                         {(currentEventVisible && currentEvent) ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
@@ -344,7 +344,7 @@ const Event = ({ props }) => {
                         {/* {(createEventVisible) ? ( */}
                         {(permission == 'Admin' || permission == 'Super Admin') && currentEvent.length == 0 ? (
                             <View className={`${tailwind.viewWrapper}`}>
-                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2  mt-2`}>Create a new session</Text>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2  mt-2 pb-2`}>Create a new session</Text>
                                 <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
                                     <View className={` w-12/12 mb-3`}>
                                         <SelectList

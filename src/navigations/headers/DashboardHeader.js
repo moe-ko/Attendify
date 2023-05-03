@@ -41,7 +41,7 @@ const DashboardHeader = () => {
         }
       }}
     >
-      <Stack.Screen name={ROUTES.HOME} component={Home} options={{ title: `Dashboard` }} />
+      <Stack.Screen name={ROUTES.HOME} component={Home}  options={{ title: `Dashboard`, headerTitleAlign: 'center'}} />
     </Stack.Navigator>
   )
 }

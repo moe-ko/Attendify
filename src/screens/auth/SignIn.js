@@ -58,7 +58,7 @@ const SignIn = ({ navigation }) => {
                     <View className={`${tailwind.viewWrapper}`}>
                         <Text onPress={() => { navigation.navigate(ROUTES.FORGOT_PASS) }} className={`${tailwind.blueTextLink}`}>Forgot Password?</Text>
                     </View>
-                    <View className={`${tailwind.viewWrapper}`}>
+                    <View className={`${tailwind.viewWrapper} my-3`}>
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
                             // onPress={() => { signInUser('test@test.com', '123456') }}
@@ -71,7 +71,7 @@ const SignIn = ({ navigation }) => {
                             <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>
                         </TouchableOpacity>
                     </View>
-                    <View className={`${tailwind.viewWrapper} bottom-0 flex-row justify-center`}>
+                    <View className={`${tailwind.viewWrapper} bottom-0 flex-row justify-center my-3`}>
                         <Text className={`text-right`}>New User? </Text>
                         <TouchableOpacity onPress={() => { navigation.navigate(ROUTES.SIGNUP) }}>
                             <Text className={`${tailwind.blueTextLink}`} > Sign Up here</Text>

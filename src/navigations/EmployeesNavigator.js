@@ -26,6 +26,7 @@ const EmployeesNavigator = () => {
                 options={{
                     headerBackTitleVisible: false,
                     headerTitle: "Search Employees",
+                    headerTitleAlign: 'center',
                     headerRight: () => {
                         return (
                             <TouchableOpacity onPress={() => navigation.openDrawer()}>
