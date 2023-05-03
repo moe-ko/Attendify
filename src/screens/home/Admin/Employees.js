@@ -90,7 +90,7 @@ const Employees = ({ navigation }) => {
     return (
         <SafeAreaView >
             <View className={`bg-[${COLORS.white}]`}>
-                <View className={`${tailwind.viewWrapper} bg-[${COLORS.white}] rounded-b-3xl items-center  py-4 justify-center`} style={{
+                <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center  py-4 justify-center`} style={{
                     shadowColor: '#000',
                     shadowOffset: {
                         width: 0,
@@ -100,7 +100,7 @@ const Employees = ({ navigation }) => {
                     shadowRadius: 4,
                     elevation: 5,
                 }}>
-                    <View className={`${tailwind.inputs} bg-[${COLORS.whiteSmoke}] w-11/12 flex-row justify-between`}>
+                    <View className={`${tailwind.inputs} bg-[#F5F5F5] w-11/12 flex-row justify-between`}>
                         <Icon name="ios-search" size={20} color="#000" className={`w-1/12`} />
                         <TextInput
                             value={search}

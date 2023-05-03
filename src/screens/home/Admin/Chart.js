@@ -309,7 +309,7 @@ const Chart = ({ navigation }) => {
         <>
             {eventExist ? (
                 <View>
-                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.white}] rounded-b-3xl items-center  py-4 px-6 justify-center`} style={{
+                    <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center  py-4 px-6 justify-center `} style={{
                         shadowColor: '#000',
                         shadowOffset: {
                             width: 0,
