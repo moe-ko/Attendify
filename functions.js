@@ -43,14 +43,25 @@ const addEmployeeDetails = (empId, email, name, subunitSelected) => {
             dark_mode: false
         })
 }
-export const fetchUnit = async (subunit_name, id) => {
+export const fetchUnitId = async (id) => {
+    let unit_id = ''
+    await firebase.firestore()
+        .collection('subunits')
+        .doc(id)
+        .get()
+        .then(querySnapshot => {
+            unit_id = `${querySnapshot.data()['unit_id']}`
+        });
+    return unit_id
+}
+export const fetchUnit = async (subunit_name = '', id) => {
     let unit = ''
     await firebase.firestore()
         .collection('units')
         .doc(id)
         .get()
         .then(querySnapshot => {
-            unit = `${querySnapshot.data()['name']}  (${subunit_name})`
+            unit = `${querySnapshot.data()['name']}${subunit_name != '' ? ' (' + subunit_name + ')' : ''}`
         });
     return unit
 }
@@ -81,7 +92,20 @@ export const getEmployeeId = async () => {
         });
     return id
 }
-
+export const getEmployeeName = async (email) => {
+    let name = ''
+    await firebase.firestore()
+        .collection('employees')
+        .where('email', '==', email)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                name = documentSnapshot.data()['full_name']
+                // emp_data.push({ key: `${documentSnapshot.id}` });
+            });
+        });
+    return name
+}
 export const getPermission = async (currentEmail) => {
     let permission = false
     await firebase.firestore()
@@ -121,23 +145,24 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = async (selectedLocation, title, date, time, absent, sick_leave, annual_leave) => {
-    date = format(date, 'yyyy-MM-dd') + ' ' + time
+export const hanldeCreateEvent = async (selectedLocation, title, endDate, endTime, absent, sick_leave, annual_leave, createdBy) => {
+    endDate = format(endDate, 'yyyy-MM-dd') + ' ' + endTime
     await firebase.firestore()
         .collection('events')
         .add({
             start: format(new Date(), "yyyy-MM-dd H:mm"),
-            end: date,
+            end: endDate,
             ip_address: '',
             location: selectedLocation,
             code: generatePasscode(6),
             wifi_name: 'test_wifi',
-            status_id: '1',
             title: title,
             attendance: [],
             absent: absent,
             sick_leave: sick_leave,
             annual_leave: annual_leave,
+            hasEnded: endDate > format(new Date(), "yyyy-MM-dd H:mm") ? false : true,
+            createdBy: createdBy
         })
         .then(() => {
             Alert.alert('Event Created', 'New event has been created', [

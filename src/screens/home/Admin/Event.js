@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform } from 'react-native'
+import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList, Button } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
-import { COLORS } from '../../..'
-import { TimePickerModal, DatePickerModal, registerTranslation } from 'react-native-paper-dates'
+import { COLORS, ROUTES } from '../../..'
+import { TimePickerModal, DatePickerModal, registerTranslation, useTheme } from 'react-native-paper-dates'
+import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
+import { useNavigation } from '@react-navigation/native';
 
 registerTranslation('pl', {
     save: 'Save',
@@ -30,6 +32,7 @@ registerTranslation('pl', {
     close: 'Close',
 })
 const Event = ({ props }) => {
+    const navigation = useNavigation();
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
     const [selectedLocation, setSelectedLocation] = useState('');
@@ -52,6 +55,10 @@ const Event = ({ props }) => {
     const [inactiveEmps, setInactiveEmps] = useState([])
     const [eventIpAddress, setEventIpAddress] = useState('')
     const [disabled, setDisabled] = useState(true)
+    const [prevEvents, setPrevEvents] = useState([])
+    const [hasAttendedAs, setHasAttendedAs] = useState('')
+    const [icon, setIcon] = useState('')
+    const [bgStatus, setBgStatus] = useState(COLORS.primary)
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
@@ -59,6 +66,7 @@ const Event = ({ props }) => {
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
         getEmployeesByStatus('3').then(res => setSickEmps(res))
         getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
+        getPrevEvents()
     }, [permission, eventIpAddress])
 
     eventTimer = (end) => {
@@ -81,6 +89,7 @@ const Event = ({ props }) => {
         }, 1000);
     }
 
+
     if (locations == '') {
         getLocations().then(res => {
             setLocations(res)
@@ -90,7 +99,7 @@ const Event = ({ props }) => {
     const getCurrentEvent = () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('end', 'desc')
+            .where('hasEnded', '==', false)
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
@@ -101,6 +110,7 @@ const Event = ({ props }) => {
                             title: docSnapshot.data()['title'],
                             end: docSnapshot.data()['end'],
                             ip_address: docSnapshot.data()['ip_address'],
+                            createdBy: docSnapshot.data()['createdBy']
                         }
                     ))
                     if (res.length > 0) {
@@ -110,13 +120,58 @@ const Event = ({ props }) => {
                                 setLocationName(res)
                             })
                         }
-                        // eventTimer(res[0]['end'])
+                        eventTimer(res[0]['end'])
                     } else {
                         setCurrentEvent('')
                     }
                 }
             })
     }
+
+    const getPrevEvents = () => {
+        firebase.firestore()
+            .collection('events')
+            .where('hasEnded', '==', true)
+            .orderBy('end', 'desc')
+            .onSnapshot({
+                next: querySnapshot => {
+                    const res = querySnapshot.docs.map(docSnapshot => (
+                        {
+                            id: docSnapshot.id,
+                            title: docSnapshot.data()['title'],
+                            startDate: docSnapshot.data()['start'],
+                            totalAttendance: docSnapshot.data()['attendance'].length + docSnapshot.data()['absent'].length + docSnapshot.data()['sick_leave'].length + docSnapshot.data()['annual_leave'].length,
+                            location: docSnapshot.data()['location'],
+                        }
+                    ))
+                    setPrevEvents(res)
+                }
+            })
+    }
+
+    const Item = ({ title, startDate, totalAttendance, location }) => {
+        return (
+            <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
+                <View className={`d-flex flex-row mx-5 my-1 bg-[#fff] rounded-2xl`}>
+                    <View className={`bg-[${COLORS.primary}] p-1 d-flex justify-center w-2/12 rounded-2xl`}>
+                        <Text className={`font-medium text-3xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'dd')}</Text>
+                        <Text className={`font-medium text-xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'MMM').toUpperCase()}</Text>
+                    </View>
+                    <View className={`py-1 px-2 d-flex justify-center`}>
+                        <View>
+                            <Text className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}> {title}</Text>
+                        </View>
+                        <View className={`d-flex flex-row`}>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.grey} /> {format(new Date(startDate), 'HH:mm')}</Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} /> {totalAttendance}</Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} />
+                                { }</Text>
+                        </View>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        )
+    };
 
     const getAttendance = () => {
         firebase.firestore()
@@ -127,6 +182,20 @@ const Event = ({ props }) => {
                 if (documentSnapshot.data()['attendance'].includes(props.empId) || documentSnapshot.data()['absent'].includes(props.empId) || documentSnapshot.data()['sick_leave'].includes(props.empId) || documentSnapshot.data()['annual_leave'].includes(props.empId)) {
                     setLoading(false)
                     setHasAttended(true)
+                    if (documentSnapshot.data()['attendance'].includes(props.empId)) {
+                        setHasAttendedAs('attendance')
+                        setBgStatus(COLORS.blue900)
+                    } else if (documentSnapshot.data()['absent'].includes(props.empId)) {
+                        setHasAttendedAs('absent')
+                        setBgStatus(COLORS.blueA700)
+                    } else if (documentSnapshot.data()['sick_leave'].includes(props.empId)) {
+                        setHasAttendedAs('sick_leave')
+                        setBgStatus(COLORS.primary)
+                    } else if (documentSnapshot.data()['annual_leave'].includes(props.empId)) {
+                        setHasAttendedAs('annual_leave')
+                        setBgStatus(COLORS.lightblue700)
+                    }
+                    getStatusIcon(hasAttendedAs).then(res => setIcon(res))
                 } else {
                     setLoading(false)
                     setHasAttended(false)
@@ -138,16 +207,6 @@ const Event = ({ props }) => {
 
     if (currentEvent.length == 0) {
         getCurrentEvent()
-    }
-
-    updateStatusEvent = (event_id) => {
-        const subscriber = firebase.firestore()
-            .collection('events')
-            .doc(event_id)
-            .update({
-                status_id: '0',
-            })
-        subscriber();
     }
 
     handleAttendify = (code, eventId) => {
@@ -203,24 +262,28 @@ const Event = ({ props }) => {
         <>
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
-                    <View className="h-screen items-center px-4 w-full">
+                    <View className="items-center px-4 w-full">
                         {(currentEventVisible && currentEvent) ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
-                                    <View className="flex-row align-items-center my-2">
-                                        <Icon name="location-outline" size={20} color={COLORS.primary} className="pr-5" />
-                                        <Text className={`${tailwind.slogan} text-[${COLORS.grey}]`}>{locationName}</Text>
-                                    </View>
-                                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Latest event</Text>
-                                    <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl`}>
+                                    <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 mt-2`}>Latest event</Text>
+                                    <View style={{ backgroundColor: bgStatus }} className={`${tailwind.viewWrapper} rounded-2xl p-6`}>
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
-                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Session Code:</Text>
-                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-center my-3`}>{currentEvent['code']}</Text>
-                                                <Text className={`${tailwind.slogan} text-white text-center  my-3`}>Expire {currentEvent['end']}</Text>
-                                                <TouchableOpacity className={`${tailwind.buttonWhite} w-10/12 m-auto mb-6`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
-                                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                                </TouchableOpacity>
+                                                <Text className={`${tailwind.slogan} text-white text-center text-3xl`}>{currentEvent['title']}</Text>
+                                                <View className="flex-row justify-center  text-center mb-3 ">
+                                                    <Icon name="location-outline" size={20} color={COLORS.white} className="pr-5" />
+                                                    <Text className={`${tailwind.slogan} text-white`}>{locationName}</Text>
+                                                </View>
+                                                <Text className={`${tailwind.titleText} font-light text-white text-center  text-3xl`}>Session Code:</Text>
+                                                <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
+                                                <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {hrs}:{mins}:{secs} {currentEvent['end']}</Text>
+                                                {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
+                                                    <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
+                                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel Event</Text>
+                                                    </TouchableOpacity>
+                                                ) : null}
+
                                             </>
                                         ) : (
                                             <>
@@ -234,20 +297,16 @@ const Event = ({ props }) => {
                                                     <>
                                                         {hasAttended ?
                                                             <>
-                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded successfully</Text>
-                                                                <View className="flex-row align-items-center justify-center my-5">
-                                                                    <Icon
-                                                                        name="checkmark-done"
-                                                                        color='white'
-                                                                        size={100}
-                                                                    />
+                                                                <Text className={`${tailwind.titleText} font-light text-white text-center my-3`}>Attendance recorded as {hasAttendedAs == 'attendance' ? 'Attended, thank you for coming!' : hasAttendedAs == 'absent' ? 'Absent, we missed you!' : hasAttendedAs == 'sick_leave' ? 'Sick Leave, get well soon!' : 'Holiday, have a great time!'}</Text>
+                                                                <View className="flex-row align-items-center justify-center">
+                                                                    <Avatar size={200} icon={{ name: icon, type: "material" }} />
                                                                 </View>
                                                             </>
                                                             :
                                                             <>
                                                                 <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
                                                                 <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
-                                                                <View className={`w-10/12 h-20 m-auto`}>
+                                                                <View className={`w-12/12 h-20 m-auto`}>
                                                                     <OTPInputView
                                                                         pinCount={6}
                                                                         autoFocusOnLoad={false}
@@ -283,11 +342,11 @@ const Event = ({ props }) => {
                             </>
                         ) : null}
                         {/* {(createEventVisible) ? ( */}
-                        {permission == 'Admin' || permission == 'Super Admin' ? (
+                        {(permission == 'Admin' || permission == 'Super Admin') && currentEvent.length == 0 ? (
                             <View className={`${tailwind.viewWrapper}`}>
-                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2`}>Create a new session</Text>
-                                <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl`}>
-                                    <View className={` w-10/12 m-auto mt-5`}>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2  mt-2`}>Create a new session</Text>
+                                <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
+                                    <View className={` w-12/12 mb-3`}>
                                         <SelectList
                                             data={locations}
                                             setSelected={setSelectedLocation}
@@ -319,26 +378,30 @@ const Event = ({ props }) => {
                                         />
                                     </View>
                                     <TextInput
-                                        className={`${tailwind.inputs} w-10/12 m-auto my-3`}
+                                        className={`${tailwind.inputs} w-12/12 mb-3`}
                                         value={title}
                                         placeholder={'Event title'}
                                         onChangeText={(text) => setTitle(text)}
                                         autoCorrect={false}
                                         placeholderTextColor={COLORS.placeHolder}
                                     />
-
-                                    <View className={`${tailwind.viewWrapper} flex-column justify-center items-center mb-5`}>
-                                        <View className={`flex-row justify-between w-10/12`}>
-                                            <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
-                                                <View className="pl-[10] flex-row align-items-center my-2">
+                                    <TextInput
+                                        className={`${tailwind.inputs} w-12/12 mb-3`}
+                                        value={`From now ${format(new Date(), 'dd-MMM-yy HH:mm')}`}
+                                        editable={false}
+                                    />
+                                    <View className={`${tailwind.viewWrapper} flex-column mb-3`}>
+                                        <View className={`flex-row justify-between w-12/12`}>
+                                            <TouchableOpacity className={`bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
+                                                <View className="pl-[10] flex-row align-items-center my-3">
                                                     <Icon name="calendar" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
-                                                    <Text className={`text-[${COLORS.placeHolder}] ml-3 my-auto`}>{date == undefined ? 'Date' : format(date, 'dd-MMM-yy')}</Text>
+                                                    <Text className={`text-[${COLORS.placeHolder}] ml-3 my-auto`}>{date == undefined ? 'Until date' : format(date, 'dd-MMM-yy')}</Text>
                                                 </View>
                                             </TouchableOpacity>
-                                            <TouchableOpacity className={`py-[2] bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
-                                                <View className="pl-[10] flex-row align-items-center my-2">
+                                            <TouchableOpacity className={`bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
+                                                <View className="pl-[10] flex-row align-items-center my-3">
                                                     <Icon name="time" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
-                                                    <Text className={`text-[${COLORS.placeHolder}]  ml-3 my-auto`}>{time == undefined ? 'Time' : time}</Text>
+                                                    <Text className={`text-[${COLORS.placeHolder}]  ml-3 my-auto`}>{time == undefined ? 'Until time' : time}</Text>
                                                 </View>
                                             </TouchableOpacity>
                                         </View>
@@ -349,30 +412,42 @@ const Event = ({ props }) => {
                                             onDismiss={onDismissDate}
                                             date={date}
                                             onConfirm={onConfirmDate}
-                                        // theme={
-                                        //     { colors: { primary: COLORS.primary } }
-                                        // }
+                                            validRange={{
+                                                startDate: new Date()
+                                            }}
+
                                         />
                                         <TimePickerModal
+                                            label='This'
                                             visible={timePickerVisible}
                                             onDismiss={onDismissTime}
-                                            hours={format(new Date, 'H') - 1}
+                                            hours={format(new Date, 'H')}
                                             minutes={format(new Date, 'mm')}
                                             onConfirm={onConfirmTime}
+                                            use24HourClock={true}
                                         />
                                     </View>
-                                </View>
-                                <View className="justify-center items-center">
-                                    <TouchableOpacity className={`${tailwind.buttonBlue} w-80 mb-4`}
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps), getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, date, time, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email), getCurrentEvent()
                                         }}>
-                                        <Text className={`${tailwind.buttonWhiteText}`}>Create Event</Text>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
                         ) : null}
                     </View>
+                    {prevEvents.length > 0 ? (
+                        <>
+                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5 mt-2`}>Previous events</Text>
+                            <FlatList
+                                data={prevEvents}
+                                renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} />}
+                                keyExtractor={item => item.id}
+                            />
+                        </>
+                    ) : null}
+
                 </KeyboardAvoidingView>
             </ScrollView>
         </>

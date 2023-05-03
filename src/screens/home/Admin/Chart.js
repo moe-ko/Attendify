@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image } from 'react-native'
+import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image, StyleSheet } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
 import { COLORS, ROUTES } from '../../..'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { setDate } from 'date-fns'
-import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
-import { arrayUnion } from 'firebase/firestore'
 import tailwind from '../../../constants/tailwind'
+import * as FileSystem from 'expo-file-system'
+import { shareAsync } from 'expo-sharing'
+import * as Print from 'expo-print';
+import BoxInfo from '../../../components/BoxInfo'
+import EmployeeItem from '../../../components/EmployeeItem'
 
 const Chart = ({ navigation }) => {
     const [eventDate, setEventDate] = useState('')
@@ -21,10 +23,8 @@ const Chart = ({ navigation }) => {
     const [viewDetails, setViewDetails] = useState(false)
     const [clear, setClear] = useState([])
     const [dates, setDates] = useState()
-    const [employeeSelected, setEmployeeSelected] = useState('')
-    const [currentStatus, setCurrentStatus] = useState('')
-    const [isVisible, setIsVisible] = useState(false);
     const [eventExist, setEventExist] = useState(true)
+
     let employees = clear
 
     useEffect(() => {
@@ -34,6 +34,7 @@ const Chart = ({ navigation }) => {
             getTotalAttendance()
         }
     }, [eventDate])
+
 
     getCurrentEventDate = async () => {
         firebase.firestore()
@@ -97,10 +98,18 @@ const Chart = ({ navigation }) => {
             .collection('employees')
             .doc(id)
             .onSnapshot(documentSnapshot => {
-                employees.push({ id: id, name: `${documentSnapshot.data()['full_name']}`, avatar: `${documentSnapshot.data()['avatar']}`, status: status })
+                employees.push({
+                    id: id,
+                    email: `${documentSnapshot.data()['email']}`,
+                    name: `${documentSnapshot.data()['full_name']}`,
+                    avatar: `${documentSnapshot.data()['avatar']}`,
+                    subunit: documentSnapshot.data()['subunit_id'],
+                    status: status
+                })
             });
         return () => subscriber();
     }
+
 
     const attendPercent = Math.round(attend / totalAssitance * 100)
     const absentPercent = Math.round(absent / totalAssitance * 100)
@@ -133,139 +142,188 @@ const Chart = ({ navigation }) => {
         { x: `${alPercent}%`, y: alPercent },
     ]
 
-    Item = ({ id, name, avatar, status }) => {
-        return (
-            <ListItem.Swipeable bottomDivider rightWidth={90} minSlideWidth={10} rightContent={() => (
-                <TouchableOpacity
-                    style={{ flexDirection: 'column', justifyContent: 'center', alignItems: 'center', display: 'flex', backgroundColor: COLORS.primary, height: '100%' }}
-                    onPress={() => { setIsVisible(true), setEmployeeSelected(id), setCurrentStatus(status) }}>
-                    <Icon name="ellipsis-horizontal" size={30} color={COLORS.white} />
-                    <Text style={{ color: COLORS.white, fontSize: 20, fontWeight: 'bold' }}>More</Text>
-                </TouchableOpacity>
-            )}>
-                <Avatar rounded size={50} source={{ uri: `${avatar}` }} />
-                <ListItem.Content>
-                    <ListItem.Title className={`${tailwind.titleText} font-medium text-xl text-[${COLORS.grey}]`}>{name}</ListItem.Title>
-                    <ListItem.Subtitle className={`${tailwind.slogan} text-base text-[${COLORS.grey}]`}>{id}</ListItem.Subtitle>
-                </ListItem.Content>
-                <Icon name={statusIcon(status)} size={30} color={COLORS.primary} />
-                <ListItem.Chevron />
-            </ListItem.Swipeable>
-        )
-    }
+    const data = [
 
-    BoxInfo = ({ bg, label, status }) => (
-        <View style={{ flex: 1, flexWrap: 'wrap', flexDirection: 'column', display: 'flex', width: '100%' }}>
-            <View style={{ width: '90%', padding: 2, borderRadius: 4, marginTop: 8, backgroundColor: `${bg}`, alignItems: 'center', }}>
-                <Icon name={statusIcon(status)} size={20} color={COLORS.secondary} fontWeight='bold' />
-                <Text style={{ fontSize: 16, fontWeight: 600, text: 'center', color: COLORS.secondary }}>
-                    {label}
-                </Text>
-            </View>
-        </View>
-    );
-
-    const bottomSheetList = [
         {
-            title: 'Attend',
-            icon: statusIcon('attendance'),
-            containerStyle: { backgroundColor: currentStatus == 'attendance' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, borderTopLeftRadius: 20, borderTopRightRadius: 20 },
-            onPress: () => { currentStatus == 'attendance' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'attendance') }
+            id: 1,
+            name: 'Item 1'
         },
         {
-            title: 'Absent',
-            icon: statusIcon('absent'),
-            containerStyle: { backgroundColor: currentStatus == 'absent' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
-            onPress: () => { currentStatus == 'absent' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'absent') }
+            id: 2,
+            name: 'Item 2'
         },
         {
-            title: 'Sick',
-            icon: statusIcon('sick_leave'),
-            containerStyle: { backgroundColor: currentStatus == 'sick_leave' ? COLORS.lightblue500 : 'white', marginHorizontal: 15 },
-            onPress: () => { currentStatus == 'sick_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'sick_leave') }
-        },
-        {
-            title: 'Holiday',
-            icon: statusIcon('annual_leave'),
-            containerStyle: { backgroundColor: currentStatus == 'annual_leave' ? COLORS.lightblue500 : 'white', marginHorizontal: 15, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 },
-            onPress: () => { currentStatus == 'annual_leave' ? '' : updateEmployeeStatus(employeeSelected, currentStatus, 'annual_leave') }
-        },
-        { title: 'Cancel', icon: 'arrow-down', containerStyle: { marginBottom: 30, padding: 20, marginHorizontal: 15, borderRadius: 20 }, onPress: () => setIsVisible(false) },
+            id: 3,
+            name: 'Item 3'
+        }
     ];
 
-    updateEmployeeStatus = (employeeSelected, currentStatus, newStatus) => {
-        firebase.firestore()
-            .collection('events')
-            .where('end', '==', eventDate)
-            .get()
-            .then(querySnapshot => {
-                querySnapshot.forEach(documentSnapshot => {
-                    let employees = []
-                    switch (currentStatus) {
-                        case 'attendance':
-                            employees = documentSnapshot.data()['attendance']
-                            break;
-                        case 'absent':
-                            employees = documentSnapshot.data()['absent']
-                            break;
-                        case 'sick_leave':
-                            employees = documentSnapshot.data()['sick_leave']
-                            break;
-                        case 'annual_leave':
-                            employees = documentSnapshot.data()['annual_leave']
-                            break;
+    const generatePDF = async () => {
+        const array = employees
+        var table = ''
+        const statusInfo = (status) => {
+            switch (status) {
+                case 'attendance': case '0':
+                    return [COLORS.blue900, 'Attend']
+                case 'absent': case '1':
+                    return [COLORS.blueA700, 'Absent']
+                case 'sick_leave': case '2':
+                    return [COLORS.primary, 'Sick Leave']
+                case 'annual_leave': case '3':
+                    return [COLORS.lightblue700, 'Annual Leave']
+            }
+        }
+        for (let i in array) {
+            table = table + `
+            <tr>
+            <td>${array[i]['id']}</td>
+            <td>${array[i]['name']}</td> 
+            <td>${array[i]['email']}</td> 
+            <td style="font-weight:bold; color:white; background-color:${statusInfo(array[i]['status'])[0]}">${statusInfo(array[i]['status'])[1]}</td>
+            </tr>`
+        }
+
+        let gData = ''
+        for (let i in graphicData) {
+            if (graphicData[i]['y'] > 0) {
+                gData = gData + `{
+                    y: ${graphicData[i]['y']}, 
+                    label: "${statusInfo(i)[1]}",
+                    color:"${statusInfo(i)[0]}"
+                },`
+            }
+        }
+        const html = `
+                <html>
+                <head>
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+                    <style>
+                        h1{
+                            font-size: 40px; 
+                            font-family: Helvetica Neue; 
+                            font-weight: bold; 
+                            color: #62ABEF;
+                            margin: 0;
+                        }
+                        h3{
+                            font-size: 30px; 
+                            font-family: Helvetica Neue; 
+                            font-weight: light; 
+                            color: #7E7E7E;
+                            margin: 0;
+                        }
+                        h6{
+                            font-size: 15px; 
+                            font-family: Helvetica Neue; 
+                            font-weight: light; 
+                            color: black;
+                            margin: 0;
+                        }
+                        .styled-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin: 25px 0;
+                            font-size: 1em;
+                            font-family: sans-serif;
+                            min-width: 400px; 
+                        }
+                        th{ 
+                            background-color: #62ABEF;
+                            border: 1px solid #DDDDDD;
+                            font-weight: bold;
+                            text-align: center;
+                            color: white;
+                            font-size: 20px; 
+                        }  
+                        tbody tr{
+                           font-size: 16px; 
+                        }
+                        tbody tr:nth-of-type(even) {
+                            background-color: rgba(0, 0, 0, 0.12);
+                        }
+                    </style>
+                    <script>
+                        window.onload = function() {
+                        var chart = new CanvasJS.Chart("chartContainer", {
+                            animationEnabled: false,
+                            data: [{
+                                type: "pie",
+                                startAngle: 240,
+                                yValueFormatString: "##0.00\"%\"",
+                                indexLabel: "{label} {y}%",
+                                indexLabelPlacement: "inside", 
+                                indexLabelFontColor:"white",
+                                indexLabelFontWeight: "bold",
+                                dataPoints: [${gData}]
+                            }]
+                        });
+                        chart.render();
                     }
-                    let index = employees.indexOf(employeeSelected)
-                    employees.splice(index, 1)
-                    updateStatus(currentStatus, documentSnapshot.id, employees, employeeSelected, newStatus)
-                });
-            });
+                    </script>
+                </head>
+                <body>
+                    <div style="display: flex; flex-direction: row;">
+                        <div style="width:40%; justify-content: center;">
+                            <h1>Attendify</h1>
+                            <h3>Event report</h3>
+                            <h6>Date: ${eventDate}</h6>
+                        </div>
+                        <div style="width:60%">
+                            <div id="chartContainer" style="height: 370px; width:100%;"></div>
+                        </div> 
+                    </div>
+                    <table class="styled-table">
+                        <thead>
+                            <tr>
+                                <th>Employee Id</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>${eventDate}</th>
+                            </tr>
+                        </th>
+                        <tbody>${table}</tbody> 
+                    </table>
+                    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"> </script>
+                </body>
+                </html>
+                `;
+
+        // On iOS/android prints the given html. On web prints the HTML from the current page.
+        const { uri } = await Print.printToFileAsync({
+            html,
+            margins: {
+                left: 20,
+                top: 50,
+                right: 20,
+                bottom: 100,
+            },
+        });
+
+        const pdfName = `${uri.slice(
+            0,
+            uri.lastIndexOf('/') + 1
+        )}attendify_event_${eventDate.split(" ").join("_").split(":").join("-")}.pdf`
+
+        await FileSystem.moveAsync({
+            from: uri,
+            to: pdfName,
+        })
+
+        await shareAsync(pdfName)
+        // console.log(uri)
+        // Alert.alert('Successfuly saved'[
+        //     { text: 'Cancel', style: 'cancel' },
+        //     { text: 'Open', onPress: () => openFile(uri) }
+        // ])
     }
 
-    updateStatus = (currentStatus, id, newArray, employeeSelected, newStatus) => {
-        let query = ''
-        let union = arrayUnion(employeeSelected)
-        switch (currentStatus) {
-            case 'attendance':
-                query = { attendance: newArray }
-                break;
-            case 'absent':
-                query = { absent: newArray }
-                break;
-            case 'sick_leave':
-                query = { sick_leave: newArray }
-                break;
-            case 'annual_leave':
-                query = { annual_leave: newArray }
-                break;
-        }
-        changeStatus(id, query)
-        switch (newStatus) {
-            case 'attendance':
-                query = { attendance: union }
-                break;
-            case 'absent':
-                query = { absent: union }
-                break;
-            case 'sick_leave':
-                query = { sick_leave: union }
-                break;
-            case 'annual_leave':
-                query = { annual_leave: union }
-                break;
-        }
-        changeStatus(id, query)
-        setIsVisible(false)
-    }
-
-    changeStatus = (id, query) => {
-        firebase.firestore()
-            .collection('events')
-            .doc(id)
-            .update(
-                query
-            )
-    }
+    // const openFile = (filepath) => {
+    //     const path = FileViewer.open(filepath) // absolute-path-to-my-local-file.
+    //         .then(() => { 
+    //         })
+    //         .catch((error) => { 
+    //         });
+    // }
 
     return (
         <>
@@ -281,58 +339,75 @@ const Chart = ({ navigation }) => {
                         shadowRadius: 4,
                         elevation: 5,
                     }}>
-                        <View className={` w-screen px-3`}>
-                            <SelectList
-                                data={dates}
-                                setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
-                                placeholder={eventDate}
-                                placeholderTextColor={COLORS.placeHolder}
-                                inputStyles={{
-                                    color: "#666",
-                                    padding: 7,
-                                    margin: 0,
-                                }}
-                                boxStyles={{
-                                    borderRadius: 20,
-                                    color: 'black',
-                                    backgroundColor: COLORS.whiteSmoke,
-                                    borderColor: 'white',
-                                }}
-                                dropdownStyles={{
-                                    borderWidth: 0,
-                                    borderRadius: 4,
-                                    borderColor: COLORS.lightGrey,
-                                    backgroundColor: COLORS.lightGrey,
-                                    color: COLORS.white,
-                                    marginLeft: 5,
-                                    marginRight: 5,
-                                    marginBottom: 5,
-                                    marginTop: 0,
-                                    position: 'relative'
-                                }}
-                            />
+                        <View className={`w-screen px-3 d-flex flex-row justify-between`}>
+                            <View className={`w-10/12 `}>
+                                <SelectList
+                                    data={dates}
+                                    setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
+                                    placeholder={eventDate}
+                                    placeholderTextColor='#726F6F'
+                                    inputStyles={{
+                                        color: "#666",
+                                        padding: 2,
+                                        margin: 0,
+                                    }}
+                                    boxStyles={{
+                                        borderRadius: 20,
+                                        color: 'black',
+                                        backgroundColor: '#F5F5F5',
+                                        borderColor: 'white',
+                                    }}
+                                    dropdownStyles={{
+                                        borderWidth: 0,
+                                        borderRadius: 4,
+                                        borderColor: '#DDDDDD',
+                                        backgroundColor: '#DDDDDD',
+                                        color: '#fff',
+                                        marginLeft: 5,
+                                        marginRight: 5,
+                                        marginBottom: 5,
+                                        marginTop: 0,
+                                        position: 'relative',
+                                    }}
+                                />
+                            </View>
+                            <TouchableOpacity onPress={generatePDF} >
+                                <Icon name={'cloud-download'} size={30} color={COLORS.primary} style={{ marginLeft: 10 }} />
+                                <Text className={`${tailwind.slogan} text-xs text-[${COLORS.grey}]`}>Download</Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                     {viewDetails ? (
                         <>
                             <ScrollView>
-                                <VictoryPie
-                                    data={graphicData}
-                                    width={Dimensions.get('window').width}
-                                    style={{ width: '100%', labels: { fill: "white", fontSize: 20, fontWeight: "light" } }}
-                                    labelRadius={({ innerRadius }) => innerRadius + 60}
-                                    innerRadius={20}
-                                    colorScale={[COLORS.primary, COLORS.lightblue700, COLORS.lightblue600, COLORS.lightblue500]}
-                                />
-                                <View style={{ flex: 1, paddingHorizontal: 10, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
-                                    <BoxInfo bg={COLORS.primary} label='Attend' status='attendance' />
-                                    <BoxInfo bg={COLORS.lightblue700} label='Absent' status='absent' />
-                                    <BoxInfo bg={COLORS.lightblue600} label='Sick' status='sick_leave' />
-                                    <BoxInfo bg={COLORS.lightblue500} label='Holiday' status='annual_leave' />
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] ml-5`}>Graphic Report</Text>
+                                <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5`}>{eventDate}</Text>
+                                <View style={{ flex: 1, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
+                                    <View style={{ width: '80%', flexDirection: 'row', alignContent: 'center', }}>
+                                        <VictoryPie
+                                            data={graphicData}
+                                            width={300}
+                                            height={300}
+                                            padding={5}
+                                            margin={0}
+                                            style={{ labels: { fill: "white", fontSize: 20, fontWeight: "light" } }}
+                                            labelRadius={({ innerRadius }) => innerRadius + 40}
+                                            innerRadius={30}
+                                            colorScale={[COLORS.blue900, COLORS.blueA700, COLORS.primary, COLORS.lightblue700]}
+                                        />
+                                    </View>
+                                    <View style={{ width: '20%', display: 'flex', justifyContent: 'center' }}>
+                                        <BoxInfo props={{ bg: COLORS.blue900, label: 'Attend', status: 'attendance' }} />
+                                        <BoxInfo props={{ bg: COLORS.blueA700, label: 'Absent', status: 'absent' }} />
+                                        <BoxInfo props={{ bg: COLORS.primary, label: 'Sick', status: 'sick_leave' }} />
+                                        <BoxInfo props={{ bg: COLORS.lightblue700, label: 'Holiday', status: 'annual_leave' }} />
+                                    </View>
                                 </View>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] ml-5`}>Assistance</Text>
+                                <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5 mb-5`}>Employees</Text>
                                 <FlatList marginBottom={100}
                                     data={employees}
-                                    renderItem={({ item }) => <Item id={item.id} name={item.name} avatar={item.avatar} status={item.status} />}
+                                    renderItem={({ item }) => <EmployeeItem props={{ id: item.id, name: item.name, avatar: item.avatar, status: item.status, event: eventDate }} />}
                                     keyExtractor={item => item.id}
                                 />
                             </ScrollView>
@@ -352,7 +427,7 @@ const Chart = ({ navigation }) => {
                             </View>
                         </View>
                     }
-                    <BottomSheet isVisible={isVisible}>
+                    {/* <BottomSheet isVisible={isVisible}>
                         {bottomSheetList.map((l, i) => (
                             <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
                                 <Icon name={l.icon} size={30} color={COLORS.primary} />
@@ -361,7 +436,7 @@ const Chart = ({ navigation }) => {
                                 </ListItem.Content>
                             </ListItem>
                         ))}
-                    </BottomSheet>
+                    </BottomSheet> */}
                 </View >
             ) :
                 <View style={{
@@ -386,5 +461,12 @@ const Chart = ({ navigation }) => {
         </>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 24,
+    },
+});
 
 export default Chart
