@@ -65,7 +65,7 @@ const Event = ({ props }) => {
         getEmployeesByStatus('0').then(res => setInactiveEmps(res))
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
         getEmployeesByStatus('3').then(res => setSickEmps(res)) 
-        getEventIpAddress(currentEvent['id']).then(res => console.log(res))
+        getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
         getPrevEvents()
     }, [permission, eventIpAddress])
 
@@ -253,6 +253,7 @@ const Event = ({ props }) => {
     }
 
     const checkEventIp = (code, eventId, eventIp, eventLoc, currentIp) => {
+        console.log('id',eventId)
         if (locationName != 'Online' && eventIpAddress != currentEvent['ip_address']) {
             Alert.alert('Check your connection', 'Please connect to the same Manager wifi network and try again', [
                 {
@@ -332,13 +333,12 @@ const Event = ({ props }) => {
 
                                                                         }}
                                                                         codeInputHighlightStyle={{ borderColor: COLORS.secondary }}
-                                                                        onCodeFilled={code => { setCode(code), setDisabled(!disabled) }}
+                                                                        onCodeFilled={code => { setCode(code) }}
                                                                     />
                                                                 </View>
                                                                 <TouchableOpacity
                                                                     className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`}
-                                                                    onPress={() => { checkEventIp(code, currentEvent['id']) }}
-                                                                    disabled={disabled}
+                                                                    onPress={() => { checkEventIp(code, currentEvent['id']) }} 
                                                                 >
                                                                     <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
                                                                 </TouchableOpacity>

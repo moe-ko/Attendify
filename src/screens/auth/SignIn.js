@@ -62,10 +62,10 @@ const SignIn = ({ navigation }) => {
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
                             // onPress={() => { signInUser('test@test.com', '123456') }}
-                            // onPress={() => { signInUser('test.test@infosys.com', 'Testtest23') }}
+                            onPress={() => { signInUser('test.test@infosys.com', 'Testtest23') }}
                             // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
                             // onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
-                        onPress={() => { signInUser(email, password) }}
+                        // onPress={() => { signInUser(email, password) }}
                         // disabled={(!email.trim() || !password.trim())}
                         >
                             <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>
