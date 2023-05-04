@@ -286,10 +286,10 @@ const Profile = ({ navigation }) => {
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <ItemContent title={'Status'} data={status} iconName={statusIcon} />
                     </ListItem>
-                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                        <ItemContent title={'Dark Mode'} data={'Off'} iconName={'visibility'} />
-                        {/* <ListItem.Chevron /> */}
-                    </ListItem>
+                    {/* <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                        <ItemContent title={'Dark Mode'} data={'Off'} iconName={'visibility'} /> */}
+                    {/* <ListItem.Chevron /> */}
+                    {/* </ListItem> */}
                     <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
                             <ItemContent title={'Password'} data={'**********'} iconName={'lock'} />

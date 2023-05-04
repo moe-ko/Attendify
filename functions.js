@@ -145,30 +145,27 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = async (selectedLocation, title, endDate, endTime, absent, sick_leave, annual_leave, createdBy) => {
-    endDate = format(endDate, 'yyyy-MM-dd') + ' ' + endTime
-    await firebase.firestore()
+export const hanldeCreateEvent = (selectedLocation, title, absent, sick_leave, annual_leave, createdBy) => {
+    firebase.firestore()
         .collection('events')
         .add({
             start: format(new Date(), "yyyy-MM-dd H:mm"),
-            end: endDate,
             ip_address: '',
             location: selectedLocation,
             code: generatePasscode(6),
-            wifi_name: 'test_wifi',
             title: title,
             attendance: [],
             absent: absent,
             sick_leave: sick_leave,
             annual_leave: annual_leave,
-            hasEnded: endDate > format(new Date(), "yyyy-MM-dd H:mm") ? false : true,
+            hasEnded: false,
             createdBy: createdBy
         })
-        .then(() => {
-            Alert.alert('Event Created', 'New event has been created', [
-                { text: 'Ok' },
-            ]);
-        })
+    // .then(() => {
+    //     Alert.alert('Event Created', 'New event has been created', [
+    //         { text: 'Ok' },
+    //     ]);
+    // })
 }
 export const alertCancelEvent = (id) => {
     Alert.alert('Cancel Event', 'Are you sure you want to cancel this event?', [
@@ -335,4 +332,18 @@ export const getEventIpAddress = async (event_id) => {
             res = documentSnapshot.data()['ip_address']
         });
     return res
+}
+
+export const finishEvent = async (id) => {
+    firebase.firestore()
+        .collection('events')
+        .doc(id)
+        .update({
+            hasEnded: true,
+        })
+        .then(() => {
+            Alert.alert('Event has finish', 'This is event has finished', [
+                { text: 'Ok' },
+            ]);
+        })
 }
