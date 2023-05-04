@@ -25,6 +25,7 @@ const AboutHeader = ({ navigation }) => {
       <Stack.Screen name={ROUTES.ABOUT} component={About}
         options={{
           headerBackTitleVisible: true,
+          headerTitleAlign: 'center',
           headerLeft: () => {
             return (
               <TouchableOpacity onPress={() => navigation.goBack()}>

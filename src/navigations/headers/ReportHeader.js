@@ -41,7 +41,7 @@ const ReportHeader = () => {
         }
       }}
     >
-      <Stack.Screen name={ROUTES.CHART} component={Chart} options={{ title: `Report` }} />
+      <Stack.Screen name={ROUTES.CHART} component={Chart} options={{ title: `Report`, headerTitleAlign: 'center'}} />
     </Stack.Navigator>
   )
 }

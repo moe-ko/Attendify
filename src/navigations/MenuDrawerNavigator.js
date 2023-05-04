@@ -33,7 +33,14 @@ const MenuDrawerNavigator = () => {
             headerShown: false,
             drawerActiveBackgroundColor: COLORS.white,
             drawerActiveTintColor: COLORS.primary,
-            drawerLabelStyle: { marginLeft: -20 }
+            drawerLabelStyle: { marginLeft: -20 },
+            drawerPosition: 'right' ,    //position right
+            drawerType: 'front',    // now work on IOS cuzof this line need to added
+            drawerStyle: {      //works on android
+                // width: 225,
+                borderBottomLeftRadius: 30,
+                borderTopLeftRadius: 30
+            }
         }
     }
     return (
