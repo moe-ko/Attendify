@@ -31,7 +31,7 @@ import { useNavigation } from '@react-navigation/native';
 //     pickDateFromCalendar: 'Pick date from calendar',
 //     close: 'Close',
 // })
-const Event = ({ props }) => {
+const Event = ({ props }) => { 
     const navigation = useNavigation();
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
@@ -64,8 +64,8 @@ const Event = ({ props }) => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
         getEmployeesByStatus('0').then(res => setInactiveEmps(res))
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
-        getEmployeesByStatus('3').then(res => setSickEmps(res))
-        getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
+        getEmployeesByStatus('3').then(res => setSickEmps(res)) 
+        getEventIpAddress(currentEvent['id']).then(res => console.log(res))
         getPrevEvents()
     }, [permission, eventIpAddress])
 
@@ -440,7 +440,7 @@ const Event = ({ props }) => {
                                     </View> */}
                                     <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email), getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email, props.ipAddress), getCurrentEvent()
                                         }}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
