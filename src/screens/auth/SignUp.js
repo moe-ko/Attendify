@@ -120,16 +120,15 @@ const SignUp = ({ navigation }) => {
                             }}
                             boxStyles={{
                                 borderRadius: 15,
-
                                 borderColor: COLORS.white,
                                 color: COLORS.white,
                                 backgroundColor: COLORS.white
                             }}
                             dropdownStyles={{
                                 borderWidth: 1,
-                                borderRadius: 4,
+                                borderRadius: 10,
                                 borderColor: COLORS.lightGrey,
-                                backgroundColor: COLORS.lightGrey,
+                                backgroundColor: COLORS.lightGreyishBlue,
                                 color: COLORS.white,
                                 marginLeft: 5,
                                 marginRight: 5,
@@ -159,9 +158,9 @@ const SignUp = ({ navigation }) => {
                             }}
                             dropdownStyles={{
                                 borderWidth: 1,
-                                borderRadius: 4,
+                                borderRadius: 10,
                                 borderColor: COLORS.lightGrey,
-                                backgroundColor: COLORS.lightGrey,
+                                backgroundColor: COLORS.lightGreyishBlue,
                                 color: COLORS.white,
                                 marginLeft: 5,
                                 marginRight: 5,
