@@ -72,7 +72,7 @@ const SignUp = ({ navigation }) => {
     };
 
     return (
-        <ScrollView>
+        <ScrollView scrollEnabled="false">
             <View className="h-screen items-center p-5 w-full my-6">
                 <View className={`${tailwind.viewWrapper} pb-6`}>
                     <Text className={`${tailwind.titleText} pb-3`}>Let's sign you up</Text>

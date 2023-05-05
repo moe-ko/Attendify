@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
     Text,
     View,
-    StyleSheet,
     TextInput,
     KeyboardAvoidingView,
     Pressable
@@ -30,9 +29,9 @@ const ForgotPasswordMsg = ({ navigation }) => {
     return (
         <KeyboardAvoidingView behavior="position">
 
-            <View className={`bg-[${COLORS.brightGrey}] mx-5"`}>
+            <View className={`${tailwind.container} h-screen`}>
                 <View>
-                    <View className=" mt-44 mb-9">
+                    <View className="mt-44 mb-9">
                         <Text className={`${tailwind.titleText}`}>Forgot Password?</Text>
                     </View>
                     <View>
@@ -73,7 +72,7 @@ const ForgotPasswordMsg = ({ navigation }) => {
                     </View>
                 </View>
             </View>
-        </KeyboardAvoidingView >
+        </KeyboardAvoidingView>
     );
 }
 

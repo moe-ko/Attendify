@@ -7,7 +7,7 @@ import { ScrollView } from 'react-native-gesture-handler'
 
 const Welcome = ({ navigation }) => {
     return (
-        <ScrollView>
+        <View>
             <ImageBackground source={require("../../assets/pic1.png")} className="h-full">
                 <View className="flex-1 justify-center items-center pt-[450]">
                     <View className=" justfy-center items-center" >
@@ -41,7 +41,7 @@ const Welcome = ({ navigation }) => {
                     </View>
                 </View>
             </ImageBackground>
-        </ScrollView>
+        </View>
     )
 }
 const style = StyleSheet.create({
