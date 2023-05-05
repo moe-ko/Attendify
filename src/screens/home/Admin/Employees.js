@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Text, SafeAreaView, View, FlatList, TextInput, TouchableOpacity } from 'react-native'
 import { firebase } from '../../../../config'
-import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
+import { ListItem, Avatar } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 import tailwind from '../../../constants/tailwind';
 import { ScrollView } from 'react-native-gesture-handler';

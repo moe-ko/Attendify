@@ -145,11 +145,12 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = (selectedLocation, title, absent, sick_leave, annual_leave, createdBy, ipAddress) => {
+export const hanldeCreateEvent = (selectedLocation, title, absent, sick_leave, annual_leave, createdBy, ipAddress, timerSelected) => {
     firebase.firestore()
         .collection('events')
         .add({
             start: format(new Date(), "yyyy-MM-dd H:mm"),
+            end: (new Date().getTime() / 1000) + timerSelected,
             ip_address: ipAddress,
             location: selectedLocation,
             code: generatePasscode(6),

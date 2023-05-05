@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList, Button } from 'react-native'
+import { View, Text, Alert, TextInput, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList, Button } from 'react-native'
 import { firebase } from '../../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
@@ -12,6 +12,8 @@ import { TimePickerModal, DatePickerModal, registerTranslation, useTheme } from 
 import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { useNavigation } from '@react-navigation/native';
+import RNPickerSelect from 'react-native-picker-select';
+import CountDown from 'react-native-countdown-component';
 
 // registerTranslation('pl', {
 //     save: 'Save',
@@ -31,7 +33,7 @@ import { useNavigation } from '@react-navigation/native';
 //     pickDateFromCalendar: 'Pick date from calendar',
 //     close: 'Close',
 // })
-const Event = ({ props }) => { 
+const Event = ({ props }) => {
     const navigation = useNavigation();
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState('')
@@ -59,37 +61,18 @@ const Event = ({ props }) => {
     const [hasAttendedAs, setHasAttendedAs] = useState('')
     const [icon, setIcon] = useState('')
     const [bgStatus, setBgStatus] = useState(COLORS.primary)
+    const [timer, setTimer] = useState(null)
+    const [timerSelected, setTimerSelected] = useState(null)
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
         getEmployeesByStatus('0').then(res => setInactiveEmps(res))
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
-        getEmployeesByStatus('3').then(res => setSickEmps(res)) 
+        getEmployeesByStatus('3').then(res => setSickEmps(res))
         getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
         getPrevEvents()
+
     }, [permission, eventIpAddress])
-
-    // eventTimer = (end) => {
-    //     console.log('end', end)
-    //     const eventExpirationDate = new Date(end) 
-    //     setInterval(() => {
-    //         const now = new Date().getTime()
-    //         const timeLeft = eventExpirationDate - now
-    //         const hrs = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    //         const mins = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60))
-    //         const secs = Math.floor((timeLeft % (1000 * 60)) / 1000)
-    //         setHrs(hrs)
-    //         setMins(mins)
-    //         setSecs(secs)
-    //         if (timeLeft < 0) {
-    //             clearInterval(eventTimer)
-    //             setHrs(0)
-    //             setMins(0)
-    //             setSecs(0)
-    //         }
-    //     }, 1000);
-    // }
-
 
     if (locations == '') {
         getLocations().then(res => {
@@ -121,13 +104,20 @@ const Event = ({ props }) => {
                                 setLocationName(res)
                             })
                         }
-                        // eventTimer(res[0]['end'])        //timer runtime
+                        checkTimer(res[0]['end'])        //timer runtime
                     } else {
                         setCurrentEvent('')
                     }
                 }
             })
     }
+
+    const checkTimer = (end) => {
+        const now = new Date().getTime() / 1000;
+        const res = Math.trunc(end - now);
+        setTimer(res)
+    }
+
 
     const getPrevEvents = () => {
         firebase.firestore()
@@ -172,6 +162,8 @@ const Event = ({ props }) => {
                         <View className={`d-flex flex-row`}>
                             <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.grey} /> {format(new Date(startDate), 'HH:mm')}</Text>
                             <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} /> {totalAttendance}</Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'person'} size={15} color={COLORS.grey} /> {creator}</Text>
+                            <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'heart'} size={15} color={COLORS.grey} /> {totalAttendance}</Text>
                         </View>
                     </View>
                 </View>
@@ -253,7 +245,7 @@ const Event = ({ props }) => {
     }
 
     const checkEventIp = (code, eventId, eventIp, eventLoc, currentIp) => {
-        console.log('id',eventId)
+        console.log('id', eventId)
         if (locationName != 'Online' && eventIpAddress != currentEvent['ip_address']) {
             Alert.alert('Check your connection', 'Please connect to the same Manager wifi network and try again', [
                 {
@@ -269,7 +261,7 @@ const Event = ({ props }) => {
         <>
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
-                    <View className="items-center px-4 w-full my-5">
+                    <View className="items-center px-4 w-full">
                         {(currentEventVisible && currentEvent) ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
@@ -278,23 +270,29 @@ const Event = ({ props }) => {
                                         {permission == 'Admin' || permission == 'Super Admin' ? (
                                             <>
                                                 <Text className={`${tailwind.slogan} text-white text-center text-3xl`}>{currentEvent['title']}</Text>
-                                                <View className="flex-row justify-center  text-center mb-3 ">
-                                                    <Icon name="location-outline" size={20} color={COLORS.white} className="pr-5" />
-                                                    <Text className={`${tailwind.slogan} text-white`}>{locationName}</Text>
-                                                </View>
+                                                <Text className={`${tailwind.slogan} text-white text-center mb-3`}>{locationName}</Text>
                                                 <Text className={`${tailwind.titleText} font-light text-white text-center  text-3xl`}>Session Code:</Text>
                                                 <Text className={`${tailwind.titleText} tracking-widest text-white text-5xl text-center mb-3`}>{currentEvent['code']}</Text>
-                                                {/* <Text className={`${tailwind.slogan} text-white text-center  mb-3`}>Expire {hrs}:{mins}:{secs} {currentEvent['end']}</Text> */}
-                                                {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
-                                                    <>
-                                                        <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12`} onPress={() => { finishEvent(currentEvent['id']), getPrevEvents() }}>
-                                                            <Text className={`${tailwind.buttonBlueText}`}>Finish Event</Text>
-                                                        </TouchableOpacity>
-                                                        <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12 mt-4`} onPress={() => { alertCancelEvent(currentEvent['id']), getCurrentEvent() }}>
-                                                            <Text className={`${tailwind.buttonBlueText} text-[#FF0000]`}>Cancel</Text>
-                                                        </TouchableOpacity>
-                                                    </>
-                                                ) : null}
+                                                <Text className={`${tailwind.slogan} text-white text-center mb-1`}>Expire in</Text>
+                                                <CountDown
+                                                    size={30}
+                                                    until={timer}
+                                                    onFinish={() => { finishEvent(currentEvent['id']); getPrevEvents() }}
+                                                    digitStyle={{
+                                                        backgroundColor: '#FFF',
+                                                    }}
+                                                    digitTxtStyle={{ color: COLORS.primary, padding: 0, fontSize: 50 }}
+                                                    timeLabelStyle={{ color: COLORS.white }}
+                                                    separatorStyle={{ color: COLORS.primary }}
+                                                    timeToShow={['H', 'M', 'S']}
+                                                    timeLabels={{ h: 'Hours', m: 'Minutes', s: 'Seconds' }}
+                                                    showSeparator
+                                                />
+                                                {/* {currentEvent['createdBy'] === firebase.auth().currentUser?.email ? (
+                                                    <TouchableOpacity className={`${tailwind.buttonWhite} w-12/12 mt-4`} onPress={() => { alertCancelEvent(currentEvent['id']); getCurrentEvent() }}>
+                                                        <Text className={`${tailwind.buttonBlueText} text-[#FF0000]`}>Cancel</Text>
+                                                    </TouchableOpacity>
+                                                ) : null} */}
 
                                             </>
                                         ) : (
@@ -317,7 +315,21 @@ const Event = ({ props }) => {
                                                             :
                                                             <>
                                                                 <Text className={`${tailwind.slogan}  text-3xl text-white text-center mt-4`}>{currentEvent['title']}</Text>
-                                                                <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire at {currentEvent['end']}</Text>
+                                                                <Text className={`${tailwind.slogan} text-white text-center my-3`}>Expire in</Text>
+                                                                <CountDown
+                                                                    size={30}
+                                                                    until={timer}
+                                                                    onFinish={() => { finishEvent(currentEvent['id']); getPrevEvents() }}
+                                                                    digitStyle={{ backgroundColor: '#FFF' }}
+                                                                    digitTxtStyle={{ color: COLORS.primary }}
+                                                                    timeLabelStyle={{ color: COLORS.white }}
+                                                                    separatorStyle={{ color: COLORS.primary }}
+                                                                    timeToShow={['H', 'M', 'S']}
+                                                                    timeLabels={{ h: 'Hr', m: 'Mins', s: 'Sec' }}
+                                                                    showSeparator
+                                                                />
+
+                                                                <Text className={`${tailwind.slogan} text-white text-center mt-3`}>Enter code</Text>
                                                                 <View className={`w-12/12 h-20 m-auto`}>
                                                                     <OTPInputView
                                                                         pinCount={6}
@@ -338,7 +350,7 @@ const Event = ({ props }) => {
                                                                 </View>
                                                                 <TouchableOpacity
                                                                     className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`}
-                                                                    onPress={() => { checkEventIp(code, currentEvent['id']) }} 
+                                                                    onPress={() => { checkEventIp(code, currentEvent['id']) }}
                                                                 >
                                                                     <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
                                                                 </TouchableOpacity>
@@ -396,6 +408,41 @@ const Event = ({ props }) => {
                                         autoCorrect={false}
                                         placeholderTextColor={COLORS.placeHolder}
                                     />
+                                    <RNPickerSelect
+                                        onValueChange={(value) => setTimerSelected(value)}
+                                        placeholder={{ label: 'Select a timer...' }}
+                                        style={{
+                                            inputIOS: {
+                                                paddingHorizontal: 15,
+                                                paddingVertical: 15,
+                                                backgroundColor: COLORS.white,
+                                                borderRadius: 15,
+                                                borderColor: COLORS.white,
+                                                color: 'black',
+                                                marginBottom: 15
+                                            },
+                                            placeholder: {
+                                                color: COLORS.placeHolder,
+                                            },
+                                            inputAndroid: {
+                                                paddingHorizontal: 15,
+                                                paddingVertical: 15,
+                                                backgroundColor: COLORS.white,
+                                                borderRadius: 15,
+                                                borderColor: COLORS.white,
+                                                color: 'black',
+                                                marginBottom: 15
+                                            },
+                                        }}
+                                        items={[
+                                            { label: '2 mins', value: 120 },
+                                            { label: '5 mins', value: 300 },
+                                            { label: '10 mins', value: 600 },
+                                            { label: '15 mins', value: 900 },
+                                            { label: '30 mins', value: 1800 },
+                                            { label: '60 mins', value: 3600 },
+                                        ]}
+                                    />
                                     {/* <TextInput
                                         className={`${tailwind.inputs} w-12/12 mb-3`}
                                         value={`From now ${format(new Date(), 'dd-MMM-yy HH:mm')}`}
@@ -440,7 +487,7 @@ const Event = ({ props }) => {
                                     </View> */}
                                     <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email, props.ipAddress), getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email, props.ipAddress, timerSelected); getCurrentEvent()
                                         }}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
@@ -450,7 +497,7 @@ const Event = ({ props }) => {
                     </View>
                     {prevEvents.length > 0 ? (
                         <>
-                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5 mt-2`}>Previous events</Text>
+                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5`}>Previous events</Text>
                             <FlatList
                                 data={prevEvents}
                                 renderItem={({ item }) => <Item title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} createdBy={item.createdBy} />}
