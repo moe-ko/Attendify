@@ -10637,6 +10637,11 @@ react-native-countdown-component@^2.7.1:
     prop-types "^15.5.8"
     sprintf-js "^1.1.1"
 
+react-native-countdown-timer-hooks@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/react-native-countdown-timer-hooks/-/react-native-countdown-timer-hooks-1.0.3.tgz"
+  integrity sha512-k0/1ou1qo1n1Zh3kx1v8LsrBTjrbzdqBRfxMVzOTeHqN/tVQhSp/d64FfygpFNOLxRPZk7yfv8Psx4SKqOEmRA==
+
 react-native-custom-datepicker-ios@^0.0.5:
   version "0.0.5"
   resolved "https://registry.npmjs.org/react-native-custom-datepicker-ios/-/react-native-custom-datepicker-ios-0.0.5.tgz"

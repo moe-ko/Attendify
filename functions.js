@@ -343,8 +343,24 @@ export const finishEvent = async (id) => {
             hasEnded: true,
         })
         .then(() => {
-            Alert.alert('Event has finish', 'This is event has finished', [
-                { text: 'Ok' },
-            ]);
+            Alert.alert('Event has finish', 'This is event has finished',
+                [
+                    { text: 'Ok' },
+                ]
+            );
         })
+}
+export const getAllAbsents = async () => {
+    let emp = []
+    await firebase.firestore()
+        .collection('employees')
+        .where('status_id', '==', '1')
+        .where('permission', '==', 'Associate')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                emp.push(documentSnapshot.id)
+            });
+        });
+    return emp
 }
