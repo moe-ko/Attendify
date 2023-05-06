@@ -143,25 +143,25 @@ const Event = ({ props }) => {
 
         return (
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
-                <View className={`d-flex flex-row mx-5 my-2 bg-[#fff] rounded-2xl drop-shadow-xl justify-between`}>
-                    <View className={`w-10/12 d-flex flex-row`}>
+                <View className={`d-flex flex-row mx-4 my-2 bg-[#fff] rounded-2xl drop-shadow-xl justify-between`}>
+                    <View className={`w-9/12 d-flex flex-row w-10/12`}>
                         <View className={`bg-[${COLORS.primary}] p-1 d-flex justify-center w-2/12 rounded-2xl`}>
                             <Text className={`font-medium text-3xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'dd')}</Text>
                             <Text className={`font-medium text-xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'MMM').toUpperCase()}</Text>
                         </View>
-                        <View className={`py-1 px-2 d-flex justify-center`}>
+                        <View className={`py-1 px-2 d-flex justify-center w-10/12`}>
                             <View>
-                                <Text className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E]`}> {title}</Text>
+                                <Text numberOfLines={1} className={`${tailwind.titleText} font-medium text-xl text-[#7E7E7E] truncate `}> {title}</Text>
                             </View>
                             <View className={`d-flex flex-row`}>
-                                <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.grey} /> {format(new Date(startDate), 'HH:mm')}</Text>
-                                <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.grey} /> {totalAttendance}</Text>
-                                <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'person'} size={15} color={COLORS.grey} /> {createdBy === firebase.auth().currentUser?.email ? 'Me' : creator}</Text>
+                                <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'time'} size={15} color={COLORS.primary} /> {format(new Date(startDate), 'HH:mm')}</Text>
+                                <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'people'} size={20} color={COLORS.primary} /> {totalAttendance}</Text>
+                                {/* <Text className={`${tailwind.slogan} text-base text-[#7E7E7E] mr-4`}> <Icon name={'person'} size={15} color={COLORS.grey} /> {createdBy === firebase.auth().currentUser?.email ? 'Me' : creator}</Text> */}
                             </View>
                         </View>
                     </View>
                     {createdBy === firebase.auth().currentUser?.email ? (
-                        <TouchableOpacity className={`text-center m-auto`} onPress={() => { alertCancelEvent(id); getCurrentEvent() }}>
+                        <TouchableOpacity className={`text-center m-auto `} onPress={() => { alertCancelEvent(id); getCurrentEvent() }}>
                             <Icon name="trash-outline" size={30} color={'#FF0000'} className={``} />
                         </TouchableOpacity>
                     ) : null}
