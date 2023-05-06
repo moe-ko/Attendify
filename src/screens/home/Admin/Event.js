@@ -379,37 +379,34 @@ const Event = ({ props }) => {
                             <View className={`${tailwind.viewWrapper}`}>
                                 <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2  mt-2 pb-2`}>Create a new session</Text>
                                 <View className={`${tailwind.viewWrapper} bg-[${COLORS.primary}] rounded-2xl p-6`}>
-                                    <View className={` w-12/12 mb-3`}>
-                                        <SelectList
-                                            data={locations}
-                                            setSelected={setSelectedLocation}
-                                            placeholder='Select Location'
-                                            placeholderTextColor={COLORS.placeHolder}
-                                            inputStyles={{
-                                                color: "#666",
-                                                padding: 0,
-                                                margin: 0,
-                                            }}
-                                            boxStyles={{
+                                    <RNPickerSelect
+                                        onValueChange={(value) => setSelectedLocation(value)}
+                                        placeholder={{ label: 'Select location...' }}
+                                        style={{
+                                            inputIOS: {
+                                                paddingHorizontal: 15,
+                                                paddingVertical: 15,
+                                                backgroundColor: COLORS.white,
                                                 borderRadius: 15,
                                                 borderColor: COLORS.white,
-                                                color: COLORS.white,
-                                                backgroundColor: COLORS.white
-                                            }}
-                                            dropdownStyles={{
-                                                borderWidth: 1,
-                                                borderRadius: 4,
-                                                borderColor: COLORS.lightGrey,
-                                                backgroundColor: COLORS.lightGrey,
-                                                color: COLORS.white,
-                                                marginLeft: 5,
-                                                marginRight: 5,
-                                                marginBottom: 5,
-                                                marginTop: 0,
-                                                position: 'relative'
-                                            }}
-                                        />
-                                    </View>
+                                                color: 'black',
+                                                marginBottom: 15
+                                            },
+                                            placeholder: {
+                                                color: COLORS.placeHolder,
+                                            },
+                                            inputAndroid: {
+                                                paddingHorizontal: 15,
+                                                paddingVertical: 15,
+                                                backgroundColor: COLORS.white,
+                                                borderRadius: 15,
+                                                borderColor: COLORS.white,
+                                                color: 'black',
+                                                marginBottom: 15
+                                            },
+                                        }}
+                                        items={locations}
+                                    />
                                     <TextInput
                                         className={`${tailwind.inputs} w-12/12 mb-3`}
                                         value={title}

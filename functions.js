@@ -127,7 +127,7 @@ export const getLocations = async () => {
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(documentSnapshot => {
-                locations.push({ key: `${documentSnapshot.id}`, value: `${documentSnapshot.data()["name"]}` });
+                locations.push({ label: `${documentSnapshot.data()["name"]}`, value: `${documentSnapshot.id}` });
             });
         });
     return locations
