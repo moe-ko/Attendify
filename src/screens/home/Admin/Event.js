@@ -1,19 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { View, Text, Alert, TextInput, TouchableOpacity, TouchableWithoutFeedback, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList, Button } from 'react-native'
+import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList } from 'react-native'
 import { firebase } from '../../../../config'
-import { SelectList } from 'react-native-dropdown-select-list'
 import { format } from 'date-fns'
 import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon, finishEvent, getEmployeeName } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
 import { COLORS, ROUTES } from '../../..'
-import { TimePickerModal, DatePickerModal, registerTranslation, useTheme } from 'react-native-paper-dates'
-import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
+import { Avatar } from '@rneui/themed';
 import OTPInputView from '@twotalltotems/react-native-otp-input';
 import { useNavigation } from '@react-navigation/native';
 import RNPickerSelect from 'react-native-picker-select';
-import CountDown from 'react-native-countdown-component';
 import CountDownTimer from 'react-native-countdown-timer-hooks';
 
 const Event = ({ props }) => {
@@ -21,25 +18,15 @@ const Event = ({ props }) => {
     const [locations, setLocations] = useState('');
     const [title, setTitle] = useState(null)
     const [selectedLocation, setSelectedLocation] = useState('');
-    const [currentEventVisible, setCurrentEventVisible] = useState(true);
     const [currentEvent, setCurrentEvent] = useState([]);
     const [locationName, setLocationName] = useState();
-    const [mins, setMins] = useState('')
-    const [secs, setSecs] = useState('')
-    const [hrs, setHrs] = useState('')
     const [code, setCode] = useState()
     const [hasAttended, setHasAttended] = useState(false)
-    const [time, setTime] = useState(undefined)
-    const [date, setDate] = useState(undefined);
-    const [timePickerVisible, setTimePickerVisible] = useState(false)
-    const [datePickerVisible, setDatePickerVisible] = useState(false)
     const [permission, setPermission] = useState('');
     const [loading, setLoading] = useState(true)
     const [sickEmps, setSickEmps] = useState([])
     const [leaveEmps, setLeaveEmps] = useState([])
-    const [inactiveEmps, setInactiveEmps] = useState([])
     const [eventIpAddress, setEventIpAddress] = useState('')
-    const [disabled, setDisabled] = useState(true)
     const [prevEvents, setPrevEvents] = useState([])
     const [hasAttendedAs, setHasAttendedAs] = useState('')
     const [icon, setIcon] = useState('')
@@ -52,7 +39,6 @@ const Event = ({ props }) => {
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
-        // getEmployeesByStatus('0').then(res => setInactiveEmps(res))
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
         getEmployeesByStatus('3').then(res => setSickEmps(res))
         getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
@@ -114,7 +100,6 @@ const Event = ({ props }) => {
         firebase.firestore()
             .collection('events')
             .where('hasEnded', '==', true)
-            // .orderBy('start', 'desc')
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
@@ -122,7 +107,7 @@ const Event = ({ props }) => {
                             id: docSnapshot.id,
                             title: docSnapshot.data()['title'],
                             startDate: docSnapshot.data()['start'],
-                            totalAttendance: docSnapshot.data()['attendance'].length + docSnapshot.data()['absent'].length + docSnapshot.data()['sick_leave'].length + docSnapshot.data()['annual_leave'].length,
+                            totalAttendance: docSnapshot.data()['attendance'].length,
                             location: docSnapshot.data()['location'],
                             createdBy: docSnapshot.data()['createdBy'],
                         }
@@ -143,7 +128,16 @@ const Event = ({ props }) => {
 
         return (
             <TouchableOpacity onPress={() => navigation.navigate(ROUTES.CHART)}>
-                <View className={`d-flex flex-row mx-4 my-2 bg-[#fff] rounded-2xl drop-shadow-xl justify-between`}>
+                <View className={`d-flex flex-row mx-4 my-2 bg-[#fff] rounded-2xl drop-shadow-xl justify-between`} style={{
+                    shadowColor: '#000',
+                    shadowOffset: {
+                        width: 0,
+                        height: 1,
+                    },
+                    shadowOpacity: 0.25,
+                    shadowRadius: 4,
+                    elevation: 5,
+                }}>
                     <View className={`w-9/12 d-flex flex-row w-10/12`}>
                         <View className={`bg-[${COLORS.primary}] p-1 d-flex justify-center w-2/12 rounded-2xl`}>
                             <Text className={`font-medium text-3xl text-[#fff] text-center m-auto`}>{format(new Date(startDate), 'dd')}</Text>
@@ -261,7 +255,7 @@ const Event = ({ props }) => {
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
                     <View className="items-center px-4 w-full">
-                        {(currentEventVisible && currentEvent) ? (
+                        {currentEvent ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
                                     <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 mt-2`}>Latest event</Text>
@@ -374,7 +368,6 @@ const Event = ({ props }) => {
                                 </View>
                             </>
                         ) : null}
-                        {/* {(createEventVisible) ? ( */}
                         {(permission == 'Admin' || permission == 'Super Admin') && currentEvent.length == 0 ? (
                             <View className={`${tailwind.viewWrapper}`}>
                                 <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2  mt-2 pb-2`}>Create a new session</Text>
@@ -417,7 +410,7 @@ const Event = ({ props }) => {
                                     />
                                     <RNPickerSelect
                                         onValueChange={(value) => setTimerSelected(value)}
-                                        placeholder={{ label: 'Select a timer...' }}
+                                        placeholder={{ label: 'Select timer...' }}
                                         style={{
                                             inputIOS: {
                                                 paddingHorizontal: 15,
@@ -450,51 +443,9 @@ const Event = ({ props }) => {
                                             { label: '60 mins', value: 3600 },
                                         ]}
                                     />
-                                    {/* <TextInput
-                                        className={`${tailwind.inputs} w-12/12 mb-3`}
-                                        value={`From now ${format(new Date(), 'dd-MMM-yy HH:mm')}`}
-                                        editable={false}
-                                    />
-                                    <View className={`${tailwind.viewWrapper} flex-column mb-3`}>
-                                        <View className={`flex-row justify-between w-12/12`}>
-                                            <TouchableOpacity className={`bg-white rounded-2xl w-[48%]`} onPress={() => setDatePickerVisible(true)}>
-                                                <View className="pl-[10] flex-row align-items-center my-3">
-                                                    <Icon name="calendar" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
-                                                    <Text className={`text-[${COLORS.placeHolder}] ml-3 my-auto`}>{date == undefined ? 'Until date' : format(date, 'dd-MMM-yy')}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity className={`bg-white rounded-2xl w-[48%]`} onPress={() => setTimePickerVisible(true)}>
-                                                <View className="pl-[10] flex-row align-items-center my-3">
-                                                    <Icon name="time" size={20} color={COLORS.primary} className={`text-[${COLORS.placeHolder}] ml-3`} />
-                                                    <Text className={`text-[${COLORS.placeHolder}]  ml-3 my-auto`}>{time == undefined ? 'Until time' : time}</Text>
-                                                </View>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <DatePickerModal
-                                            locale='en'
-                                            mode='single'
-                                            visible={datePickerVisible}
-                                            onDismiss={onDismissDate}
-                                            date={date}
-                                            onConfirm={onConfirmDate}
-                                            validRange={{
-                                                startDate: new Date()
-                                            }}
-
-                                        />
-                                        <TimePickerModal
-                                            label='This'
-                                            visible={timePickerVisible}
-                                            onDismiss={onDismissTime}
-                                            hours={format(new Date, 'H')}
-                                            minutes={format(new Date, 'mm')}
-                                            onConfirm={onConfirmTime}
-                                            use24HourClock={true}
-                                        />
-                                    </View> */}
                                     <TouchableOpacity className={`${tailwind.buttonWhite}`}
                                         onPress={() => {
-                                            hanldeCreateEvent(selectedLocation, title, inactiveEmps, sickEmps, leaveEmps, firebase.auth().currentUser?.email, props.ipAddress, timerSelected); getCurrentEvent()
+                                            hanldeCreateEvent(selectedLocation, title, sickEmps, leaveEmps, firebase.auth().currentUser?.email, props.ipAddress, timerSelected); getCurrentEvent(); setTimer(timerSelected)
                                         }}>
                                         <Text className={`${tailwind.buttonBlueText}`}>Create Event</Text>
                                     </TouchableOpacity>
@@ -512,7 +463,6 @@ const Event = ({ props }) => {
                             />
                         </>
                     ) : null}
-
                 </KeyboardAvoidingView>
             </ScrollView>
         </>

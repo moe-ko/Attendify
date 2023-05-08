@@ -2,7 +2,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { firebase } from './config'
 import { format } from 'date-fns'
 import { Alert } from 'react-native'
-
+import { arrayUnion } from "firebase/firestore";
 
 export const checkConnection = () => {
     return NetInfo.fetch().then(state => {
@@ -145,7 +145,7 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = (selectedLocation, title, absent, sick_leave, annual_leave, createdBy, ipAddress, timerSelected) => {
+export const hanldeCreateEvent = (selectedLocation, title, sick_leave, annual_leave, createdBy, ipAddress, timerSelected) => {
     firebase.firestore()
         .collection('events')
         .add({
@@ -156,7 +156,7 @@ export const hanldeCreateEvent = (selectedLocation, title, absent, sick_leave, a
             code: generatePasscode(6),
             title: title,
             attendance: [],
-            absent: absent,
+            absent: [],
             sick_leave: sick_leave,
             annual_leave: annual_leave,
             hasEnded: false,
@@ -343,15 +343,11 @@ export const finishEvent = async (id) => {
             hasEnded: true,
         })
         .then(() => {
-            Alert.alert('Event has finish', 'This is event has finished',
-                [
-                    { text: 'Ok' },
-                ]
-            );
+            getAllAbsents(id)
         })
 }
-export const getAllAbsents = async () => {
-    let emp = []
+
+const getAllAbsents = async (eventId) => {
     await firebase.firestore()
         .collection('employees')
         .where('status_id', '==', '1')
@@ -359,8 +355,36 @@ export const getAllAbsents = async () => {
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(documentSnapshot => {
-                emp.push(documentSnapshot.id)
+                getAttendance(eventId, documentSnapshot.id)
+
             });
+        })
+        .then(() => {
+            Alert.alert('Event has finish', 'See the report in the Report screen',
+                [
+                    { text: 'Ok' },
+                ]
+            );
+        })
+}
+
+const getAttendance = (eventId, empId) => {
+    firebase.firestore()
+        .collection('events')
+        .doc(eventId)
+        .get()
+        .then(documentSnapshot => {
+            if (documentSnapshot.data()['attendance'].includes(empId) == false) {
+                addAbsents(eventId, empId)
+            }
         });
-    return emp
+
+}
+const addAbsents = (eventId, empId) => {
+    firebase.firestore()
+        .collection('events')
+        .doc(eventId)
+        .update({
+            absent: arrayUnion(empId),
+        })
 }
