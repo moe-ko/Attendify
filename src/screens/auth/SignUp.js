@@ -72,8 +72,8 @@ const SignUp = ({ navigation }) => {
     };
 
     return (
-        <ScrollView scrollEnabled="false">
-            <View className="h-screen items-center p-5 w-full my-6">
+        // <ScrollView scrollEnabled="false">
+            <View className="h-screen items-center p-5 w-full my-2">
                 <View className={`${tailwind.viewWrapper} pb-6`}>
                     <Text className={`${tailwind.titleText} pb-3`}>Let's sign you up</Text>
                     <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
@@ -282,7 +282,7 @@ const SignUp = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        </ScrollView>
+        // </ScrollView>
     );
 };
 export default SignUp;
