@@ -400,3 +400,29 @@ export const getCurrentEventDate = async () => {
         });
     return dates
 }
+
+export const getAllUnits = async () => {
+    let units = []
+    await firebase.firestore()
+        .collection('units')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                units.push({ label: documentSnapshot.data()['name'], value: documentSnapshot.id })
+            });
+        });
+    return units
+}
+export const getAllSubunitsByUnitId = async (id) => {
+    let subunits = []
+    await firebase.firestore()
+        .collection('subunits')
+        .where('unit_id', '==', id)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                subunits.push({ label: documentSnapshot.data()['name'], value: documentSnapshot.id })
+            });
+        });
+    return subunits
+}
