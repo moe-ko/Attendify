@@ -279,7 +279,7 @@ const Chart = ({ navigation }) => {
         <>
             {eventExist ? (
                 <View>
-                    <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center  py-4 px-6 justify-center `} style={{
+                    <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center px-6 justify-center `} style={{
                         shadowColor: '#000',
                         shadowOffset: {
                             width: 0,
@@ -319,35 +319,6 @@ const Chart = ({ navigation }) => {
                                     }}
                                     items={dates}
                                 />
-                                {/* <SelectList
-                                    data={dates}
-                                    setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
-                                    placeholder={eventDate}
-                                    placeholderTextColor='#726F6F'
-                                    inputStyles={{
-                                        color: "#666",
-                                        padding: 2,
-                                        margin: 0,
-                                    }}
-                                    boxStyles={{
-                                        borderRadius: 20,
-                                        color: 'black',
-                                        backgroundColor: '#F5F5F5',
-                                        borderColor: 'white',
-                                    }}
-                                    dropdownStyles={{
-                                        borderWidth: 0,
-                                        borderRadius: 4,
-                                        borderColor: '#DDDDDD',
-                                        backgroundColor: '#DDDDDD',
-                                        color: '#fff',
-                                        marginLeft: 5,
-                                        marginRight: 5,
-                                        marginBottom: 5,
-                                        marginTop: 0,
-                                        position: 'relative',
-                                    }}
-                                /> */}
                             </View>
                             <TouchableOpacity onPress={generatePDF} >
                                 <Icon name={'cloud-download'} size={30} color={COLORS.primary} style={{ marginLeft: 10 }} />

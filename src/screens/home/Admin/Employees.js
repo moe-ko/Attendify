@@ -100,7 +100,7 @@ const Employees = ({ navigation }) => {
                     shadowRadius: 4,
                     elevation: 5,
                 }}>
-                    <View className={`${tailwind.inputs} bg-[#F5F5F5] w-11/12 flex-row justify-between`}>
+                    <View className={`${tailwind.inputs} bg-[${COLORS.brightGrey}] w-11/12 flex-row justify-between`}>
                         <Icon name="ios-search" size={20} color="#000" className={`w-1/12`} />
                         <TextInput
                             value={search}
