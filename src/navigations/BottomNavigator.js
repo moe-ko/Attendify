@@ -1,13 +1,10 @@
 
 import React, { useState, useEffect } from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Home, Profile, } from "../screens";
-// import Event from "../screens/home/CurrentEvent";
+import { Image } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
-import Chart from "../screens/home/Admin/Chart";
 import { COLORS, ROUTES } from "..";
 import EmployeesNavigator from "./EmployeesNavigator";
-import { TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { getPermission } from "../../functions";
 import { firebase } from '../../config'
@@ -19,7 +16,6 @@ const Tab = createBottomTabNavigator();
 
 const BottomTabNavigator = () => {
     const [permission, setPermission] = useState()
-    const navigation = useNavigation()
 
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
@@ -50,6 +46,12 @@ const BottomTabNavigator = () => {
             tabBarShowLabel: true,
             tabBarInactiveTintColor: COLORS.lightGrey,
             tabBarActiveTintColor: COLORS.primary,
+            // tabBarIcon: ({ color, focused }) => {
+            //     return <Image
+            //         style={{ width: 30, height: 50 }}
+            //         source={require('../../assets/search_icon.png')}
+            //     />
+            // },
             tabBarIcon: ({ color, focused }) => { return <Icon name={iconName(route, focused)} size={30} color={color} /> },
             // headerRight: () => {
             //     return (

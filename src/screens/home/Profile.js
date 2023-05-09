@@ -320,9 +320,9 @@ const Profile = ({ navigation }) => {
                     <View className={`${tailwind.containerWrapper2} bg-[${COLORS.lightblue700}]  min-h-screen mt-16`}>
                         <View className="pb-4 justify-center items-center">
                             <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
-                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>{name} nsdasdasd</Text>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center mt-2`}>{name}</Text>
                             </TouchableOpacity>
-                            <Text className={`${tailwind.slogan}`}>{empId} id</Text>
+                            <Text className={`${tailwind.slogan}`}>{empId}</Text>
                         </View>
                         <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
                             <ItemContent title={'Email'} data={email} iconName={'email'} />
