@@ -33,7 +33,9 @@ const SignIn = ({ navigation }) => {
                         <TextInput
                             className={`${tailwind.inputs}`}
                             value={email}
-                            placeholder={'Employee ID'}
+                            // placeholder={'Employee ID'}
+                            // added email holder, prefer ID
+                            placeholder={'Employee Email'}
                             onChangeText={(text) => setEmail(text)}
 
                             // ReferenceError: Property 'handleValidUser' doesn't exist, js engine: hermes
