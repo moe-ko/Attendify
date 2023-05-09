@@ -89,7 +89,7 @@ const Employees = ({ navigation }) => {
 
     return (
         <SafeAreaView >
-            <View className={`bg-[${COLORS.white}]`}>
+            <View className={`bg-[${COLORS.brightGrey}] min-h-screen`}>
                 <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center  py-4 justify-center`} style={{
                     shadowColor: '#000',
                     shadowOffset: {

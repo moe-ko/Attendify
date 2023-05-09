@@ -15,7 +15,11 @@ const WelcomeStackNavigator = () => {
     const optionsHeader = {
         headerBackTitleVisible: false,
         headerTitleStyle: { display: 'none' },
-        headerStyle: { backgroundColor: COLORS.brightGrey, elevation: 25, }
+        headerStyle: {
+            backgroundColor: COLORS.brightGrey, elevation: 0, shadowOffset: {
+                width: 0, height: 0 // for iOS
+            }
+        }
     }
     return (
         <Stack.Navigator initialRouteName="Welcome">
@@ -27,8 +31,7 @@ const WelcomeStackNavigator = () => {
             <Stack.Screen name='EnterOTP' component={EnterOTP} options={optionsHeader} />
             <Stack.Screen name='ResetPassword' component={ResetPassword} options={optionsHeader} />
             {/* HOME STACK */}
-            <Stack.Screen name={ROUTES.HOME} component={MenuDrawerNavigator} options={{ headerShown: false }} />
-
+            {/* <Stack.Screen name={ROUTES.HOME} component={MenuDrawerNavigator} options={{ headerShown: false }} /> */}
         </Stack.Navigator>
     );
 };

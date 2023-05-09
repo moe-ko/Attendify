@@ -249,7 +249,7 @@ const Event = ({ props }) => {
         <>
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
-                    <View className="items-center px-4 w-full">
+                    <View className={`items-center px-4 w-full`}>
                         {currentEvent ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
@@ -452,6 +452,7 @@ const Event = ({ props }) => {
                         <>
                             <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5`}>Previous events</Text>
                             <FlatList
+                                marginBottom={200}
                                 data={prevEvents}
                                 renderItem={({ item }) => <Item id={item.id} title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} createdBy={item.createdBy} />}
                                 keyExtractor={item => item.id}

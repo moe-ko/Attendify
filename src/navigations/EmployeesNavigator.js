@@ -27,13 +27,13 @@ const EmployeesNavigator = () => {
                     headerBackTitleVisible: false,
                     headerTitle: "Search Employees",
                     headerTitleAlign: 'center',
-                    headerRight: () => {
-                        return (
-                            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                                <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
-                            </TouchableOpacity>
-                        )
-                    }
+                    // headerRight: () => {
+                    //     return (
+                    //         <TouchableOpacity onPress={() => navigation.openDrawer()}>
+                    //             <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
+                    //         </TouchableOpacity>
+                    //     )
+                    // }
                 }}
             />
             <Stack.Screen name={ROUTES.EMPLOYEE} component={Employee}

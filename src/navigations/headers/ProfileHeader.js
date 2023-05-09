@@ -32,13 +32,13 @@ const ProfileHeader = () => {
                borderWidth: 0,
                borderBottomColor: 'transparent'
             },
-            headerRight: () => {
-               return (
-                  <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                     <Icon name={'ios-menu'} size={30} color={'white'} style={{ marginRight: 10 }} />
-                  </TouchableOpacity>
-               )
-            }
+            // headerRight: () => {
+            //    return (
+            //       <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            //          <Icon name={'ios-menu'} size={30} color={'white'} style={{ marginRight: 10 }} />
+            //       </TouchableOpacity>
+            //    )
+            // }
          }}
       >
          <Stack.Screen name={ROUTES.PROFILE} component={Profile} options={{ title: `My Profile`, headerTitleAlign: 'center' }} />

@@ -275,7 +275,7 @@ const Profile = ({ navigation }) => {
     return (
         <ScrollView>
             <KeyboardAvoidingView>
-                <View className={`${tailwind.containerWrapper2}`}>
+                <View className={`${tailwind.containerWrapper2} bg-[${COLORS.brightGrey}]  min-h-screen`}>
                     <ProfileHeader />
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
                         <ItemContent title={'Email'} data={email} iconName={'email'} />

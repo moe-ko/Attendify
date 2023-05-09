@@ -402,6 +402,7 @@ export const getCurrentEventDate = async () => {
 }
 
 export const getAllUnits = async () => {
+    console.log('here')
     let units = []
     await firebase.firestore()
         .collection('units')

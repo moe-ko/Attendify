@@ -29,16 +29,16 @@ const BottomTabNavigator = () => {
         let iconName = '';
         switch (route.name) {
             case ROUTES.HOME_TAB:
-                iconName = focused ? 'ios-home-sharp' : 'ios-home-outline'
+                iconName = 'ios-home-sharp'
                 break;
             case ROUTES.PROFILE:
-                iconName = focused ? 'person-circle-sharp' : 'person-circle-outline'
+                iconName = 'person-circle-sharp'
                 break;
             case ROUTES.CHART:
-                iconName = focused ? 'stats-chart' : 'stats-chart-outline'
+                iconName = 'stats-chart'
                 break;
             case ROUTES.EMPLOYEES_NAVIGATOR:
-                iconName = focused ? 'people' : 'people-outline'
+                iconName = 'people'
                 break;
         }
         return iconName
@@ -47,17 +47,35 @@ const BottomTabNavigator = () => {
     const screenOptions = (route) => {
         return {
             headerShown: false,
-            tabBarShowLabel: false,
-            tabBarInactiveTintColor: COLORS.inactiveIcon,
+            tabBarShowLabel: true,
+            tabBarInactiveTintColor: COLORS.lightGrey,
             tabBarActiveTintColor: COLORS.primary,
             tabBarIcon: ({ color, focused }) => { return <Icon name={iconName(route, focused)} size={30} color={color} /> },
-            headerRight: () => {
-                return (
-                    <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                        <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
-                    </TouchableOpacity>
-                )
-            }
+            // headerRight: () => {
+            //     return (
+            //         <TouchableOpacity onPress={() => navigation.openDrawer()}>
+            //             <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
+            //         </TouchableOpacity>
+            //     )
+            // }
+            tabBarStyle: {
+                shadowOffset: {
+                    width: 0,
+                    height: 12,
+                },
+                shadowOpacity: 0.58,
+                shadowRadius: 10.0,
+                elevation: 24,
+                borderTopLeftRadius: 25,
+                borderTopRightRadius: 25,
+                backgroundColor: '#fff',
+                position: 'absolute',
+                bottom: 0,
+                padding: 10,
+                width: '100%',
+                height: 84,
+                zIndex: 0,
+            },
         }
     }
 
@@ -66,11 +84,10 @@ const BottomTabNavigator = () => {
         <Tab.Navigator screenOptions={({ route }) => (screenOptions(route))} >
             <Tab.Screen name={ROUTES.HOME_TAB} component={DashboardHeader} options={{ title: 'Dashboard' }} />
             {permission == 'Admin' || permission == 'Super Admin' ? (
-                <Tab.Screen name={ROUTES.CHART} component={ReportHeader} options={{ title: 'Chart' }} />
+                <Tab.Screen name={ROUTES.CHART} component={ReportHeader} options={{ title: 'Report' }} />
             ) : null}
-            <Tab.Screen name={ROUTES.PROFILE} component={ProfileHeader} options={{ title: `${permission} Profile` }} />
+            <Tab.Screen name={ROUTES.PROFILE} component={ProfileHeader} options={{ title: `Profile` }} />
             <Tab.Screen name={ROUTES.EMPLOYEES_NAVIGATOR} component={EmployeesNavigator} options={{ title: 'Employees' }} />
-
         </Tab.Navigator>
     );
 };
