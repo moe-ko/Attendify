@@ -162,11 +162,6 @@ export const hanldeCreateEvent = (selectedLocation, title, sick_leave, annual_le
             hasEnded: false,
             createdBy: createdBy
         })
-    // .then(() => {
-    //     Alert.alert('Event Created', 'New event has been created', [
-    //         { text: 'Ok' },
-    //     ]);
-    // })
 }
 export const alertCancelEvent = (id) => {
     Alert.alert('Cancel Event', 'Are you sure you want to cancel this event?', [
@@ -186,7 +181,6 @@ export const cancelEvent = async (id) => {
         .doc(id)
         .delete()
         .then(() => {
-            //Event needs to be deleted from attendance table
             firebase.firestore()
                 .collection('attendance')
                 .where('event_id', '==', id)
@@ -200,7 +194,6 @@ export const cancelEvent = async (id) => {
                             .then(() => {
                                 console.log(`Event ${id} deleted from attendance!`);
                                 setHasAttended(false)
-                                // clearInterval(eventTimer)
                             });
                     });
                 });
@@ -254,18 +247,22 @@ export const getStatusIcon = async (status) => {
     switch (status) {
         case 'attendance':
         case '1':
+        case 1:
             icon = 'done'
             break;
         case 'absent':
         case '0':
+        case 0:
             icon = 'close'
             break;
         case 'annual_leave':
         case '2':
+        case 2:
             icon = 'flight'
             break;
         case 'sick_leave':
         case '3':
+        case 3:
             icon = 'favorite'
             break;
     }
@@ -387,4 +384,19 @@ const addAbsents = (eventId, empId) => {
         .update({
             absent: arrayUnion(empId),
         })
+}
+
+
+export const getCurrentEventDate = async () => {
+    let dates = []
+    await firebase.firestore()
+        .collection('events')
+        .orderBy('start', 'desc')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                dates.push({ label: `${format(new Date(documentSnapshot.data()["start"]), 'E dd MMM yy - HH:mm')}`, value: `${documentSnapshot.data()["start"]}` });
+            });
+        });
+    return dates
 }
