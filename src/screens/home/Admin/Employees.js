@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Text, SafeAreaView, View, FlatList, TextInput, TouchableOpacity } from 'react-native'
 import { firebase } from '../../../../config'
-import { ListItem, Avatar, BottomSheet } from '@rneui/themed';
+import { ListItem, Avatar } from '@rneui/themed';
 import Icon from 'react-native-vector-icons/Ionicons'
 import tailwind from '../../../constants/tailwind';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -100,7 +100,7 @@ const Employees = ({ navigation }) => {
                     shadowRadius: 4,
                     elevation: 5,
                 }}>
-                    <View className={`${tailwind.inputs} bg-[#F5F5F5] w-11/12 flex-row justify-between`}>
+                    <View className={`${tailwind.inputs} bg-[${COLORS.brightGrey}] w-11/12 flex-row justify-between`}>
                         <Icon name="ios-search" size={20} color="#000" className={`w-1/12`} />
                         <TextInput
                             value={search}

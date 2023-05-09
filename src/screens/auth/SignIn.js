@@ -16,7 +16,7 @@ const SignIn = ({ navigation }) => {
         try {
             await firebase.auth().signInWithEmailAndPassword(email, password);
         } catch (error) {
-            Alert.alert('Login Failed', `${error.message="Please provide correct login details"}`, [
+            Alert.alert('Login Failed', `${error.message = "Please provide correct login details"}`, [
                 { text: 'Ok' },
             ]);
         }
@@ -37,10 +37,6 @@ const SignIn = ({ navigation }) => {
                             // added email holder, prefer ID
                             placeholder={'Employee Email'}
                             onChangeText={(text) => setEmail(text)}
-
-                            // ReferenceError: Property 'handleValidUser' doesn't exist, js engine: hermes
-                            // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
-                            
                             autoCapitalize={'none'}
                             keyboardType={'email-address'}
                             required
@@ -63,11 +59,11 @@ const SignIn = ({ navigation }) => {
                     <View className={`${tailwind.viewWrapper} my-3`}>
                         <TouchableOpacity
                             className={`${tailwind.buttonBlue}`}
-                            // onPress={() => { signInUser('test@test.com', '123456') }}
+                            //     onPress={() => { signInUser('test@test.com', '123456') }}
                             // onPress={() => { signInUser('test.test@infosys.com', 'Testtest23') }}
-                            // onPress={() => { signInUser('admin@admin.com', 'admin2') }}
-                            // onPress={() => { signInUser('superadmin@test.com', 'superadmin') }}
-                        onPress={() => { signInUser(email, password) }}
+                            onPress={() => { signInUser('admin@admin.com', 'admin2') }}
+                        // onPress={() => { signInUsers('superadmin@test.com', 'superadmin') }}
+                        // onPress={() => { signInUser(email, password) }}
                         // disabled={(!email.trim() || !password.trim())}
                         >
                             <Text className={`${tailwind.buttonWhiteText}`}>Sign In</Text>

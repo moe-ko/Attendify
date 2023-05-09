@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { ListItem, Avatar } from '@rneui/themed';
-import { Dimensions, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 import tailwind from '../constants/tailwind';
 import { getStatusIcon } from '../../functions';
 import { COLORS } from '..';
@@ -20,7 +20,7 @@ const EmployeeItem = ({ props }) => {
   updateEmployeeStatus = () => {
     firebase.firestore()
       .collection('events')
-      .where('end', '==', props.event)
+      .where('start', '==', props.event)
       .get()
       .then(querySnapshot => {
         querySnapshot.forEach(documentSnapshot => {
@@ -89,6 +89,7 @@ const EmployeeItem = ({ props }) => {
         query
       )
     refRBSheet.current.close()
+    // onRefresh()
   }
 
   const bottomSheetList = [
@@ -156,7 +157,7 @@ const EmployeeItem = ({ props }) => {
           labelStyle={{ fontSize: 20, color: COLORS.grey }}
           onPress={(value) => { setNewAttendance(value) }}
         />
-        <TouchableOpacity className={`${tailwind.buttonBlue} mt-5`} onPress={() => updateEmployeeStatus()} >
+        <TouchableOpacity className={`${tailwind.buttonBlue} mt-5`} onPress={() => { updateEmployeeStatus() }} >
           <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
         </TouchableOpacity>
       </RBSheet>

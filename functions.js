@@ -2,7 +2,7 @@ import NetInfo from "@react-native-community/netinfo";
 import { firebase } from './config'
 import { format } from 'date-fns'
 import { Alert } from 'react-native'
-
+import { arrayUnion } from "firebase/firestore";
 
 export const checkConnection = () => {
     return NetInfo.fetch().then(state => {
@@ -127,7 +127,7 @@ export const getLocations = async () => {
         .get()
         .then(querySnapshot => {
             querySnapshot.forEach(documentSnapshot => {
-                locations.push({ key: `${documentSnapshot.id}`, value: `${documentSnapshot.data()["name"]}` });
+                locations.push({ label: `${documentSnapshot.data()["name"]}`, value: `${documentSnapshot.id}` });
             });
         });
     return locations
@@ -145,27 +145,23 @@ export const getLocationName = async (id) => {
     return location
 }
 
-export const hanldeCreateEvent = (selectedLocation, title, absent, sick_leave, annual_leave, createdBy, ipAddress) => {
+export const hanldeCreateEvent = (selectedLocation, title, sick_leave, annual_leave, createdBy, ipAddress, timerSelected) => {
     firebase.firestore()
         .collection('events')
         .add({
             start: format(new Date(), "yyyy-MM-dd H:mm"),
+            end: (new Date().getTime() / 1000) + timerSelected,
             ip_address: ipAddress,
             location: selectedLocation,
             code: generatePasscode(6),
             title: title,
             attendance: [],
-            absent: absent,
+            absent: [],
             sick_leave: sick_leave,
             annual_leave: annual_leave,
             hasEnded: false,
             createdBy: createdBy
         })
-    // .then(() => {
-    //     Alert.alert('Event Created', 'New event has been created', [
-    //         { text: 'Ok' },
-    //     ]);
-    // })
 }
 export const alertCancelEvent = (id) => {
     Alert.alert('Cancel Event', 'Are you sure you want to cancel this event?', [
@@ -185,7 +181,6 @@ export const cancelEvent = async (id) => {
         .doc(id)
         .delete()
         .then(() => {
-            //Event needs to be deleted from attendance table
             firebase.firestore()
                 .collection('attendance')
                 .where('event_id', '==', id)
@@ -199,7 +194,6 @@ export const cancelEvent = async (id) => {
                             .then(() => {
                                 console.log(`Event ${id} deleted from attendance!`);
                                 setHasAttended(false)
-                                // clearInterval(eventTimer)
                             });
                     });
                 });
@@ -253,18 +247,22 @@ export const getStatusIcon = async (status) => {
     switch (status) {
         case 'attendance':
         case '1':
+        case 1:
             icon = 'done'
             break;
         case 'absent':
         case '0':
+        case 0:
             icon = 'close'
             break;
         case 'annual_leave':
         case '2':
+        case 2:
             icon = 'flight'
             break;
         case 'sick_leave':
         case '3':
+        case 3:
             icon = 'favorite'
             break;
     }
@@ -342,8 +340,63 @@ export const finishEvent = async (id) => {
             hasEnded: true,
         })
         .then(() => {
-            Alert.alert('Event has finish', 'This is event has finished', [
-                { text: 'Ok' },
-            ]);
+            getAllAbsents(id)
         })
+}
+
+const getAllAbsents = async (eventId) => {
+    await firebase.firestore()
+        .collection('employees')
+        .where('status_id', '==', '1')
+        .where('permission', '==', 'Associate')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                getAttendance(eventId, documentSnapshot.id)
+
+            });
+        })
+        .then(() => {
+            Alert.alert('Event has finish', 'See the report in the Report screen',
+                [
+                    { text: 'Ok' },
+                ]
+            );
+        })
+}
+
+const getAttendance = (eventId, empId) => {
+    firebase.firestore()
+        .collection('events')
+        .doc(eventId)
+        .get()
+        .then(documentSnapshot => {
+            if (documentSnapshot.data()['attendance'].includes(empId) == false) {
+                addAbsents(eventId, empId)
+            }
+        });
+
+}
+const addAbsents = (eventId, empId) => {
+    firebase.firestore()
+        .collection('events')
+        .doc(eventId)
+        .update({
+            absent: arrayUnion(empId),
+        })
+}
+
+
+export const getCurrentEventDate = async () => {
+    let dates = []
+    await firebase.firestore()
+        .collection('events')
+        .orderBy('start', 'desc')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                dates.push({ label: `${format(new Date(documentSnapshot.data()["start"]), 'E dd MMM yy - HH:mm')}`, value: `${documentSnapshot.data()["start"]}` });
+            });
+        });
+    return dates
 }

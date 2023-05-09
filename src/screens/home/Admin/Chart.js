@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image, StyleSheet } from 'react-native'
+import { Text, View, Dimensions, FlatList, TouchableOpacity, ScrollView, Image, RefreshControl } from 'react-native'
 import { VictoryPie } from 'victory-native'
 import { Svg } from 'react-native-svg'
 import { COLORS, ROUTES } from '../../..'
@@ -12,9 +12,12 @@ import { shareAsync } from 'expo-sharing'
 import * as Print from 'expo-print';
 import BoxInfo from '../../../components/BoxInfo'
 import EmployeeItem from '../../../components/EmployeeItem'
+import RNPickerSelect from 'react-native-picker-select';
+import { getCurrentEventDate } from '../../../../functions'
+import { format } from 'date-fns'
 
 const Chart = ({ navigation }) => {
-    const [eventDate, setEventDate] = useState('')
+    const [eventDate, setEventDate] = useState()
     const [attend, setAttend] = useState(0)
     const [absent, setAbsent] = useState(0)
     const [sickLeave, setSickLeave] = useState(0)
@@ -22,38 +25,32 @@ const Chart = ({ navigation }) => {
     const [totalAssitance, setTotalAssistance] = useState(0)
     const [viewDetails, setViewDetails] = useState(false)
     const [clear, setClear] = useState([])
-    const [dates, setDates] = useState()
+    const [dates, setDates] = useState('')
     const [eventExist, setEventExist] = useState(true)
+    const [refreshing, setRefreshing] = React.useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false);
+            getTotalAttendance()
+        }, 2000);
+    }, []);
 
     let employees = clear
 
     useEffect(() => {
-        if (eventDate == '') {
-            getCurrentEventDate()
-        } else {
-            getTotalAttendance()
-        }
+        getCurrentEventDate().then(res => {
+            if (res.length > 0) {
+                if (eventDate == '') setEventDate(res[0]['label'])
+                setDates(res)
+                getTotalAttendance()
+                setEventExist(true)
+            } else {
+                setEventExist(false)
+            }
+        })
     }, [eventDate])
-
-
-    getCurrentEventDate = async () => {
-        firebase.firestore()
-            .collection('events')
-            .orderBy('start', 'desc')
-            .onSnapshot({
-                next: querySnapshot => {
-                    const res = querySnapshot.docs.map(docSnapshot => ({ key: docSnapshot.data()['start'], value: docSnapshot.data()['start'] }))
-                    if (res.length > 0) {
-                        setEventDate(res[0]['key'])
-                        setDates(res)
-                        getTotalAttendance()
-                        setEventExist(true)
-                    } else {
-                        setEventExist(false)
-                    }
-                }
-            })
-    }
 
     getTotalAttendance = () => {
         const conn = firebase.firestore()
@@ -122,21 +119,6 @@ const Chart = ({ navigation }) => {
         { x: `${slPercent}% ❤`, y: slPercent },
         { x: `${alPercent}% ✈️`, y: alPercent },
     ]
-
-    const data = [
-        {
-            id: 1,
-            name: 'Item 1'
-        },
-        {
-            id: 2,
-            name: 'Item 2'
-        },
-        {
-            id: 3,
-            name: 'Item 3'
-        }
-    ];
 
     const generatePDF = async () => {
         const array = employees
@@ -290,26 +272,14 @@ const Chart = ({ navigation }) => {
         })
 
         await shareAsync(pdfName)
-        // console.log(uri)
-        // Alert.alert('Successfuly saved'[
-        //     { text: 'Cancel', style: 'cancel' },
-        //     { text: 'Open', onPress: () => openFile(uri) }
-        // ])
-    }
 
-    // const openFile = (filepath) => {
-    //     const path = FileViewer.open(filepath) // absolute-path-to-my-local-file.
-    //         .then(() => { 
-    //         })
-    //         .catch((error) => { 
-    //         });
-    // }
+    }
 
     return (
         <>
             {eventExist ? (
                 <View>
-                    <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center  py-4 px-6 justify-center `} style={{
+                    <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center px-6 justify-center `} style={{
                         shadowColor: '#000',
                         shadowOffset: {
                             width: 0,
@@ -321,34 +291,33 @@ const Chart = ({ navigation }) => {
                     }}>
                         <View className={`w-screen px-3 d-flex flex-row justify-between`}>
                             <View className={`w-10/12 `}>
-                                <SelectList
-                                    data={dates}
-                                    setSelected={selectedDate => { setEventDate(selectedDate), getTotalAttendance() }}
-                                    placeholder={eventDate}
-                                    placeholderTextColor='#726F6F'
-                                    inputStyles={{
-                                        color: "#666",
-                                        padding: 2,
-                                        margin: 0,
+                                <RNPickerSelect
+                                    onValueChange={(value) => { setEventDate(value) }}
+                                    placeholder={{ label: 'Select date...' }}
+                                    style={{
+                                        inputIOS: {
+                                            paddingHorizontal: 15,
+                                            paddingVertical: 15,
+                                            backgroundColor: COLORS.brightGrey,
+                                            borderRadius: 15,
+                                            borderColor: COLORS.white,
+                                            color: 'black',
+                                            marginBottom: 15
+                                        },
+                                        placeholder: {
+                                            color: COLORS.placeHolder,
+                                        },
+                                        inputAndroid: {
+                                            paddingHorizontal: 15,
+                                            paddingVertical: 15,
+                                            backgroundColor: COLORS.white,
+                                            borderRadius: 15,
+                                            borderColor: COLORS.white,
+                                            color: 'black',
+                                            marginBottom: 15
+                                        },
                                     }}
-                                    boxStyles={{
-                                        borderRadius: 20,
-                                        color: 'black',
-                                        backgroundColor: '#F5F5F5',
-                                        borderColor: 'white',
-                                    }}
-                                    dropdownStyles={{
-                                        borderWidth: 0,
-                                        borderRadius: 4,
-                                        borderColor: '#DDDDDD',
-                                        backgroundColor: '#DDDDDD',
-                                        color: '#fff',
-                                        marginLeft: 5,
-                                        marginRight: 5,
-                                        marginBottom: 5,
-                                        marginTop: 0,
-                                        position: 'relative',
-                                    }}
+                                    items={dates}
                                 />
                             </View>
                             <TouchableOpacity onPress={generatePDF} >
@@ -359,9 +328,11 @@ const Chart = ({ navigation }) => {
                     </View>
                     {viewDetails ? (
                         <>
-                            <ScrollView>
+                            <ScrollView refreshControl={
+                                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                            }>
                                 <Text className={`${tailwind.titleText} text-[${COLORS.grey}] ml-5`}>Graphic Report</Text>
-                                <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5`}>{eventDate}</Text>
+                                <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5`}>{format(new Date(eventDate), 'E dd MMM yy - HH:mm')}</Text>
                                 <View style={{ flex: 1, flexDirection: 'row', alignContent: 'space-between', marginBottom: 20 }}>
                                     <View style={{ width: '80%', flexDirection: 'row', alignContent: 'center', }}>
                                         <VictoryPie
@@ -400,23 +371,13 @@ const Chart = ({ navigation }) => {
                         }}>
                             <Image source={require('../../../../assets/empty.webp')} style={{ height: 200, width: '100%' }} />
                             <View className={`${tailwind.viewWrapper} px-4`}>
-                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>No records found</Text>
+                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center`}>Search report</Text>
                                 <View className={`flex-row justify-center items-center`}>
-                                    <Text className={`${tailwind.slogan} text-[${COLORS.grey}] text-center`} >No records found for {eventDate} </Text>
+                                    <Text className={`${tailwind.slogan} text-[${COLORS.grey}] text-center`} >Select a date to see the report </Text>
                                 </View>
                             </View>
                         </View>
                     }
-                    {/* <BottomSheet isVisible={isVisible}>
-                        {bottomSheetList.map((l, i) => (
-                            <ListItem bottomDivider key={i} containerStyle={l.containerStyle} onPress={l.onPress} borderRadius='10'>
-                                <Icon name={l.icon} size={30} color={COLORS.primary} />
-                                <ListItem.Content>
-                                    <ListItem.Title >{l.title}</ListItem.Title>
-                                </ListItem.Content>
-                            </ListItem>
-                        ))}
-                    </BottomSheet> */}
                 </View >
             ) :
                 <View style={{
@@ -441,12 +402,5 @@ const Chart = ({ navigation }) => {
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-    },
-});
 
 export default Chart

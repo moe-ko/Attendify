@@ -6,7 +6,7 @@ export default {
     lightblue500: '#C1EDFA',
     lightblue600: '#AEE5FA',
     lightblue700: '#A0D4F8',
-    placeHolder: '#000',
+    placeHolder: '#cdcdce',
     grey: '#7E7E7E',
     white: '#FFF',
     blueA700: '#0091EA',
