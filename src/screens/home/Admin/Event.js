@@ -103,9 +103,7 @@ const Event = ({ props }) => {
     const getPrevEvents = () => {
         firebase.firestore()
             .collection('events')
-            .orderBy('start', 'desc')
             .where('hasEnded', '==', true)
-
             .onSnapshot({
                 next: querySnapshot => {
                     const res = querySnapshot.docs.map(docSnapshot => (
