@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import { checkIpAddress, getEmployeeId, isAdmin } from '../../../functions'
 import Event from './Admin/Event'
-import Geolocation from '../../components/Geolocation'
+import { COLORS } from '../..'
 
 const Home = ({ navigation }) => {
     const [ipAddress, setIpAddress] = useState('')
@@ -24,16 +24,8 @@ const Home = ({ navigation }) => {
     }, []);
 
     return (
-        <View>
-            <View>
-                {/* {loading ? (
-                    <Text>Loading</Text>
-                ) : ( */}
-                {/* <Geolocation /> */}
-                <Event props={{ ipAddress: ipAddress, empId: empId }} />
-                {/* )} */}
-
-            </View>
+        <View className={`min-h-screen bg-[${COLORS.brightGrey}]`}>
+            <Event props={{ ipAddress: ipAddress, empId: empId }} />
         </View>
     )
 }

@@ -3,10 +3,11 @@ import { Component } from 'react'
 import React, { useState, useEffect } from 'react'
 import { firebase } from '../../../config'
 import { SelectList } from 'react-native-dropdown-select-list'
-import { handleSignUp, fetchUnit } from '../../../functions'
+import { handleSignUp, getAllUnits, getAllSubunitsByUnitId } from '../../../functions'
 import tailwind from '../../constants/tailwind'
 import { COLORS, ROUTES } from '../..'
 import { Platform } from 'react-native'
+import RNPickerSelect from 'react-native-picker-select';
 
 const SignUp = ({ navigation }) => {
 
@@ -18,36 +19,22 @@ const SignUp = ({ navigation }) => {
     const [checkValidEmail, setCheckValidEmail] = useState(false);
     const [password, setPassword] = useState('');
     const [validpassword, setValidPassword] = useState(false);
-
     const [validpasswordSpace, setValidPasswordSpace] = useState(false);
     const [validpasswordChar, setValidPasswordChar] = useState(false);
-
     const [confirmPassword, setConfirmPassword] = useState('');
     const [validconfirmPassword, setValidConfirmPassword] = useState();
     const [error, setError] = useState('');
     const [subunitSelected, setSubunitSelected] = useState('');
-    const units = []
+    const [units, setUnits] = useState([])
+    const [subunits, setSubunits] = useState([])
 
     useEffect(() => {
-        getUnits()
-    })
+        if (units.length <= 0) getAllUnits().then(res => setUnits(res))
+    }, [units])
 
     useEffect(() => {
         password === confirmPassword ? setValidConfirmPassword(true) : setValidConfirmPassword(false);
     }, [, confirmPassword]);
-
-    const getUnits = () => {
-        firebase.firestore()
-            .collection('subunits')
-            .get()
-            .then(querySnapshot => {
-                let res = []
-                querySnapshot.forEach(documentSnapshot => {
-                    fetchUnit(documentSnapshot.data()['name'], documentSnapshot.data()['unit_id'])
-                        .then((res) => units.push({ key: documentSnapshot.id, value: res }))
-                });
-            });
-    }
 
     const handleCheckEmail = (text) => {
         let regex = /^[a-z]+\.[a-z]+(@infosys.com)$/;
@@ -72,9 +59,9 @@ const SignUp = ({ navigation }) => {
     };
 
     return (
-        // <ScrollView scrollEnabled="false">
-            <View className="h-screen items-center p-5 w-full my-2">
-                <View className={`${tailwind.viewWrapper} pb-6`}>
+        <KeyboardAvoidingView behavior="position">
+            <View className={`bg-[${COLORS.brightGrey}] items-center p-5 w-full min-h-screen`}>
+                <View className={`${tailwind.viewWrapper}  pb-6`}>
                     <Text className={`${tailwind.titleText} pb-3`}>Let's sign you up</Text>
                     <Text className={`${tailwind.slogan}`}>Enter your information below to continue with your account</Text>
                 </View>
@@ -107,68 +94,62 @@ const SignUp = ({ navigation }) => {
                 Employee Name should be in alphabets </Text>} */}
 
                 <View className={`${tailwind.viewWrapper}`}>
-                    {Platform.OS == 'ios' ? (
-                        <SelectList
-                            data={units}
-                            setSelected={setSubunitSelected}
-                            placeholder='Select Unit/Subunit'
-                            placeholderTextColor={COLORS.primary}
-                            inputStyles={{
-                                padding: 2,
-                                margin: 0,
-                                textAlign: 'left'
-                            }}
-                            boxStyles={{
+                    <RNPickerSelect
+                        onValueChange={(value) => { getAllSubunitsByUnitId(value).then(res => setSubunits(res)) }}
+                        placeholder={{ label: 'Select unit...' }}
+                        style={{
+                            inputIOS: {
+                                paddingHorizontal: 15,
+                                paddingVertical: 15,
+                                backgroundColor: COLORS.white,
                                 borderRadius: 15,
                                 borderColor: COLORS.white,
-                                color: COLORS.white,
-                                backgroundColor: COLORS.white
-                            }}
-                            dropdownStyles={{
-                                borderWidth: 1,
-                                borderRadius: 10,
-                                borderColor: COLORS.lightGrey,
-                                backgroundColor: COLORS.lightGreyishBlue,
-                                color: COLORS.white,
-                                marginLeft: 5,
-                                marginRight: 5,
-                                marginBottom: 5,
-                                marginTop: 0,
-                                position: 'relative'
-                            }}
-                        />) : (
-                        <SelectList
-                            data={units}
-                            setSelected={setSubunitSelected}
-                            placeholder='Select Unit/Subunit'
-                            placeholderTextColor={COLORS.placeHolder}
-                            inputStyles={{
-                                padding: 5,
-                                margin: 0,
-                                marginRight: 10,
-                                textAlign: 'left'
-
-                            }}
-                            boxStyles={{
+                                color: 'black',
+                                marginBottom: 10
+                            },
+                            placeholder: {
+                                color: COLORS.placeHolder,
+                            },
+                            inputAndroid: {
+                                paddingHorizontal: 15,
+                                paddingVertical: 15,
+                                backgroundColor: COLORS.white,
                                 borderRadius: 15,
-
                                 borderColor: COLORS.white,
-                                color: COLORS.white,
-                                backgroundColor: COLORS.white
-                            }}
-                            dropdownStyles={{
-                                borderWidth: 1,
-                                borderRadius: 10,
-                                borderColor: COLORS.lightGrey,
-                                backgroundColor: COLORS.lightGreyishBlue,
-                                color: COLORS.white,
-                                marginLeft: 5,
-                                marginRight: 5,
-                                marginBottom: 5,
-                                marginTop: 0,
-                                position: 'relative'
-                            }}
-                        />)}
+                                color: 'black',
+                                marginBottom: 10
+                            },
+                        }}
+                        items={units}
+                    />
+                    <RNPickerSelect
+                        onValueChange={(value) => { setSubunitSelected(value) }}
+                        placeholder={{ label: 'Select subunit...' }}
+                        style={{
+                            inputIOS: {
+                                paddingHorizontal: 15,
+                                paddingVertical: 15,
+                                backgroundColor: COLORS.white,
+                                borderRadius: 15,
+                                borderColor: COLORS.white,
+                                color: 'black',
+                                marginBottom: 0
+                            },
+                            placeholder: {
+                                color: COLORS.placeHolder,
+                            },
+                            inputAndroid: {
+                                paddingHorizontal: 15,
+                                paddingVertical: 15,
+                                backgroundColor: COLORS.white,
+                                borderRadius: 15,
+                                borderColor: COLORS.white,
+                                color: 'black',
+                                marginBottom: 0
+                            },
+                        }}
+                        items={subunits}
+                    />
                 </View>
                 <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
@@ -182,49 +163,8 @@ const SignUp = ({ navigation }) => {
                     />
 
                 </View>
-                {checkValidEmail && (<Text className={`${tailwind.validate}`}>please use the email associated with @infosys.com</Text>)}
 
-                {/* <Text className="text-[#ff0000]"></Text>)
-                     <View className={`${tailwind.viewWrapper}`}>
-                         <SelectList
-                            data={units}
-                            setSelected={setSubunitSelected}
-                            placeholder='Select Unit/Subunit'
-                            placeholderTextColor='#000'
-                            inputStyles={{
-                              //  padding: 0,
-                              //  margin: 0,
-                            }}
-                            boxStyles={{
-                                borderRadius: 15,
-                                borderColor: '#fff',
-                                color: '#fff',
-                                backgroundColor: '#fff'
-                            }}
-                            dropdownStyles={{
-                                borderWidth: 1,
-                                borderRadius: 4,
-                                borderColor: '#DDDDDD',
-                                backgroundColor: '#DDDDDD',
-                                color: '#fff',
-                                marginLeft: 5,
-                                marginRight: 5,
-                                marginBottom: 5,
-                                marginTop: 0,
-                                position: 'relative'
-                            }}
-                        /> 
-                      </View> */}
-                {/* <Picker
-                           selectedValue={setSubunitSelected}
-                            onValueChange={(itemValue) => setSubunitSelected(itemValue)}
-                            placeholder='Select Unit/Subunit'
-                         >
-                        <Picker.Item label="Java" value="java" />
-                        <Picker.Item label="JavaScript" value="js" />
-                        <Picker.Item label="Python" value="python" />
-                        <Picker.Item label="Ruby" value="ruby" />
-                    </Picker> */}
+                {checkValidEmail && (<Text className={`${tailwind.validate}`}>please use the email associated with @infosys.com</Text>)}
 
                 <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
@@ -240,11 +180,9 @@ const SignUp = ({ navigation }) => {
 
                 {validpasswordSpace && <Text className={`${tailwind.validate}`}>Password shouldn`t contain space</Text>}
                 {validpassword && <Text className={`${tailwind.validate}`}>Password must be 8-16 characters long</Text>}
-
                 {validpasswordChar && <Text className={`${tailwind.validate}`}>Password should contain atleast an uppercase </Text>}
                 {validpasswordChar && <Text className={`${tailwind.validate}`}>Password should contain atleast a lowercase</Text>}
                 {validpasswordChar && <Text className={`${tailwind.validate}`}>Password should contain atleast a number</Text>}
-
 
                 <View className={`${tailwind.viewWrapper}`}>
                     <TextInput
@@ -256,12 +194,8 @@ const SignUp = ({ navigation }) => {
                         autoCorrect={false}
                     />
                 </View>
-                {validconfirmPassword ? (<Text className={`text-red-500`}></Text>)
-                    : (<Text className={`text-red-500`}>Password should match</Text>)}
-
-
+                {validconfirmPassword ? (<Text className={`text-red-500`}></Text>) : (<Text className={`text-red-500`}>Password should match</Text>)}
                 <View className={`${tailwind.viewWrapper}`}>
-
                     <TouchableOpacity
                         className={`${tailwind.buttonBlue}`}
                         onPress={() => { handleSignUp(navigation, empId, email, password, name, subunitSelected) }}
@@ -269,10 +203,7 @@ const SignUp = ({ navigation }) => {
                     >
                         <Text className={`${tailwind.buttonWhiteText}`}>Create account</Text>
                     </TouchableOpacity>
-
                 </View>
-
-
                 <View className={`flex-row justify-center items-center`}>
                     <Text className={`text-center`}>Already an account?
                     </Text>
@@ -282,7 +213,7 @@ const SignUp = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-        // </ScrollView>
+        </KeyboardAvoidingView>
     );
 };
 export default SignUp;

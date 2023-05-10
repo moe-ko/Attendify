@@ -167,7 +167,6 @@ export const alertCancelEvent = (id) => {
     Alert.alert('Cancel Event', 'Are you sure you want to cancel this event?', [
         {
             text: 'No',
-            onPress: () => console.log('No'),
             style: 'cancel',
         },
         { text: 'Yes', onPress: () => cancelEvent(id) },
@@ -192,7 +191,6 @@ export const cancelEvent = async (id) => {
                             .doc(documentSnapshot.id)
                             .delete()
                             .then(() => {
-                                console.log(`Event ${id} deleted from attendance!`);
                                 setHasAttended(false)
                             });
                     });
@@ -207,39 +205,6 @@ export const cancelEvent = async (id) => {
             deleted = true
         })
     return deleted
-}
-
-export const getDates = async () => {
-    let data = []
-    await new firebase.firestore()
-        .collection('events')
-        .orderBy('end', 'desc')
-        .then(querySnapshot => {
-            querySnapshot.forEach(docSnapshot => {
-                console.log(docSnapshot.data()['end'])
-                // locations.push({ key: `${documentSnapshot.id}`, value: `${documentSnapshot.data()["name"]}` });
-            });
-        });
-    // .onSnapshot({
-    //     next: querySnapshot => {
-    //         const res = querySnapshot.docs.map(docSnapshot => ({ date: docSnapshot.data()['end'] }))
-    //         if (res.length > 0) {
-    //             res.forEach(documentSnapshot => {
-    //                 data.push(documentSnapshot['date'])
-    //             })
-    //         }
-    //     }
-    // })
-
-    // firebase.firestore()
-    //     .collection('locations')
-    //     .get()
-    //     .then(querySnapshot => {
-    //         querySnapshot.forEach(documentSnapshot => {
-    //             locations.push({ key: `${documentSnapshot.id}`, value: `${documentSnapshot.data()["name"]}` });
-    //         });
-    //     });
-    // return data
 }
 
 export const getStatusIcon = async (status) => {
@@ -300,9 +265,6 @@ export const updateStatus = async (id, statusId) => {
         .update({
             status_id: statusId,
         })
-        .then(() => {
-            console.log('Status updated!');
-        });
 }
 
 export const getEmployeesByStatus = async (status_id) => {
@@ -399,4 +361,43 @@ export const getCurrentEventDate = async () => {
             });
         });
     return dates
+}
+
+export const getAllUnits = async () => {
+    let units = []
+    await firebase.firestore()
+        .collection('units')
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                units.push({ label: documentSnapshot.data()['name'], value: documentSnapshot.id })
+            });
+        });
+    return units
+}
+export const getAllSubunitsByUnitId = async (id) => {
+    let subunits = []
+    await firebase.firestore()
+        .collection('subunits')
+        .where('unit_id', '==', id)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                subunits.push({ label: documentSnapshot.data()['name'], value: documentSnapshot.id })
+            });
+        });
+    return subunits
+}
+export const getCurrentEmployeeStatus = async (email) => {
+    let status_id = ''
+    await firebase.firestore()
+        .collection('employees')
+        .where('email', '==', email)
+        .get()
+        .then(querySnapshot => {
+            querySnapshot.forEach(documentSnapshot => {
+                status_id = documentSnapshot.data()['status_id']
+            });
+        });
+    return status_id
 }

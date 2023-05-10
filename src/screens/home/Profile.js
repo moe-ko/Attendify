@@ -120,9 +120,6 @@ const Profile = ({ navigation }) => {
             .update({
                 subunit_id: newUnit,
             })
-            .then(() => {
-                console.log('Unit updated!');
-            });
         getUnit(newUnit)
         setIsModalUnitsVisible(false)
     }
@@ -130,7 +127,9 @@ const Profile = ({ navigation }) => {
     const changePassword = () => {
         firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
             .then(() => {
-                console.log('Password email sent')
+                Alert.alert('Reset password email sent', `Please check your email/spams`, [
+                    { text: 'Ok' },
+                ]);
             }).catch(e => {
                 console.log(e)
             })
@@ -208,19 +207,55 @@ const Profile = ({ navigation }) => {
     const ProfileHeader = () => {
         return (
             <>
-                <View className={`${tailwind.container2}`}>
-                    {/* Blue header */}
-                </View>
-                <View className=" h-32 w-32 rounded-full mx-auto my-[-80] mb-3 justify-center items-center">
+                <View className={`${tailwind.container2} align-items-center mb-0`}
+                    style={{
+                        shadowColor: '#000',
+                        shadowOffset: {
+                            width: 0,
+                            height: 2,
+                        },
+                        shadowOpacity: 0.25,
+                        shadowRadius: 4,
+                        elevation: 5,
+                        zIndex: 3,
+                        alignItems: 'center'
+                    }}
+                >
                     <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
                         {loadingAvatar ? <>
                             <Avatar
                                 className=""
                                 size={130}
                                 rounded
-                                source={{ uri: 'https://media.tenor.com/images/e549f9798674301c5af2c91581194091/tenor.gif' }}
-                                containerStyle={{ backgroundColor: COLORS.white }}
+                                source={{ uri: avatar }}
+                                containerStyle={{
+                                    backgroundColor: COLORS.white,
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                    zIndex: 3,
+                                }}
                             >
+                                <View style={{
+                                    position: 'absolute',
+                                    top: 90,
+                                    left: 90,
+                                    backgroundColor: COLORS.primary,
+                                    color: COLORS.white,
+                                    borderRadius: 100,
+                                    shadowColor: '#000',
+                                    shadowOffset: { width: -2, height: 0 },
+                                    shadowOpacity: 0.5,
+                                    shadowRadius: 2,
+                                    elevation: 10,
+                                }} >
+                                    <Avatar size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={COLORS.white} />
+                                </View>
                             </Avatar>
                         </> : <>
                             <Avatar
@@ -228,7 +263,18 @@ const Profile = ({ navigation }) => {
                                 size={130}
                                 rounded
                                 source={{ uri: avatar }}
-                                containerStyle={{ backgroundColor: COLORS.white }}
+                                containerStyle={{
+                                    backgroundColor: COLORS.white,
+                                    shadowColor: '#000',
+                                    shadowOffset: {
+                                        width: 0,
+                                        height: 2,
+                                    },
+                                    shadowOpacity: 0.25,
+                                    shadowRadius: 4,
+                                    elevation: 5,
+                                    zIndex: 3,
+                                }}
                             >
                                 <View style={{
                                     position: 'absolute',
@@ -247,14 +293,7 @@ const Profile = ({ navigation }) => {
                                 </View>
                             </Avatar>
                         </>}
-
                     </TouchableOpacity>
-                </View>
-                <View className="pb-4 justify-center items-center">
-                    <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
-                        <Text className={`${tailwind.titleText} text-[${COLORS.grey}]`}>{name}</Text>
-                    </TouchableOpacity>
-                    <Text className={`${tailwind.slogan}`}>{empId}</Text>
                 </View>
             </>
         )
@@ -273,10 +312,17 @@ const Profile = ({ navigation }) => {
     }
 
     return (
-        <ScrollView>
+        <>
+            <ProfileHeader />
+            {/* <ScrollView> */}
             <KeyboardAvoidingView>
-                <View className={`${tailwind.containerWrapper2}`}>
-                    <ProfileHeader />
+                <View className={`${tailwind.containerWrapper2} bg-[${COLORS.lightblue700}]  min-h-screen mt-16`}>
+                    <View className="pb-4 justify-center items-center">
+                        <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
+                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center mt-2`}>{name}</Text>
+                        </TouchableOpacity>
+                        <Text className={`${tailwind.slogan}`}>{empId}</Text>
+                    </View>
                     <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
                         <ItemContent title={'Email'} data={email} iconName={'email'} />
                     </ListItem>
@@ -297,7 +343,7 @@ const Profile = ({ navigation }) => {
                         </ListItem>
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                        <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 20, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
+                        <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
                             <ItemContent title={'Unit'} data={`${unit}`} iconName={'group'} />
                             <ListItem.Chevron />
                         </ListItem>
@@ -527,7 +573,7 @@ const Profile = ({ navigation }) => {
                         </View>
                     </Modal>
                     <View className={`${tailwind.viewWrapper} px-4`}>
-                        {permission == 'Admin' || permission == 'Super Admin' ? null : (<TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                        {permission == 'Admin' || permission == 'Super Admin' ? null : (<TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-2`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
                             <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
                         </TouchableOpacity>)}
                         <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
@@ -536,8 +582,8 @@ const Profile = ({ navigation }) => {
                     </View>
                 </View>
             </KeyboardAvoidingView>
-        </ScrollView>
-
+            {/* </ScrollView> */}
+        </>
     )
 }
 

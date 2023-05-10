@@ -9,6 +9,7 @@ import { checkConnection } from './functions';
 import { Offline } from './src/screens/Offline';
 import MenuDrawerNavigator from './src/navigations/MenuDrawerNavigator';
 import { LogBox } from 'react-native';
+import BottomTabNavigator from './src/navigations/BottomNavigator';
 
 LogBox.ignoreAllLogs()
 
@@ -31,7 +32,6 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    console.log('Checking Connection')
     checkConnection().then(res => {
       setConnection(res)
     })
@@ -42,7 +42,7 @@ export default function App() {
   return (
     connection ? (
       <NavigationContainer>
-        {(user) ? <MenuDrawerNavigator /> : <WelcomeStackNavigator />}
+        {(user) ? <BottomTabNavigator /> : <WelcomeStackNavigator />}
       </NavigationContainer>
     ) : (<Offline onCheck={checkConnection} />)
   )

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { View, Text, Alert, TextInput, TouchableOpacity, KeyboardAvoidingView, ScrollView, ActivityIndicator, Platform, FlatList } from 'react-native'
 import { firebase } from '../../../../config'
 import { format } from 'date-fns'
-import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon, finishEvent, getEmployeeName } from '../../../../functions'
+import { getLocationName, getLocations, hanldeCreateEvent, alertCancelEvent, getPermission, getEmployeesByStatus, getEventIpAddress, getStatusIcon, finishEvent, getEmployeeName, getCurrentEmployeeStatus } from '../../../../functions'
 import { arrayUnion } from "firebase/firestore";
 import tailwind from '../../../constants/tailwind'
 import Icon from 'react-native-vector-icons/Ionicons'
@@ -37,12 +37,16 @@ const Event = ({ props }) => {
     // For keeping a track on the Timer
     const [timerEnd, setTimerEnd] = useState(false);
 
+    const [myStatusId, setMyStatusId] = useState()
+
     useEffect(() => {
         getPermission(firebase.auth().currentUser?.email).then(res => setPermission(res))
+        getCurrentEmployeeStatus(firebase.auth().currentUser?.email).then(res => setMyStatusId(res))
         getEmployeesByStatus('2').then(res => setLeaveEmps(res))
         getEmployeesByStatus('3').then(res => setSickEmps(res))
         getEventIpAddress(currentEvent['id']).then(res => setEventIpAddress(res))
         getPrevEvents()
+
     }, [permission, eventIpAddress])
 
     if (locations == '') {
@@ -50,6 +54,7 @@ const Event = ({ props }) => {
             setLocations(res)
         })
     }
+
 
     const getCurrentEvent = () => {
         firebase.firestore()
@@ -233,7 +238,6 @@ const Event = ({ props }) => {
     }
 
     const checkEventIp = (code, eventId) => {
-        console.log('id', eventId)
         if (locationName != 'Online' && eventIpAddress != currentEvent['ip_address']) {
             Alert.alert('Check your connection', 'Please connect to the same Manager wifi network and try again', [
                 {
@@ -249,7 +253,7 @@ const Event = ({ props }) => {
         <>
             <ScrollView>
                 <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}  >
-                    <View className="items-center px-4 w-full">
+                    <View className={`items-center px-4 w-full`}>
                         {currentEvent ? (
                             <>
                                 <View className={`${tailwind.viewWrapper}`}>
@@ -328,31 +332,53 @@ const Event = ({ props }) => {
                                                                         letterSpacing: 10,
                                                                     }}
                                                                 />
-                                                                <Text className={`${tailwind.slogan} text-white text-center mt-3`}>Enter code</Text>
-                                                                <View className={`w-12/12 h-20 m-auto`}>
-                                                                    <OTPInputView
-                                                                        pinCount={6}
-                                                                        autoFocusOnLoad={false}
-                                                                        codeInputFieldStyle={{
-                                                                            color: COLORS.primary,
-                                                                            fontWeight: 'bold',
-                                                                            fontSize: 30,
-                                                                            height: 45,
-                                                                            borderWidth: 0,
-                                                                            borderBottomWidth: 3,
-                                                                            backgroundColor: 'white'
-
+                                                                {myStatusId == 0 ?
+                                                                    <View className={`bg-[#FF0000] p-3 my-2 rounded-2xl`}
+                                                                        style={{
+                                                                            shadowColor: '#000',
+                                                                            shadowOffset: {
+                                                                                width: 0,
+                                                                                height: 2,
+                                                                            },
+                                                                            shadowOpacity: 0.25,
+                                                                            shadowRadius: 4,
+                                                                            elevation: 5,
+                                                                            zIndex: 3,
+                                                                            alignItems: 'center'
                                                                         }}
-                                                                        codeInputHighlightStyle={{ borderColor: COLORS.secondary }}
-                                                                        onCodeFilled={code => { setCode(code) }}
-                                                                    />
-                                                                </View>
-                                                                <TouchableOpacity
-                                                                    className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`}
-                                                                    onPress={() => { checkEventIp(code, currentEvent['id']) }}
-                                                                >
-                                                                    <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
-                                                                </TouchableOpacity>
+                                                                    >
+                                                                        <Text className={`${tailwind.slogan} text-white text-center font-bold`}>Your account is inactive, please contact your manager to attend this meeting</Text>
+                                                                    </View>
+
+                                                                    :
+                                                                    <>
+                                                                        <Text className={`${tailwind.slogan} text-white text-center mt-3`}>Enter code</Text>
+                                                                        <View className={`w-12/12 h-20 m-auto`}>
+                                                                            <OTPInputView
+                                                                                pinCount={6}
+                                                                                autoFocusOnLoad={false}
+                                                                                codeInputFieldStyle={{
+                                                                                    color: COLORS.primary,
+                                                                                    fontWeight: 'bold',
+                                                                                    fontSize: 30,
+                                                                                    height: 45,
+                                                                                    borderWidth: 0,
+                                                                                    borderBottomWidth: 3,
+                                                                                    backgroundColor: 'white'
+
+                                                                                }}
+                                                                                codeInputHighlightStyle={{ borderColor: COLORS.secondary }}
+                                                                                onCodeFilled={code => { setCode(code) }}
+                                                                            />
+                                                                        </View>
+                                                                        <TouchableOpacity
+                                                                            className={`${tailwind.buttonWhite} w-10/12 m-auto mt-3 mb-5`}
+                                                                            onPress={() => { checkEventIp(code, currentEvent['id']) }}
+                                                                        >
+                                                                            <Text className={`${tailwind.buttonBlueText}`}>Attendify</Text>
+                                                                        </TouchableOpacity>
+                                                                    </>}
+
                                                             </>
                                                         }
                                                     </>
@@ -452,6 +478,7 @@ const Event = ({ props }) => {
                         <>
                             <Text className={`${tailwind.titleText} text-[${COLORS.grey}] mb-2 ml-5`}>Previous events</Text>
                             <FlatList
+                                marginBottom={200}
                                 data={prevEvents}
                                 renderItem={({ item }) => <Item id={item.id} title={item.title} startDate={item.startDate} totalAttendance={item.totalAttendance} location={item.location} createdBy={item.createdBy} />}
                                 keyExtractor={item => item.id}

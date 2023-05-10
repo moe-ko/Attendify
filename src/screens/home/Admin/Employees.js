@@ -89,7 +89,7 @@ const Employees = ({ navigation }) => {
 
     return (
         <SafeAreaView >
-            <View className={`bg-[${COLORS.white}]`}>
+            <View className={`bg-[${COLORS.brightGrey}] min-h-screen`}>
                 <View className={`${tailwind.viewWrapper} bg-[#FFFFFF] rounded-b-3xl items-center  py-4 justify-center`} style={{
                     shadowColor: '#000',
                     shadowOffset: {
@@ -114,7 +114,7 @@ const Employees = ({ navigation }) => {
                     </View>
                 </View>
                 <ScrollView>
-                    <FlatList marginBottom={100}
+                    <FlatList marginBottom={400}
                         data={filteredData}
                         keyExtractor={item => item['data']['employee_id']}
                         renderItem={(item) => <Item id={item.item['data']['employee_id']} data={item.item['data']} />}

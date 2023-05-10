@@ -32,16 +32,16 @@ const ReportHeader = () => {
           },
           backgroundColor: 'white',
         },
-        headerRight: () => {
-          return (
-            <TouchableOpacity onPress={() => navigation.openDrawer()}>
-              <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
-            </TouchableOpacity>
-          )
-        }
+        // headerRight: () => {
+        //   return (
+        //     <TouchableOpacity onPress={() => navigation.openDrawer()}>
+        //       <Icon name={'ios-menu'} size={30} color={COLORS.primary} style={{ marginRight: 10 }} />
+        //     </TouchableOpacity>
+        //   )
+        // }
       }}
     >
-      <Stack.Screen name={ROUTES.CHART} component={Chart} options={{ title: `Report`, headerTitleAlign: 'center'}} />
+      <Stack.Screen name={ROUTES.CHART} component={Chart} options={{ title: `Report`, headerTitleAlign: 'center' }} />
     </Stack.Navigator>
   )
 }

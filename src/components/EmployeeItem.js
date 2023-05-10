@@ -89,7 +89,6 @@ const EmployeeItem = ({ props }) => {
         query
       )
     refRBSheet.current.close()
-    // onRefresh()
   }
 
   const bottomSheetList = [
@@ -162,7 +161,6 @@ const EmployeeItem = ({ props }) => {
         </TouchableOpacity>
       </RBSheet>
     </>
-
   )
 }
 
