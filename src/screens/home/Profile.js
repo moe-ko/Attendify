@@ -120,9 +120,6 @@ const Profile = ({ navigation }) => {
             .update({
                 subunit_id: newUnit,
             })
-            .then(() => {
-                console.log('Unit updated!');
-            });
         getUnit(newUnit)
         setIsModalUnitsVisible(false)
     }
@@ -130,7 +127,9 @@ const Profile = ({ navigation }) => {
     const changePassword = () => {
         firebase.auth().sendPasswordResetEmail(firebase.auth().currentUser.email)
             .then(() => {
-                console.log('Password email sent')
+                Alert.alert('Reset password email sent', `Please check your email/spams`, [
+                    { text: 'Ok' },
+                ]);
             }).catch(e => {
                 console.log(e)
             })
@@ -315,275 +314,275 @@ const Profile = ({ navigation }) => {
     return (
         <>
             <ProfileHeader />
-            <ScrollView>
-                <KeyboardAvoidingView>
-                    <View className={`${tailwind.containerWrapper2} bg-[${COLORS.lightblue700}]  min-h-screen mt-16`}>
-                        <View className="pb-4 justify-center items-center">
-                            <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
-                                <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center mt-2`}>{name}</Text>
-                            </TouchableOpacity>
-                            <Text className={`${tailwind.slogan}`}>{empId}</Text>
-                        </View>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
-                            <ItemContent title={'Email'} data={email} iconName={'email'} />
-                        </ListItem>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                            <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
-                        </ListItem>
-                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
-                            <ItemContent title={'Status'} data={status} iconName={statusIcon} />
-                        </ListItem>
-                        {/* <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+            {/* <ScrollView> */}
+            <KeyboardAvoidingView>
+                <View className={`${tailwind.containerWrapper2} bg-[${COLORS.lightblue700}]  min-h-screen mt-16`}>
+                    <View className="pb-4 justify-center items-center">
+                        <TouchableOpacity onPress={() => setIsModalProfileVisible(!isModalProfileVisible)}>
+                            <Text className={`${tailwind.titleText} text-[${COLORS.grey}] text-center mt-2`}>{name}</Text>
+                        </TouchableOpacity>
+                        <Text className={`${tailwind.slogan}`}>{empId}</Text>
+                    </View>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10, borderTopLeftRadius: 20, borderTopRightRadius: 20 }} >
+                        <ItemContent title={'Email'} data={email} iconName={'email'} />
+                    </ListItem>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                        <ItemContent title={'Permission'} data={permission} iconName={'trending-up'} />
+                    </ListItem>
+                    <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
+                        <ItemContent title={'Status'} data={status} iconName={statusIcon} />
+                    </ListItem>
+                    {/* <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }}>
                         <ItemContent title={'Dark Mode'} data={'Off'} iconName={'visibility'} /> */}
-                        {/* <ListItem.Chevron /> */}
-                        {/* </ListItem> */}
-                        <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
-                            <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
-                                <ItemContent title={'Password'} data={'**********'} iconName={'lock'} />
-                                <ListItem.Chevron />
-                            </ListItem>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                            <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
-                                <ItemContent title={'Unit'} data={`${unit}`} iconName={'group'} />
-                                <ListItem.Chevron />
-                            </ListItem>
-                        </TouchableOpacity>
-                        {/* CHANGE PASSWORD MODAL */}
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={isModalPasswordVisible}
-                            onRequestClose={() => {
-                                Alert.alert('Modal has been closed.');
-                                setIsModalPasswordVisible(!isModalPasswordVisible);
-                            }}>
+                    {/* <ListItem.Chevron /> */}
+                    {/* </ListItem> */}
+                    <TouchableOpacity onPress={() => { setIsModalPasswordVisible(!isModalPasswordVisible) }}>
+                        <ListItem bottomDivider containerStyle={{ marginHorizontal: 10 }} >
+                            <ItemContent title={'Password'} data={'**********'} iconName={'lock'} />
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                        <ListItem containerStyle={{ marginHorizontal: 10, marginBottom: 10, borderBottomLeftRadius: 20, borderBottomRightRadius: 20 }} >
+                            <ItemContent title={'Unit'} data={`${unit}`} iconName={'group'} />
+                            <ListItem.Chevron />
+                        </ListItem>
+                    </TouchableOpacity>
+                    {/* CHANGE PASSWORD MODAL */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isModalPasswordVisible}
+                        onRequestClose={() => {
+                            Alert.alert('Modal has been closed.');
+                            setIsModalPasswordVisible(!isModalPasswordVisible);
+                        }}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}>
                             <View style={{
-                                flex: 1,
-                                justifyContent: 'center',
+                                width: '80%',
+                                margin: 20,
+                                backgroundColor: COLORS.white,
+                                borderRadius: 20,
+                                padding: 10,
                                 alignItems: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)'
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
                             }}>
-                                <View style={{
-                                    width: '80%',
-                                    margin: 20,
-                                    backgroundColor: COLORS.white,
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
-                                    <Text className={`${tailwind.titleText} pt-5`}>Change password</Text>
-                                    {emailSent ? (
-                                        <>
-                                            <Avatar
-                                                icon={{
-                                                    name: 'done',
-                                                    type: 'material',
-                                                    size: 40,
-                                                    color: COLORS.primary
-                                                }}
-                                            />
-                                            <Text className={`${tailwind.slogan} pb-5`}>Email sent</Text>
-                                            <View className={`${tailwind.viewWrapper}`}>
-                                                <TouchableOpacity
-                                                    className={`${tailwind.buttonBlue}`}
-                                                    onPress={() => { setEmailSent(!emailSent), setIsModalPasswordVisible(!isModalPasswordVisible) }}>
-                                                    <Text className={`${tailwind.buttonWhiteText}`}>Ok</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Text className={`${tailwind.slogan} py-5`}>An email will be sent to {email}</Text>
-                                            <View className={`${tailwind.viewWrapper}`}>
-                                                <TouchableOpacity
-                                                    className={`${tailwind.buttonBlue}`}
-                                                    onPress={() => changePassword()}>
-                                                    <Text className={`${tailwind.buttonWhiteText}`}>Change password</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View className={`${tailwind.viewWrapper} `}>
-                                                <TouchableOpacity
-                                                    className={`${tailwind.buttonWhite}`}
-                                                    onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
-                                                    <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </>
-                                    )}
-
-                                </View>
-                            </View>
-                        </Modal>
-                        {/* MODAL UNITS */}
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={isModalUnitsVisible}
-                            onRequestClose={() => {
-                                setIsModalUnitsVisible(!isModalUnitsVisible);
-                            }}>
-                            <View style={{
-                                flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)'
-                            }}>
-                                <View style={{
-                                    width: '80%',
-                                    margin: 20,
-                                    backgroundColor: 'white',
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
-                                    <Text className={`${tailwind.titleText} py-5`}>Change Unit/Subunit</Text>
-                                    <View className={`${tailwind.viewWrapper}`}>
-                                        <SelectList
-                                            data={units}
-                                            setSelected={selected => setSubunitSelected(selected)}
-                                            placeholder={`${unit}`}
-                                            placeholderTextColor='#F5F5F5'
-                                            inputStyles={{
-                                                margin: 0,
-                                            }}
-                                            boxStyles={{
-                                                borderRadius: 15,
-                                                borderColor: '#fff',
-                                                color: '#fff',
-                                                backgroundColor: '#F5F5F5'
-                                            }}
-                                            dropdownStyles={{
-                                                borderWidth: 1,
-                                                borderRadius: 4,
-                                                borderColor: '#DDDDDD',
-                                                backgroundColor: '#DDDDDD',
-                                                color: '#fff',
-                                                marginLeft: 5,
-                                                marginRight: 5,
-                                                marginBottom: 5,
-                                                marginTop: 0,
-                                                position: 'relative'
+                                <Text className={`${tailwind.titleText} pt-5`}>Change password</Text>
+                                {emailSent ? (
+                                    <>
+                                        <Avatar
+                                            icon={{
+                                                name: 'done',
+                                                type: 'material',
+                                                size: 40,
+                                                color: COLORS.primary
                                             }}
                                         />
-                                    </View>
-                                    <View className={`${tailwind.viewWrapper}`}>
-                                        <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updateUnit(subunitSelected)}>
-                                            <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View className={`${tailwind.viewWrapper} `}>
-                                        <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
-                                            <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            </View>
-                        </Modal>
-                        {/* MODAL PROFILE */}
-                        <Modal
-                            animationType="slide"
-                            transparent={true}
-                            visible={isModalProfileVisible}
-                            onRequestClose={() => { setIsModalProfileVisible(!isModalProfileVisible) }}
-                        >
-                            <View style={{
-                                flex: 1,
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                backgroundColor: 'rgba(0,0,0,0.5)'
-                            }}>
-                                <View style={{
-                                    width: '80%',
-                                    margin: 20,
-                                    backgroundColor: 'white',
-                                    borderRadius: 20,
-                                    padding: 10,
-                                    alignItems: 'center',
-                                    shadowColor: '#000',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 2,
-                                    },
-                                    shadowOpacity: 0.25,
-                                    shadowRadius: 4,
-                                    elevation: 5,
-                                }}>
-                                    <Text className={`${tailwind.titleText} py-5`}>Edit profile</Text>
-                                    <Avatar
-                                        onPress={pickImage}
-                                        className=""
-                                        size={200}
-                                        source={{ uri: newAvatar == '' ? avatar : newAvatar }}
-                                        containerStyle={{
-                                            backgroundColor: 'white'
-                                        }}
-                                    >
-                                        {/* <Avatar.Accessory  size={30} className=" mx-auto  mr-3 mb-3 justify-center items-center bg-[#62ABEF]" /> */}
-                                        <View style={{
-                                            position: 'absolute',
-                                            top: 150,
-                                            left: 150,
-                                            backgroundColor: COLORS.primary,
-                                            color: 'white',
-                                            borderRadius: 100,
-                                            shadowColor: '#000',
-                                            shadowOffset: { width: -2, height: 0 },
-                                            shadowOpacity: 0.5,
-                                            shadowRadius: 2,
-                                            elevation: 10,
-                                        }} >
-                                            <Avatar onPress={pickImage} size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                        <Text className={`${tailwind.slogan} pb-5`}>Email sent</Text>
+                                        <View className={`${tailwind.viewWrapper}`}>
+                                            <TouchableOpacity
+                                                className={`${tailwind.buttonBlue}`}
+                                                onPress={() => { setEmailSent(!emailSent), setIsModalPasswordVisible(!isModalPasswordVisible) }}>
+                                                <Text className={`${tailwind.buttonWhiteText}`}>Ok</Text>
+                                            </TouchableOpacity>
                                         </View>
-                                    </Avatar>
-                                    <TextInput
-                                        className={`${tailwind.inputs} w-full my-3 bg-[#DDDDDD]`}
-                                        placeholder={`Edit name: ${name}`}
-                                        placeholderTextColor='#726F6F'
-                                        autoCorrect={false}
-                                        onChangeText={(text) => setNewName(text)}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Text className={`${tailwind.slogan} py-5`}>An email will be sent to {email}</Text>
+                                        <View className={`${tailwind.viewWrapper}`}>
+                                            <TouchableOpacity
+                                                className={`${tailwind.buttonBlue}`}
+                                                onPress={() => changePassword()}>
+                                                <Text className={`${tailwind.buttonWhiteText}`}>Change password</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View className={`${tailwind.viewWrapper} `}>
+                                            <TouchableOpacity
+                                                className={`${tailwind.buttonWhite}`}
+                                                onPress={() => setIsModalPasswordVisible(!isModalPasswordVisible)}>
+                                                <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </>
+                                )}
+
+                            </View>
+                        </View>
+                    </Modal>
+                    {/* MODAL UNITS */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isModalUnitsVisible}
+                        onRequestClose={() => {
+                            setIsModalUnitsVisible(!isModalUnitsVisible);
+                        }}>
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}>
+                            <View style={{
+                                width: '80%',
+                                margin: 20,
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                padding: 10,
+                                alignItems: 'center',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
+                            }}>
+                                <Text className={`${tailwind.titleText} py-5`}>Change Unit/Subunit</Text>
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <SelectList
+                                        data={units}
+                                        setSelected={selected => setSubunitSelected(selected)}
+                                        placeholder={`${unit}`}
+                                        placeholderTextColor='#F5F5F5'
+                                        inputStyles={{
+                                            margin: 0,
+                                        }}
+                                        boxStyles={{
+                                            borderRadius: 15,
+                                            borderColor: '#fff',
+                                            color: '#fff',
+                                            backgroundColor: '#F5F5F5'
+                                        }}
+                                        dropdownStyles={{
+                                            borderWidth: 1,
+                                            borderRadius: 4,
+                                            borderColor: '#DDDDDD',
+                                            backgroundColor: '#DDDDDD',
+                                            color: '#fff',
+                                            marginLeft: 5,
+                                            marginRight: 5,
+                                            marginBottom: 5,
+                                            marginTop: 0,
+                                            position: 'relative'
+                                        }}
                                     />
-                                    <View className={`${tailwind.viewWrapper}`}>
-                                        <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updateProfile()}>
-                                            <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View className={`${tailwind.viewWrapper} `}>
-                                        <TouchableOpacity className={`${tailwind.buttonWhite}`}
-                                            onPress={() => { setNewAvatar(''), setIsModalProfileVisible(!isModalProfileVisible) }}>
-                                            <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
-                                        </TouchableOpacity>
-                                    </View>
+                                </View>
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updateUnit(subunitSelected)}>
+                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View className={`${tailwind.viewWrapper} `}>
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`} onPress={() => setIsModalUnitsVisible(!isModalUnitsVisible)}>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
-                        </Modal>
-                        <View className={`${tailwind.viewWrapper} px-4`}>
-                            {permission == 'Admin' || permission == 'Super Admin' ? null : (<TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-4`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
-                                <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
-                            </TouchableOpacity>)}
-                            <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
-                                <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
-                            </TouchableOpacity>
                         </View>
+                    </Modal>
+                    {/* MODAL PROFILE */}
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={isModalProfileVisible}
+                        onRequestClose={() => { setIsModalProfileVisible(!isModalProfileVisible) }}
+                    >
+                        <View style={{
+                            flex: 1,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.5)'
+                        }}>
+                            <View style={{
+                                width: '80%',
+                                margin: 20,
+                                backgroundColor: 'white',
+                                borderRadius: 20,
+                                padding: 10,
+                                alignItems: 'center',
+                                shadowColor: '#000',
+                                shadowOffset: {
+                                    width: 0,
+                                    height: 2,
+                                },
+                                shadowOpacity: 0.25,
+                                shadowRadius: 4,
+                                elevation: 5,
+                            }}>
+                                <Text className={`${tailwind.titleText} py-5`}>Edit profile</Text>
+                                <Avatar
+                                    onPress={pickImage}
+                                    className=""
+                                    size={200}
+                                    source={{ uri: newAvatar == '' ? avatar : newAvatar }}
+                                    containerStyle={{
+                                        backgroundColor: 'white'
+                                    }}
+                                >
+                                    {/* <Avatar.Accessory  size={30} className=" mx-auto  mr-3 mb-3 justify-center items-center bg-[#62ABEF]" /> */}
+                                    <View style={{
+                                        position: 'absolute',
+                                        top: 150,
+                                        left: 150,
+                                        backgroundColor: COLORS.primary,
+                                        color: 'white',
+                                        borderRadius: 100,
+                                        shadowColor: '#000',
+                                        shadowOffset: { width: -2, height: 0 },
+                                        shadowOpacity: 0.5,
+                                        shadowRadius: 2,
+                                        elevation: 10,
+                                    }} >
+                                        <Avatar onPress={pickImage} size={40} rounded icon={{ name: 'camera-alt', type: "material" }} color={'white'} />
+                                    </View>
+                                </Avatar>
+                                <TextInput
+                                    className={`${tailwind.inputs} w-full my-3 bg-[#DDDDDD]`}
+                                    placeholder={`Edit name: ${name}`}
+                                    placeholderTextColor='#726F6F'
+                                    autoCorrect={false}
+                                    onChangeText={(text) => setNewName(text)}
+                                />
+                                <View className={`${tailwind.viewWrapper}`}>
+                                    <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => updateProfile()}>
+                                        <Text className={`${tailwind.buttonWhiteText}`}>Save</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View className={`${tailwind.viewWrapper} `}>
+                                    <TouchableOpacity className={`${tailwind.buttonWhite}`}
+                                        onPress={() => { setNewAvatar(''), setIsModalProfileVisible(!isModalProfileVisible) }}>
+                                        <Text className={`${tailwind.buttonBlueText}`}>Cancel</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </View>
+                    </Modal>
+                    <View className={`${tailwind.viewWrapper} px-4`}>
+                        {permission == 'Admin' || permission == 'Super Admin' ? null : (<TouchableOpacity className={`${tailwind.buttonBlue} bg-black mb-2`} onPress={() => Linking.openURL(`http://seevee.uksouth.cloudapp.azure.com`)}>
+                            <Text className={`${tailwind.buttonWhiteText}`}>SeeVee</Text>
+                        </TouchableOpacity>)}
+                        <TouchableOpacity className={`${tailwind.buttonBlue}`} onPress={() => { handleSignOut() }}>
+                            <Text className={`${tailwind.buttonWhiteText}`}>Sign Out</Text>
+                        </TouchableOpacity>
                     </View>
-                </KeyboardAvoidingView>
-            </ScrollView>
+                </View>
+            </KeyboardAvoidingView>
+            {/* </ScrollView> */}
         </>
     )
 }

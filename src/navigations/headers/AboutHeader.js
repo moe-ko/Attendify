@@ -9,7 +9,6 @@ import { TouchableOpacity } from 'react-native'
 const Stack = createStackNavigator()
 
 const AboutHeader = ({ navigation }) => {
-  console.log(navigation)
   return (
     <Stack.Navigator
       screenOptions={{

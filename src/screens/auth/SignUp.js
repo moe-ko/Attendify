@@ -29,7 +29,7 @@ const SignUp = ({ navigation }) => {
     const [subunits, setSubunits] = useState([])
 
     useEffect(() => {
-        if (units.length != 0) getAllUnits().then(res => setUnits(res))
+        if (units.length <= 0) getAllUnits().then(res => setUnits(res))
     }, [units])
 
     useEffect(() => {

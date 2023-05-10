@@ -32,7 +32,6 @@ export default function App() {
   }, [])
 
   useEffect(() => {
-    console.log('Checking Connection')
     checkConnection().then(res => {
       setConnection(res)
     })

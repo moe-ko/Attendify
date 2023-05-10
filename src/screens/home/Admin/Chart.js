@@ -356,7 +356,7 @@ const Chart = ({ navigation }) => {
                                 </View>
                                 <Text className={`${tailwind.titleText} text-[${COLORS.grey}] ml-5`}>Assistance</Text>
                                 <Text className={`${tailwind.slogan} text-[${COLORS.grey}] ml-5 mb-5`}>Employees</Text>
-                                <FlatList marginBottom={100}
+                                <FlatList marginBottom={200}
                                     data={employees}
                                     renderItem={({ item }) => <EmployeeItem props={{ id: item.id, name: item.name, avatar: item.avatar, status: item.status, event: eventDate }} />}
                                     keyExtractor={item => item.id}

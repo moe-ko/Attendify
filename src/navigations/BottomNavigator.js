@@ -31,10 +31,10 @@ const BottomTabNavigator = () => {
                 iconName = 'person-circle-sharp'
                 break;
             case ROUTES.CHART:
-                iconName = 'stats-chart'
+                iconName = 'pie-chart'
                 break;
             case ROUTES.EMPLOYEES_NAVIGATOR:
-                iconName = 'people'
+                iconName = 'search'
                 break;
         }
         return iconName
